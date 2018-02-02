@@ -22,8 +22,29 @@ body{
 /*@media only handheld{
   body{width: 100%;background: yellow;}
 }*/
+.BlockWrap{
+  width: 100%;
+  padding-top: 50px;  
+  padding-bottom: 50px; 
+  background-color: #fff;
+  border: 1px solid #eee;
+  -webkit-box-shadow: 0 0 5px rgba(0,0,0,.2);
+  -moz-box-shadow: 0 0 5px rgba(0,0,0,.2);
+  box-shadow: 0 0 5px rgba(0,0,0,.2);
+}
 
-
+.transparentBg .ivu-input{
+  background-color: transparent !important;  
+}
+.transparentBg .ivu-input-group-prepend{
+  background-color: transparent !important;  
+}
+.transparentBg i{
+  color: #fff;  
+}
+.ivu-card-head{
+    border-bottom: 0px !important;
+}
 
 
 /*@media (min-width: 1280px){
@@ -60,6 +81,9 @@ body{
 }
 .colorBlue{
   color: #39f;
+}
+.colorWhite{
+  color: #fff !important;
 }
 
 .TextCenter{

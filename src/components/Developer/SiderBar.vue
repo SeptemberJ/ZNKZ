@@ -1,10 +1,6 @@
 <template>
-    <Sider class="fixedSider" :style="{position: 'fixed', height: '100vh', left: 0, overflow: 'auto'}">
-        <Menu active-name="首页" theme="light" width="auto" accordion>
-            <MenuItem name="-1">
-            </MenuItem>
-            <MenuItem name="-1">
-            </MenuItem>
+    <Sider class="fixedSider" :style="{position: 'fixed',left: 0, overflow: 'auto'}">
+         <Menu :active-name="ActiveName" theme="light" width="auto" accordion @on-select="SideMenuChange">
             <MenuItem name="首页">
                 <Icon type="home" size="22"></Icon>
                 首页
@@ -25,8 +21,8 @@
                     <Icon type="earth" size="22"></Icon>
                     智能互联
                 </template>
-                <MenuItem name="Amazon Echo">Amazon Echo</MenuItem>
-                <MenuItem name="Google Home">Google Home</MenuItem>
+                <MenuItem name="AmazonEcho">Amazon Echo</MenuItem>
+                <MenuItem name="GoogleHome">Google Home</MenuItem>
                 <MenuItem name="莹石摄像头">莹石摄像头</MenuItem>
                 <MenuItem name="公子小白">公子小白</MenuItem>
                 <MenuItem name="天猫精灵">天猫精灵</MenuItem>
@@ -41,7 +37,7 @@
                     开发指南
                 </template>
                 <MenuItem name="开发简介">开发简介</MenuItem>
-                <MenuItem name="嵌入式/WIFI">嵌入式/WIFI</MenuItem>
+                <MenuItem name="嵌入式/Wifi">嵌入式/Wifi</MenuItem>
                 <MenuItem name="Android">Android</MenuItem>
                 <MenuItem name="iOS">iOS</MenuItem>
                 <MenuItem name="OpenAPI">OpenAPI</MenuItem>
@@ -77,7 +73,6 @@
   export default{
     data: function () {
       return {
-        ActiveName:'首页',
         SideMenu:[
             {'Fmenu':'首页','Smenu':[]},
             {'Fmenu':'用户管理','Smenu':['用户情况','活跃用户']},
@@ -103,9 +98,9 @@
       
     },
     computed: {
-      activeRoute(){
-        return this.$store.state.activeRoute
-       }
+        ActiveName(){
+          return this.$store.state.OperatorMenuCur
+        }
       
     },
     watch: {
@@ -114,7 +109,9 @@
     components: {
     },
     methods: {
-     
+        SideMenuChange(Smenu){
+          this.$emit('SideMenu-click',Smenu)
+        },
 
     }
   }
@@ -124,6 +121,8 @@
   display:none;
 }
 .fixedSider{
+    height: calc(100% - 60px);
+    z-index: 999999;
     -webkit-box-shadow: 0 0 9px rgba(0,0,0,.25);
     -moz-box-shadow: 0 0 9px rgba(0,0,0,.25);
     box-shadow: 0 0 9px rgba(0,0,0,.25);

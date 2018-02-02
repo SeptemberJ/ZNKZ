@@ -4,6 +4,8 @@ import axios from 'axios'
 import Store from '../store/store'
 import App from '../App'
 import Login from '../page/Login/Index'
+import Sign from '../page/Sign/Index'
+import Modify from '../page/Modify/Index'
 import Operator from '../page/Operator/Index'
 import Developer from '../page/Developer/Index'
 
@@ -19,12 +21,15 @@ const routes = [
     path: '/',
     component: App,
     children: [
+     // {path: '/App', name: '测试', component: App},
     {path: '/Login', name: '登录', component: Login},
+    {path: '/Sign', name: '注册', component: Sign},
+    {path: '/Modify', name: '修改密码', component: Modify},
     {path: '/Operator', name: '运营者平台', component: Operator},
     {path: '/Developer', name: '开发者平台', component: Developer},
     // {path: '/ArticleDetail/:id', name: '详情', component: ArticleDetail,meta: {requireAuth: false}},
 
-      {path:'*', redirect: '/Operator'}
+      {path:'*', redirect: '/Login'}
       // {path: '/article/:id', name: 'article', component: Article},
     ]
   }

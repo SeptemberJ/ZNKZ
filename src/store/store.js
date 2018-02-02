@@ -15,38 +15,39 @@ const store = new Vuex.Store({
         register_type:localStorage.getItem("register_type"),
         // useravatar:localStorage.getItem("user_avatar"),
     },
-    MessageCount:11,
-    HRMenuCur:'我的订单',
+    //MessageCount:11,
+    OperatorMenuCur:'首页',
+    DeveloperMenuCur:'首页',
     ifLogined:getCookie('btsby_cookie')?true : false,
     // ifLogined:(localStorage.getItem("member_id"))?true : false,
     loading:false,
     activeRoute:'首页', //导航显示路由名字
-    newsKind:'1',
-    newsPage:1,
-    isMobile:'',
-    ifAddOrMin:false,   //是否显示增减员Modal框
-    ifReadExcel:false,  //是否显示导入Modal框
-    ifDisMission:false, //是否显示离职人员Modal框
-    toAddMember:false,  //是否显示新增人员Modal框
-    PeripheryTab_cur:1, //手机端tab索引值
-    toast:{
-        ifShow:false, //显示
-        text:'', //提示文字
-    },
-    tips:{
-        ifShow:false, //显示
-        text:'', //提示文字
-    },
-    confirm:{
-        // ifShow:false, //显示
-        // text:'', //提示文字
-        confirmSureFn:'', //确定后执行的函数
-        title: '提示',
-        contentHtml: '确定该操作?',
-        ok: '确定',
-        cancel: '取消'
-    },
-    snackbarText:''
+    // newsKind:'1',
+    // newsPage:1,
+    // isMobile:'',
+    // ifAddOrMin:false,   //是否显示增减员Modal框
+    // ifReadExcel:false,  //是否显示导入Modal框
+    // ifDisMission:false, //是否显示离职人员Modal框
+    // toAddMember:false,  //是否显示新增人员Modal框
+    // PeripheryTab_cur:1, //手机端tab索引值
+    // toast:{
+    //     ifShow:false, //显示
+    //     text:'', //提示文字
+    // },
+    // tips:{
+    //     ifShow:false, //显示
+    //     text:'', //提示文字
+    // },
+    // confirm:{
+    //     // ifShow:false, //显示
+    //     // text:'', //提示文字
+    //     confirmSureFn:'', //确定后执行的函数
+    //     title: '提示',
+    //     contentHtml: '确定该操作?',
+    //     ok: '确定',
+    //     cancel: '取消'
+    // },
+    // snackbarText:''
     
     
     

@@ -1,10 +1,6 @@
 <template>
-    <Sider class="fixedSider" :style="{position: 'fixed', height: '100vh', left: 0, overflow: 'auto'}">
-        <Menu active-name="首页" theme="light" width="auto" accordion>
-            <MenuItem name="-1">
-            </MenuItem>
-            <MenuItem name="-1">
-            </MenuItem>
+    <Sider class="fixedSider" :style="{position: 'fixed', left: LeftPosition, overflow: 'auto'}" >
+        <Menu :active-name="ActiveName" theme="light" width="auto" accordion @on-select="SideMenuChange">
             <MenuItem name="首页">
                 <Icon type="home" size="22"></Icon>
                 首页
@@ -54,23 +50,8 @@
                 常见问题管理
             </MenuItem>
         </Menu>
+        <div slot="trigger"></div>
     </Sider>
-
-        <!-- <Sider class="fixedSider" :style="{position: 'fixed', height: '100vh', left: 0, overflow: 'auto'}">
-           <Menu :active-name="ActiveName" theme="light" width="auto" >
-                <MenuItem name="-1">
-                </MenuItem>
-                <MenuItem name="1">
-                </MenuItem>
-                <Submenu v-for="(Menu,MenuIdx) in SideMenu" :name="Menu.Fmenu">
-                    <template slot="title">
-                        <Icon type="ios-navigate"></Icon>
-                         {{Menu.Fmenu}}
-                    </template>
-                    <MenuItem  v-for="(Smenu,SmenuIdx) in Menu.Smenu" :name="Smenu"><span>{{Smenu}}</span></MenuItem>
-                </Submenu>
-            </Menu> 
-        </Sider> -->
         
 </template>
 <script>
@@ -78,7 +59,7 @@
   export default{
     data: function () {
       return {
-        ActiveName:'首页',
+        LeftPosition:'0px',
         SideMenu:[
             {'Fmenu':'首页','Smenu':[]},
             {'Fmenu':'用户管理','Smenu':['用户情况','活跃用户']},
@@ -104,9 +85,24 @@
       
     },
     computed: {
-      activeRoute(){
-        return this.$store.state.activeRoute
-       }
+        ActiveName(){
+          return this.$store.state.OperatorMenuCur
+        },
+        enuitemClasses: function () {
+            return [
+                'menu-item',
+                this.isCollapsed ? 'collapsed-menu' : ''
+            ]
+        },
+        // LeftPosition(){
+        //     let distance
+        //     if(this.$store.state.isMobile){
+        //         distance = '-200px'
+        //     }else{
+        //         distance = '0px'
+        //     }
+        //   return distance
+        // },
       
     },
     watch: {
@@ -115,6 +111,9 @@
     components: {
     },
     methods: {
+        SideMenuChange(Smenu){
+          this.$emit('SideMenu-click',Smenu)
+        },
      
 
     }
@@ -125,6 +124,8 @@
   display:none;
 }
 .fixedSider{
+    height: calc(100% - 60px);
+    z-index: 999999;
     -webkit-box-shadow: 0 0 9px rgba(0,0,0,.25);
     -moz-box-shadow: 0 0 9px rgba(0,0,0,.25);
     box-shadow: 0 0 9px rgba(0,0,0,.25);
@@ -134,5 +135,6 @@
     -moz-box-shadow: 0 0 9px rgba(0,0,0,.25);
     box-shadow: 0 0 9px rgba(0,0,0,.25);
 }
+
     
 </style>

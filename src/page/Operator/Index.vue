@@ -1,52 +1,8 @@
 <template>
 <div class="com-app">
 <div class="layout">
-<SiderBar/>
-        <!-- <Sider class="fixedSider" :style="{position: 'fixed', height: '100vh', left: 0, overflow: 'auto'}">
-            <Menu active-name="1-2" theme="light" width="auto" :open-names="['1']" >
-                <MenuItem name="-1">
-                </MenuItem>
-                <MenuItem name="-1">
-                </MenuItem>
-                <MenuItem name="1">
-                    <Icon type="ios-paper"></Icon>
-                    首页
-                </MenuItem>
-                <Submenu name="1">
-                    <template slot="title">
-                        <Icon type="ios-navigate"></Icon>
-                        Item 1
-                    </template>
-                    <MenuItem name="1-1">Option 1</MenuItem>
-                    <MenuItem name="1-2">Option 2</MenuItem>
-                    <MenuItem name="1-3">Option 3</MenuItem>
-                    <MenuItem name="1-4">Option 1</MenuItem>
-                    <MenuItem name="1-5">Option 2</MenuItem>
-                    <MenuItem name="1-6">Option 3</MenuItem>
-                </Submenu>
-                <Submenu name="2">
-                    <template slot="title">
-                        <Icon type="ios-keypad"></Icon>
-                        Item 2
-                    </template>
-                    <MenuItem name="2-1">Option 1</MenuItem>
-                    <MenuItem name="2-2">Option 2</MenuItem>
-                    <MenuItem name="2-3">Option 3</MenuItem>
-                    <MenuItem name="2-4">Option 1</MenuItem>
-                    <MenuItem name="2-5">Option 2</MenuItem>
-                    <MenuItem name="2-6">Option 3</MenuItem>
-                </Submenu>
-                <Submenu name="3">
-                    <template slot="title">
-                        <Icon type="ios-analytics"></Icon>
-                        Item 3
-                    </template>
-                    <MenuItem name="3-1">Option 1</MenuItem>
-                    <MenuItem name="3-2">Option 2</MenuItem>
-                </Submenu>
-            </Menu>
-        </Sider> -->
-        <Layout :style="{marginLeft: '200px'}">
+<SiderBar v-on:SideMenu-click="listenFromSideMenu"/>
+        <Layout :style="{marginLeft: LeftPosition}">
            <Header class="fixedHeader shadow" :style="{position: 'fixed',top:0}">
                 <Menu mode="horizontal" theme="light" active-name="1">
                     <div class="layout-logo">
@@ -68,9 +24,23 @@
                     </div>
                 </Menu>
             </Header>
-            <Content :style="{margin: '88px 20px 0',  minHeight: '800px'}">
-                <Card>
-                    <div :style="{height: '600px',background: '#fff'}">Content</div>
+            <Content :style="{margin: '62px 20px 0',  minWidth: '768px'}">
+                <Card :bordered="false" dis-hover>
+                    <div :style="{}">
+                        <Home v-if="curMneu == '首页'"></Home>
+                        <Alert v-if="curMneu == '警告管理'"></Alert>
+                        <UserSituation v-if="curMneu == '用户情况'"></UserSituation>
+                        <ActiveUser v-if="curMneu == '活跃用户'"></ActiveUser>
+                        <EquipmentCondition v-if="curMneu == '设备情况'"></EquipmentCondition>
+                        <EquipmentAuthorization v-if="curMneu == '设备授权'"></EquipmentAuthorization>
+                        <ApkUpgrade v-if="curMneu == 'APK升级'"></ApkUpgrade>
+                        <FirmwareUpdate v-if="curMneu == '固件升级'"></FirmwareUpdate>
+                        <MessagePush v-if="curMneu == '消息推送'"></MessagePush>
+                        <UserFeedback v-if="curMneu == '用户反馈'"></UserFeedback>
+                        <MailTemplate v-if="curMneu == '邮件模板'"></MailTemplate>
+                        <CommonProblem v-if="curMneu == '常见问题管理'"></CommonProblem>
+                        
+                    </div>
                 </Card>
             </Content>
         </Layout>
@@ -82,11 +52,22 @@
 import Vue from 'vue'
 import axios from 'axios'
 import SiderBar from '../../components/Operator/SiderBar.vue'
-
+import Home from '../../components/Operator/Home.vue'
+import Alert from '../../components/Operator/Alert.vue'
+import UserSituation from '../../components/Operator/UserSituation.vue'
+import ActiveUser from '../../components/Operator/ActiveUser.vue'
+import EquipmentCondition from '../../components/Operator/EquipmentCondition.vue'
+import EquipmentAuthorization from '../../components/Operator/EquipmentAuthorization.vue'
+import ApkUpgrade from '../../components/Operator/ApkUpgrade.vue'
+import FirmwareUpdate from '../../components/Operator/FirmwareUpdate.vue'
+import MessagePush from '../../components/Operator/MessagePush.vue'
+import UserFeedback from '../../components/Operator/UserFeedback.vue'
+import MailTemplate from '../../components/Operator/MailTemplate.vue'
+import CommonProblem from '../../components/Operator/CommonProblem.vue'
   export default{
     data: function () {
       return {
-        // transitionName: 'slide-left',
+        LeftPosition:'200px',
       }
     },
     mounted: function () {
@@ -100,21 +81,50 @@ import SiderBar from '../../components/Operator/SiderBar.vue'
       
     },
     computed: {
-      activeRoute(){
+       activeRoute(){
         return this.$store.state.activeRoute
-       }
+       },
+       curMneu: {
+        get: function () {
+          return this.$store.state.OperatorMenuCur
+        },
+        set: function (newValue) {
+          this.$store.state.OperatorMenuCur = newValue
+        }
+       },
+       // LeftPosition(){
+       //      let distance
+       //      if(this.$store.state.isMobile){
+       //          distance = '0px'
+       //      }else{
+       //          distance = '200px'
+       //      }
+       //    return distance
+       //  },
       
     },
     watch: {
       
     },
     components: {
-        SiderBar
-      
-      
-
+        SiderBar,
+        Home,
+        Alert,
+        UserSituation,
+        ActiveUser,
+        EquipmentCondition,
+        EquipmentAuthorization,
+        ApkUpgrade,
+        FirmwareUpdate,
+        MessagePush,
+        UserFeedback,
+        MailTemplate,
+        CommonProblem
     },
     methods: {
+        listenFromSideMenu(MENU){
+            this.curMneu = MENU
+        }
      
 
     }
@@ -159,8 +169,8 @@ import SiderBar from '../../components/Operator/SiderBar.vue'
 
 }
 .layout{
-    border: 1px solid #d7dde4;
-    background: #f5f7f9;
+    /*border: 1px solid #d7dde4;
+    background: #f5f7f9;*/
     position: relative;
     border-radius: 4px;
     /*overflow: hidden;*/
@@ -182,5 +192,7 @@ import SiderBar from '../../components/Operator/SiderBar.vue'
 .layout-nav{
     float: right;
 }
-    
+.ivu-card{
+  background-color: transparent;
+}
 </style>

@@ -125,12 +125,11 @@
     cursor: pointer;
     z-index: 999;
 }
-.layout{
+/*.layout{
     border: 1px solid #d7dde4;
     background: #f5f7f9;
     position: relative;
     border-radius: 4px;
-    /*overflow: hidden;*/
 }
 .layout-header-bar{
     background: #fff;
@@ -139,7 +138,6 @@
 .layout-logo{
   width: 100px;
   height: 30px;
-  /*background: #5b6270;*/
   border-radius: 3px;
   float: left;
   position: relative;
@@ -149,5 +147,5 @@
 .layout-nav{
     float: right;
 }
-    
+    */
 </style>

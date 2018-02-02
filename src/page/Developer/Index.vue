@@ -1,51 +1,7 @@
 <template>
 <div class="com-app">
 <div class="layout">
-<SiderBar/>
-        <!-- <Sider class="fixedSider" :style="{position: 'fixed', height: '100vh', left: 0, overflow: 'auto'}">
-            <Menu active-name="1-2" theme="light" width="auto" :open-names="['1']" >
-                <MenuItem name="-1">
-                </MenuItem>
-                <MenuItem name="-1">
-                </MenuItem>
-                <MenuItem name="1">
-                    <Icon type="ios-paper"></Icon>
-                    首页
-                </MenuItem>
-                <Submenu name="1">
-                    <template slot="title">
-                        <Icon type="ios-navigate"></Icon>
-                        Item 1
-                    </template>
-                    <MenuItem name="1-1">Option 1</MenuItem>
-                    <MenuItem name="1-2">Option 2</MenuItem>
-                    <MenuItem name="1-3">Option 3</MenuItem>
-                    <MenuItem name="1-4">Option 1</MenuItem>
-                    <MenuItem name="1-5">Option 2</MenuItem>
-                    <MenuItem name="1-6">Option 3</MenuItem>
-                </Submenu>
-                <Submenu name="2">
-                    <template slot="title">
-                        <Icon type="ios-keypad"></Icon>
-                        Item 2
-                    </template>
-                    <MenuItem name="2-1">Option 1</MenuItem>
-                    <MenuItem name="2-2">Option 2</MenuItem>
-                    <MenuItem name="2-3">Option 3</MenuItem>
-                    <MenuItem name="2-4">Option 1</MenuItem>
-                    <MenuItem name="2-5">Option 2</MenuItem>
-                    <MenuItem name="2-6">Option 3</MenuItem>
-                </Submenu>
-                <Submenu name="3">
-                    <template slot="title">
-                        <Icon type="ios-analytics"></Icon>
-                        Item 3
-                    </template>
-                    <MenuItem name="3-1">Option 1</MenuItem>
-                    <MenuItem name="3-2">Option 2</MenuItem>
-                </Submenu>
-            </Menu>
-        </Sider> -->
+<SiderBar v-on:SideMenu-click="listenFromSideMenu"/>
         <Layout :style="{marginLeft: '200px'}">
            <Header class="fixedHeader shadow" :style="{position: 'fixed',top:0}">
                 <Menu mode="horizontal" theme="light" active-name="1">
@@ -68,9 +24,28 @@
                     </div>
                 </Menu>
             </Header>
-            <Content :style="{margin: '88px 20px 0',  minHeight: '800px'}">
+            <Content :style="{margin: '62px 20px 0',  minWidth: '768px'}">
                 <Card>
-                    <div :style="{height: '600px',background: '#fff'}">Content</div>
+                    <div :style="{height: '600px',background: '#fff'}">
+                        <Home v-if="curMneu == '首页'"></Home>
+                        <ApplicationManagement v-if="curMneu == '应用管理'"></ApplicationManagement>
+                        <ProductManagement v-if="curMneu == '产品管理'"></ProductManagement>
+                        <AgreementManagement v-if="curMneu == '协议管理'"></AgreementManagement>
+                        <WarningSetting v-if="curMneu == '警告设置'"></WarningSetting>
+                        <DebugEquipment v-if="curMneu == '调试设备'"></DebugEquipment>
+                        <AmazonEcho v-if="curMneu == 'AmazonEcho'"></AmazonEcho>
+                        <GoogleHome v-if="curMneu == 'GoogleHome'"></GoogleHome>
+                        <YSSXT v-if="curMneu == '莹石摄像头'"></YSSXT>
+                        <GZXB v-if="curMneu == '公子小白'"></GZXB>
+                        <TMJL v-if="curMneu == '天猫精灵'"></TMJL>
+                        <DataForwarding v-if="curMneu == '数据转发'"></DataForwarding>
+                        <DevelopmentIntroduction v-if="curMneu == '开发简介'"></DevelopmentIntroduction>
+                        <EmbeddedWifi v-if="curMneu == '嵌入式/Wifi'"></EmbeddedWifi>
+                        <Android v-if="curMneu == 'Android'"></Android>
+                        <Ios v-if="curMneu == 'iOS'"></Ios>
+                        <OpenApi v-if="curMneu == 'OpenAPI'"></OpenApi>
+                        <Community v-if="curMneu == '极客社区'"></Community>
+                    </div>
                 </Card>
             </Content>
         </Layout>
@@ -82,6 +57,24 @@
 import Vue from 'vue'
 import axios from 'axios'
 import SiderBar from '../../components/Developer/SiderBar.vue'
+import Home from '../../components/Developer/Home.vue'
+import ApplicationManagement from '../../components/Developer/ApplicationManagement.vue'
+import ProductManagement from '../../components/Developer/ProductManagement.vue'
+import AgreementManagement from '../../components/Developer/AgreementManagement.vue'
+import WarningSetting from '../../components/Developer/WarningSetting.vue'
+import DebugEquipment from '../../components/Developer/DebugEquipment.vue'
+import AmazonEcho from '../../components/Developer/AmazonEcho.vue'
+import GoogleHome from '../../components/Developer/GoogleHome.vue'
+import YSSXT from '../../components/Developer/YSSXT.vue'
+import GZXB from '../../components/Developer/GZXB.vue'
+import TMJL from '../../components/Developer/TMJL.vue'
+import DataForwarding from '../../components/Developer/DataForwarding.vue'
+import DevelopmentIntroduction from '../../components/Developer/DevelopmentIntroduction.vue'
+import EmbeddedWifi from '../../components/Developer/EmbeddedWifi.vue'
+import Android from '../../components/Developer/Android.vue'
+import Ios from '../../components/Developer/Ios.vue'
+import OpenApi from '../../components/Developer/OpenApi.vue'
+import Community from '../../components/Developer/Community.vue'
 
   export default{
     data: function () {
@@ -102,19 +95,48 @@ import SiderBar from '../../components/Developer/SiderBar.vue'
     computed: {
       activeRoute(){
         return this.$store.state.activeRoute
-       }
+       },
+       curMneu: {
+        get: function () {
+          return this.$store.state.DeveloperMenuCur
+        },
+        set: function (newValue) {
+          this.$store.state.DeveloperMenuCur = newValue
+        }
+       },
       
     },
     watch: {
       
     },
     components: {
-        SiderBar
-      
-      
+        SiderBar,
+        Home,
+        ApplicationManagement,
+        ProductManagement,
+        AgreementManagement,
+        WarningSetting,
+        DebugEquipment,
+        AmazonEcho,
+        GoogleHome,
+        YSSXT,
+        GZXB,
+        TMJL,
+        DataForwarding,
+        DevelopmentIntroduction,
+        EmbeddedWifi,
+        Android,
+        Ios,
+        OpenApi,
+        Community
+
+
 
     },
     methods: {
+        listenFromSideMenu(MENU){
+            this.curMneu = MENU
+        }
      
 
     }
@@ -159,8 +181,8 @@ import SiderBar from '../../components/Developer/SiderBar.vue'
 
 }
 .layout{
-    border: 1px solid #d7dde4;
-    background: #f5f7f9;
+    /*border: 1px solid #d7dde4;
+    background: #f5f7f9;*/
     position: relative;
     border-radius: 4px;
     /*overflow: hidden;*/
