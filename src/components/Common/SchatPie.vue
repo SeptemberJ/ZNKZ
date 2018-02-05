@@ -1,20 +1,12 @@
 <template>
-	<div class="Schat">
+	<div class="SchatPie">
     <h2>{{Info.Htit}}</h2>
     <div class="BlockWrap marginTB_20">
         <Row type="flex" justify="space-around" class="code-row-bg">
             <Col class="marginTB_10 TextCenter" :xs="{ span: 24,offset: 0}" :lg="{ span: 24}">
-                <ButtonGroup shape="circle">
-                    <Button :type="BtCur == BtIdx?'primary':'ghost'" @click.prevent="BtTab(Bt.value,BtIdx)" v-for="(Bt,BtIdx) in Info.Sdata">
-                        {{Bt.BtName}}
-                    </Button>
-                </ButtonGroup>
+                <schart :canvasId="Info.Htit" :type="type" :width="width"
+    :height="height" :data="data" :options="options"></schart>
             </Col>
-            <Col class="marginTB_10 TextCenter" :xs="{ span: 24,offset: 0}" :lg="{ span: 24}">
-                <schart :width="width"
-    :height="height"  :canvasId="Info.Htit" :type="type"  :data="data" :options="options"></schart>
-            </Col>
-            
         </Row>
     </div>
 	</div>
@@ -25,13 +17,13 @@
 import Schart from 'vue-schart';
 import axios from 'axios'
   export default{
-    props:['Info'],
+     props:['Info'],
     data: function () {
       return {
         BtCur:0,
         //canvasId: 'myCanvas',
-        type: 'line',
-        width: 750,
+        type: 'pie',
+        width: 500,
         height: 400,
         data: [],
         options: {
@@ -40,21 +32,35 @@ import axios from 'axios'
             title: '',// 图表标题
             titleColor: '#000000',         // 图表标题颜色
             titlePosition: 'top',      // 图表标题位置: top / bottom
-            yEqual: 5,                     // y轴分成5等分
-            fillColor: '#1E9FFF',          // 默认填充颜色
-            contentColor: '#eeeeee',       // 内容横线颜色
-            axisColor: '#666666',          // 坐标轴颜色
+            legendColor: '#000000',         // 图例文本颜色
+            legendTop: 40,               // 图例距离顶部的长度
+            colorList: [],   //环形图颜色列表
+            radius: 100,                     // 环形图外圆半径
+            innerRadius: 70            // 环形图内圆半径
+            
         }
-
       }
     },
     mounted: function () {
       
     },
     created() {
-      console.log('bts------')
       console.log(this.Info)
-      this.GetSchatData('Schat')
+      this.options.colorList = this.Info.colorList
+      switch(this.Info.kind){
+        case 'activationData':
+        this.GetSchatData('SchatPie1')
+        break
+        case 'onlineData':
+        this.GetSchatData('SchatPie2')
+        break
+        case 'modelData':
+        this.GetSchatData('SchatPie3')
+        break
+        default:
+        this.GetSchatData('SchatPie1')
+      }
+    
       
     },
     computed: {
@@ -69,20 +75,6 @@ import axios from 'axios'
 
     },
     methods: {
-      BtTab(VALUE,IDX){
-        console.log(IDX)
-        this.BtCur = IDX
-        switch(IDX){
-          case '0':
-          this.GetSchatData('Schat')
-          break
-          case '1':
-          this.GetSchatData('Schat2')
-          break
-          default:
-          this.GetSchatData('Schat')
-        }
-      },
       GetSchatData(KIND){
         axios.get('static/json/'+ KIND +'.json'
           ).then((res)=> {
@@ -98,6 +90,6 @@ import axios from 'axios'
   }
 </script>
 <style lang="scss">
-.Schat{
+.SchatPie{
 }
 </style>

@@ -48,7 +48,7 @@
                 </FormItem>
                 <FormItem>
                     <Button type="primary" @click="handleSubmit('formSign')">注册</Button>
-                    <Button type="text" @click="ToLogin">去登录</Button>
+                    <Button class="colorWhite" type="text" @click="ToLogin">去登录</Button>
                 </FormItem>
               </Col>
             </Row>
@@ -199,7 +199,7 @@ import particles from 'particles.js'
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: #182022;
+  background-color: #245787;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 50% 50%;

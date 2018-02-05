@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import axios from 'axios'
 import Store from '../store/store'
+import Appyl from '../Appyl'
 import App from '../App'
 import Login from '../page/Login/Index'
 import Sign from '../page/Sign/Index'
@@ -15,25 +16,36 @@ import {setCookie,getCookie} from '../util/utils'
 import {MessageChange} from "../util/utils"
 
 Vue.use(VueRouter)
-
 const routes = [
   {
     path: '/',
-    component: App,
+    component: Appyl,
     children: [
-     // {path: '/App', name: '测试', component: App},
-    {path: '/Login', name: '登录', component: Login},
-    {path: '/Sign', name: '注册', component: Sign},
-    {path: '/Modify', name: '修改密码', component: Modify},
-    {path: '/Operator', name: '运营者平台', component: Operator},
-    {path: '/Developer', name: '开发者平台', component: Developer},
-    // {path: '/ArticleDetail/:id', name: '详情', component: ArticleDetail,meta: {requireAuth: false}},
-
-      {path:'*', redirect: '/Login'}
-      // {path: '/article/:id', name: 'article', component: Article},
+      {path: '/Appyl', name: '测试', component: Appyl},
+      {path: '/Developer', name: '开发者平台', component: Developer,meta: {requireAuth: false}},
+      {path: '/Operator', name: '运营者平台', component: Operator,meta: {requireAuth: false}},
+    
     ]
   }
 ]
+// const routes = [
+//   {
+//     path: '/',
+//     component: App,
+//     children: [
+//      // {path: '/App', name: '测试', component: App},
+//     {path: '/Login', name: '登录', component: Login},
+//     {path: '/Sign', name: '注册', component: Sign},
+//     {path: '/Modify', name: '修改密码', component: Modify},
+//     {path: '/Operator', name: '运营者平台', component: Operator,meta: {requireAuth: true}},
+//     {path: '/Developer', name: '开发者平台', component: Developer,meta: {requireAuth: true}},
+//     // {path: '/ArticleDetail/:id', name: '详情', component: ArticleDetail,meta: {requireAuth: false}},
+
+//       {path:'*', redirect: '/Login'}
+//       // {path: '/article/:id', name: 'article', component: Article},
+//     ]
+//   }
+// ]
 const router = new VueRouter({
   routes: routes, // short for routes: routes
   //linkActiveClass: 'active',  // router-link的选中状态的class，也有一个默认的值
@@ -43,25 +55,25 @@ const router = new VueRouter({
   history: true
 })
 //登录控制
-// router.beforeEach((to, from, next) => {
-//     if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
-//         if (getCookie('btsby_cookie')) {  // 通过vuex state获取当前的token是否存在
-//             next()
-//         }
-//         else {
-//             localStorage.clear();
-//             Store.state.userInfo.username = ''
-//             Store.state.userInfo.member_id = ''
-//             Store.state.ifLogined = false
-//             next({
-//                 path: '/Login',
-//             })
-//         }
-//     }
-//     else {
-//         next();
-//     }
-// })
+router.beforeEach((to, from, next) => {
+    if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
+        if (getCookie('btznkz')) {  // 通过vuex state获取当前的token是否存在
+            next()
+        }
+        else {
+            // localStorage.clear();
+            // Store.state.userInfo.username = ''
+            // Store.state.userInfo.member_id = ''
+            // Store.state.ifLogined = false
+            next({
+                path: '/Login',
+            })
+        }
+    }
+    else {
+        next();
+    }
+})
 //导航显示当前路由名称
 router.afterEach((to, from, next) => {
   var ISMobile = deviceInfo()
@@ -70,6 +82,6 @@ router.afterEach((to, from, next) => {
   document.title = to.name;
   Store.commit('ROUTE_CHANGE',{activeRoute: to.name})
   //获取消息通知
-  MessageChange()
+  // MessageChange()
 })
 export default router

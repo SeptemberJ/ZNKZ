@@ -1,7 +1,7 @@
 <template>
-<Sider :style="{float:'left',overflow:'hidden'}" ref="side1" hide-trigger collapsible :collapsed-width="0" v-model="isCollapsed">
-                <Menu :active-name="ActiveName" theme="light" width="auto" accordion @on-select="SideMenuChange" :class="menuitemClasses">
-                    <MenuItem name="首页">
+    <Sider class="fixedSider" :style="{position: 'fixed',left: 0, overflow: 'auto'}">
+         <Menu :active-name="ActiveName" theme="light" width="auto" accordion @on-select="SideMenuChange">
+            <MenuItem name="首页">
                 <Icon type="home" size="22"></Icon>
                 首页
             </MenuItem>
@@ -48,9 +48,24 @@
                 <Icon type="ios-paw" size="22"></Icon>
                 极客社区
             </MenuItem>
-                </Menu>
-            </Sider>
+        </Menu>
+    </Sider>
 
+        <!-- <Sider class="fixedSider" :style="{position: 'fixed', height: '100vh', left: 0, overflow: 'auto'}">
+           <Menu :active-name="ActiveName" theme="light" width="auto" >
+                <MenuItem name="-1">
+                </MenuItem>
+                <MenuItem name="1">
+                </MenuItem>
+                <Submenu v-for="(Menu,MenuIdx) in SideMenu" :name="Menu.Fmenu">
+                    <template slot="title">
+                        <Icon type="ios-navigate"></Icon>
+                         {{Menu.Fmenu}}
+                    </template>
+                    <MenuItem  v-for="(Smenu,SmenuIdx) in Menu.Smenu" :name="Smenu"><span>{{Smenu}}</span></MenuItem>
+                </Submenu>
+            </Menu> 
+        </Sider> -->
         
 </template>
 <script>
@@ -58,7 +73,6 @@
   export default{
     data: function () {
       return {
-        isCollapsed: false,
         SideMenu:[
             {'Fmenu':'首页','Smenu':[]},
             {'Fmenu':'用户管理','Smenu':['用户情况','活跃用户']},
@@ -84,14 +98,8 @@
       
     },
     computed: {
-        menuitemClasses () {
-            return [
-                'menu-item',
-                this.isCollapsed ? 'collapsed-menu' : ''
-            ]
-        },
         ActiveName(){
-          return this.$store.state.DeveloperMenuCur
+          return this.$store.state.OperatorMenuCur
         }
       
     },
@@ -103,9 +111,7 @@
     methods: {
         SideMenuChange(Smenu){
           this.$emit('SideMenu-click',Smenu)
-          this.$refs.side1.toggleCollapse();
         },
-        
 
     }
   }
@@ -126,57 +132,5 @@
     -moz-box-shadow: 0 0 9px rgba(0,0,0,.25);
     box-shadow: 0 0 9px rgba(0,0,0,.25);
 }
-.ivu-menu-submenu-title{
-        background: pink !important;
-    }
-    .layout{
-        border: 1px solid #d7dde4;
-        background: #f5f7f9;
-        position: relative;
-        border-radius: 4px;
-        overflow: hidden;
-    }
-    .layout-header-bar{
-        background: #fff;
-        box-shadow: 0 1px 1px rgba(0,0,0,.1);
-    }
-    .layout-logo-left{
-        width: 90%;
-        height: 30px;
-        background: #5b6270;
-        border-radius: 3px;
-        margin: 15px auto;
-    }
-    .menu-icon{
-        transition: all .3s;
-    }
-    .rotate-icon{
-        transform: rotate(-90deg);
-    }
-    .menu-item span{
-        display: inline-block;
-        overflow: hidden;
-        width: 69px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        vertical-align: bottom;
-        transition: width .2s ease .2s;
-    }
-    .menu-item i{
-        transform: translateX(0px);
-        transition: font-size .2s ease, transform .2s ease;
-        vertical-align: middle;
-        font-size: 16px;
-    }
-    .collapsed-menu span{
-        width: 0px;
-        transition: width .2s ease;
-    }
-    .collapsed-menu i{
-        transform: translateX(5px);
-        transition: font-size .2s ease .2s, transform .2s ease .2s;
-        vertical-align: middle;
-        font-size: 22px;
-    }
     
 </style>

@@ -3,7 +3,7 @@
     <transition>
         <router-view class="child-view"></router-view>
     </transition>
-    <div class="ChangePlant" @mouseover="OverShow" @mouseout="OutHide"  @click="ChangePlatform">
+    <div v-if="activeRoute!='登录' && activeRoute!='注册' && activeRoute!='修改密码'" class="ChangePlant" @mouseover="OverShow" @mouseout="OutHide"  @click="ChangePlatform">
         {{activeRoute}}
         <span v-if="ChangeShow" class="ChangePlantMask">切换</span>
     </div>

@@ -2,9 +2,13 @@
 <div class="com-app">
 <div class="layout">
 <SiderBar v-on:SideMenu-click="listenFromSideMenu"/>
-        <Layout>
-                <Header :style="{padding: 0}" class="layout-header-bar">
-                    <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '20px 20px 0'}" type="navicon-round" size="24"></Icon>
+        <Layout :style="{marginLeft: '200px'}">
+           <Header class="fixedHeader shadow" :style="{position: 'fixed',top:0}">
+                <Menu mode="horizontal" theme="light" active-name="1">
+                    <div class="layout-logo">
+                        <img style="width: 100%" src="/static/img/logo1.png">
+                    </div>
+                    <div class="layout-nav">
                     <Dropdown trigger="click" :style="{marginRight: '20px'}">
                         <a href="javascript:void(0)">
                             <Icon type="android-person" size="24"></Icon>
@@ -17,9 +21,11 @@
                             <DropdownItem>退出</DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
-                </Header>
-                <Content :style="{margin: '20px', background: '#fff', minHeight: '260px'}">
-                    <Card :bordered="false" shadow>
+                    </div>
+                </Menu>
+            </Header>
+            <Content :style="{margin: '62px 20px 0',  minWidth: '768px'}">
+                <Card>
                     <div :style="{height: '600px',background: '#fff'}">
                         <Home v-if="curMneu == '首页'"></Home>
                         <ApplicationManagement v-if="curMneu == '应用管理'"></ApplicationManagement>
@@ -41,8 +47,8 @@
                         <Community v-if="curMneu == '极客社区'"></Community>
                     </div>
                 </Card>
-                </Content>
-            </Layout>
+            </Content>
+        </Layout>
     </div>
     <div class="ChangePlant" :style="{display: 'none'}">运营者平台</div>
 </div>
@@ -73,7 +79,7 @@ import Community from '../../components/Developer/Community.vue'
   export default{
     data: function () {
       return {
-        isCollapsed: false,
+        // transitionName: 'slide-left',
       }
     },
     mounted: function () {
@@ -98,13 +104,6 @@ import Community from '../../components/Developer/Community.vue'
           this.$store.state.DeveloperMenuCur = newValue
         }
        },
-       rotateIcon () {
-            return [
-                'menu-icon',
-                this.isCollapsed ? 'rotate-icon' : ''
-            ];
-        },
-
       
     },
     watch: {
@@ -137,9 +136,6 @@ import Community from '../../components/Developer/Community.vue'
     methods: {
         listenFromSideMenu(MENU){
             this.curMneu = MENU
-        },
-        collapsedSider () {
-            this.$children[0].$refs.side1.toggleCollapse();
         }
      
 

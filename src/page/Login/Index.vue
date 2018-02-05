@@ -19,8 +19,8 @@
                     </Input>
                 </FormItem>
                 <FormItem>
-                    <Button type="text" @click="ToModify">忘记密码</Button>
-                    <Button type="text" @click="ToSign" style="float: right">去注册</Button>
+                    <Button class="colorWhite" type="text" @click="ToModify">忘记密码</Button>
+                    <Button class="colorWhite" type="text" @click="ToSign" style="float: right">去注册</Button>
                 </FormItem>
                 <FormItem>
                     <Button type="primary" @click="handleSubmit('formLogin')">登录</Button>
@@ -38,6 +38,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import particles from 'particles.js'
+import {setCookie,getCookie,getCryptoJsCookie,Encrypt,Decrypt} from '../../util/utils'
 
   export default{
     data: function () {
@@ -91,6 +92,7 @@ import particles from 'particles.js'
       handleSubmit(name) {
           this.$refs[name].validate((valid) => {
               if (valid) {
+                let cookieStr = this.formLogin.phone.toString() + this.formLogin.password.toString()
                 // let LoginInfo = this.formLogin
                 // axios.get(R_PRE_URL+'/login.do?username='+LoginInfo.user+'&psw='+LoginInfo.password
                 //   ).then((res)=> {
@@ -110,6 +112,7 @@ import particles from 'particles.js'
                 //   }).catch((error)=> {
                 //     console.log(error)
                 //   })
+                setCookie('btznkz',Encrypt(cookieStr),1)
                 this.$router.push({name:'运营者平台'})
               } else {
                   this.$Message.error('请输入用户名或密码!');
@@ -126,13 +129,14 @@ import particles from 'particles.js'
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: #182022;
+  background-color: #245787;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 50% 50%;
   .Login{
     .LoginBox{
       width: 80%;
+      color: #fff;
       max-width: 500px;
       padding:20px 0;
       border-radius: 5px;
@@ -151,8 +155,8 @@ import particles from 'particles.js'
       form{
         width: 90%;
         margin: 0 auto;
-
       }
+
 
     }
   }

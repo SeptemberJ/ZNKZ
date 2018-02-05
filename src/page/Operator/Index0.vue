@@ -1,24 +1,30 @@
 <template>
 <div class="com-app">
-    <div class="layout">
-    <SiderBar v-on:SideMenu-click="listenFromSideMenu"  v-on:SideStatus="listenSideStatus"/>
-        <Layout>
-                <Header :style="{padding: 0}" class="layout-header-bar">
-                    <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '20px 20px 0'}" type="navicon-round" size="24"></Icon>
-                    <Dropdown trigger="click" :style="{marginRight: '20px'}">
+<div class="layout">
+<SiderBar v-on:SideMenu-click="listenFromSideMenu"/>
+        <Layout :style="{marginLeft: LeftPosition}">
+           <Header class="fixedHeader shadow" :style="{position: 'fixed',top:0}">
+                <Menu mode="horizontal" theme="light" active-name="1">
+                    <div class="layout-logo">
+                        <img style="width: 100%" src="/static/img/logo1.png">
+                    </div>
+                    <div class="layout-nav">
+                    <Dropdown trigger="click" :style="{marginRight: '20px'}" @on-click="ChangeDropdown">
                         <a href="javascript:void(0)">
                             <Icon type="android-person" size="24"></Icon>
                             欢迎您，用户
                             <Icon type="arrow-down-b"></Icon>
                         </a>
                         <DropdownMenu slot="list">
-                            <DropdownItem>个人账号</DropdownItem>
-                            <DropdownItem>企业信息</DropdownItem>
-                            <DropdownItem>退出</DropdownItem>
+                            <DropdownItem name="individualAccount">个人账号</DropdownItem>
+                            <DropdownItem name="enterpriseInfo">企业信息</DropdownItem>
+                            <DropdownItem name="logout">退出</DropdownItem>
                         </DropdownMenu>
                     </Dropdown>
-                </Header>
-            <Content :style="{ minWidth: '678px',marginLeft:LeftDistance?'0px':'200px'}">
+                    </div>
+                </Menu>
+            </Header>
+            <Content :style="{margin: '62px 20px 0',  minWidth: '768px'}">
                 <Card :bordered="false" dis-hover>
                     <div :style="{}">
                         <Home v-if="curMneu == '首页'"></Home>
@@ -61,8 +67,7 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
   export default{
     data: function () {
       return {
-        isCollapsed: false,
-        LeftDistance:false
+        LeftPosition:'200px',
       }
     },
     mounted: function () {
@@ -76,7 +81,7 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
       
     },
     computed: {
-      activeRoute(){
+       activeRoute(){
         return this.$store.state.activeRoute
        },
        curMneu: {
@@ -87,13 +92,15 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
           this.$store.state.OperatorMenuCur = newValue
         }
        },
-       rotateIcon () {
-            return [
-                'menu-icon',
-                this.isCollapsed ? 'rotate-icon' : ''
-            ];
-        },
-
+       // LeftPosition(){
+       //      let distance
+       //      if(this.$store.state.isMobile){
+       //          distance = '0px'
+       //      }else{
+       //          distance = '200px'
+       //      }
+       //    return distance
+       //  },
       
     },
     watch: {
@@ -118,25 +125,18 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
         listenFromSideMenu(MENU){
             this.curMneu = MENU
         },
-        listenSideStatus(Status){
-            this.LeftDistance = Status
-        },
-        collapsedSider () {
-            this.LeftDistance = !this.LeftDistance
-            this.$children[0].$refs.side1.toggleCollapse();
-        },
-        // ChangeDropdown(NAME){
-        //     switch(NAME){
-        //       case 'individualAccount':
-        //       break
-        //       case 'enterpriseInfo':
-        //       break
-        //       case 'logout':
-        //       localStorage.clear();
-        //       this.$router.push({name:'登录'})
-        //       break
-        //     }
-        // }
+        ChangeDropdown(NAME){
+            switch(NAME){
+              case 'individualAccount':
+              break
+              case 'enterpriseInfo':
+              break
+              case 'logout':
+              localStorage.clear();
+              this.$router.push({name:'登录'})
+              break
+            }
+        }
      
 
     }
@@ -204,5 +204,7 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
 .layout-nav{
     float: right;
 }
-    
+.ivu-card{
+  background-color: transparent;
+}
 </style>

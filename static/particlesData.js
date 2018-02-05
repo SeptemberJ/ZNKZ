@@ -4,7 +4,7 @@
       "value": 60,
       "density": {
         "enable": true,
-        "value_area": 350
+        "value_area": 650
       }
     },
     "color": {
@@ -20,7 +20,7 @@
         "nb_sides": 5
       },
       "image": {
-        "src": "img/github.svg",
+        "src": "",
         "width": 100,
         "height": 100
       }
