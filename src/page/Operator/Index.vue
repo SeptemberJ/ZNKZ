@@ -1,11 +1,18 @@
 <template>
 <div class="com-app">
-    <div class="layout">
+<div class="layout">
     <SiderBar v-on:SideMenu-click="listenFromSideMenu"  v-on:SideStatus="listenSideStatus"/>
         <Layout>
-                <Header :style="{padding: 0}" class="layout-header-bar">
-                    <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '20px 20px 0'}" type="navicon-round" size="24"></Icon>
-                    <Dropdown trigger="click" :style="{marginRight: '20px'}">
+            <Content :style="{ minWidth: '678px',marginLeft:LeftDistance?'0px':'200px'}">
+                <Header class="shadow" :style="{position: 'fixed',top:0,left:LeftDistance?'0px':'200px', width: '100%',background:'#fff',zIndex:999}">
+                    <Icon v-if="LeftDistance" @click.native="collapsedSider" class="menu-icon" :style="{margin: '2px 20px 0'}" type="navicon-round" size="24"></Icon>
+                    <Icon v-if="!LeftDistance" @click.native="collapsedSider" class="rotate-icon" :style="{margin: '2px 2px 0'}" type="chevron-left" size="24"></Icon>
+                    <div :style="{float: 'right',marginRight:LeftDistance?'0px':'200px'}">
+                        <Button @click="GoDeveloper" type="text" :class="{active:activeRoute=='开发者平台'}">开发平台</Button>
+                        |
+                        <Button @click="GoOperator" type="text" :class="{active:activeRoute=='运营者平台'}">运营平台</Button>
+                    </div>
+                    <!-- <Dropdown trigger="click" :style="{marginRight: '20px'}">
                         <a href="javascript:void(0)">
                             <Icon type="android-person" size="24"></Icon>
                             欢迎您，用户
@@ -16,17 +23,18 @@
                             <DropdownItem>企业信息</DropdownItem>
                             <DropdownItem>退出</DropdownItem>
                         </DropdownMenu>
-                    </Dropdown>
+                    </Dropdown> -->
                 </Header>
-            <Content :style="{ minWidth: '678px',marginLeft:LeftDistance?'0px':'200px'}">
                 <Card :bordered="false" dis-hover>
-                    <div :style="{}">
+                    <div>
                         <Home v-if="curMneu == '首页'"></Home>
-                        <Alert v-if="curMneu == '警告管理'"></Alert>
+                        <IndividualAccount v-if="curMneu == '个人账号'"></IndividualAccount>
+                        <EnterpriseInfo v-if="curMneu == '企业信息'"></EnterpriseInfo>
                         <UserSituation v-if="curMneu == '用户情况'"></UserSituation>
                         <ActiveUser v-if="curMneu == '活跃用户'"></ActiveUser>
                         <EquipmentCondition v-if="curMneu == '设备情况'"></EquipmentCondition>
                         <EquipmentAuthorization v-if="curMneu == '设备授权'"></EquipmentAuthorization>
+                        <Alert v-if="curMneu == '警告管理'"></Alert>
                         <ApkUpgrade v-if="curMneu == 'APK升级'"></ApkUpgrade>
                         <FirmwareUpdate v-if="curMneu == '固件升级'"></FirmwareUpdate>
                         <MessagePush v-if="curMneu == '消息推送'"></MessagePush>
@@ -40,6 +48,7 @@
         </Layout>
     </div>
     <div class="ChangePlant" :style="{display: 'none'}">运营者平台</div>
+    
 </div>
 </template>
 <script>
@@ -47,6 +56,8 @@ import Vue from 'vue'
 import axios from 'axios'
 import SiderBar from '../../components/Operator/SiderBar.vue'
 import Home from '../../components/Operator/Home.vue'
+import IndividualAccount from '../../components/Common/IndividualAccount.vue'
+import EnterpriseInfo from '../../components/Common/EnterpriseInfo.vue'
 import Alert from '../../components/Operator/Alert.vue'
 import UserSituation from '../../components/Operator/UserSituation.vue'
 import ActiveUser from '../../components/Operator/ActiveUser.vue'
@@ -76,15 +87,15 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
       
     },
     computed: {
-      activeRoute(){
+        activeRoute(){
         return this.$store.state.activeRoute
        },
        curMneu: {
         get: function () {
-          return this.$store.state.OperatorMenuCur
+          return this.$store.state.DeveloperMenuCur
         },
         set: function (newValue) {
-          this.$store.state.OperatorMenuCur = newValue
+          this.$store.state.DeveloperMenuCur = newValue
         }
        },
        rotateIcon () {
@@ -94,19 +105,21 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
             ];
         },
 
+
       
     },
     watch: {
-      
     },
     components: {
         SiderBar,
         Home,
-        Alert,
+        IndividualAccount,
+        EnterpriseInfo,
         UserSituation,
         ActiveUser,
         EquipmentCondition,
         EquipmentAuthorization,
+        Alert,
         ApkUpgrade,
         FirmwareUpdate,
         MessagePush,
@@ -124,6 +137,12 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
         collapsedSider () {
             this.LeftDistance = !this.LeftDistance
             this.$children[0].$refs.side1.toggleCollapse();
+        },
+        GoDeveloper(){
+            this.$router.push({name:'开发者平台'})
+        },
+        GoOperator(){
+            this.$router.push({name:'运营者平台'})
         },
         // ChangeDropdown(NAME){
         //     switch(NAME){
@@ -146,23 +165,7 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
 ::-webkit-scrollbar{
   display:none;
 }
-.fixedSider{
-    /*border-right: 1px solid #eee;*/
-    -webkit-box-shadow: 0 0 9px rgba(0,0,0,.25);
-    -moz-box-shadow: 0 0 9px rgba(0,0,0,.25);
-    box-shadow: 0 0 9px rgba(0,0,0,.25);
-}
-.fixedHeader{
-    width: 100%;
-     /*width: calc(100% + 200px);*/
-     left: 0;
-     z-index:999;
-}
-.shadow{
-    -webkit-box-shadow: 0 0 9px rgba(0,0,0,.25);
-    -moz-box-shadow: 0 0 9px rgba(0,0,0,.25);
-    box-shadow: 0 0 9px rgba(0,0,0,.25);
-}
+
 .ChangePlant{
     position:fixed;
     top:50%;
@@ -177,8 +180,6 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
     background-image: -webkit-linear-gradient(bottom left, #FBDA61 0%, #FF5ACD 100%);
     background-image: -o-linear-gradient(bottom left, #FBDA61 0%, #FF5ACD 100%);
     background-image: linear-gradient(to top right, #FBDA61 0%, #FF5ACD 100%);
-
-
 }
 .layout{
     /*border: 1px solid #d7dde4;

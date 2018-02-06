@@ -1,6 +1,6 @@
 <template>
-    <div class="UserSituation">
-        用户情况
+    <div class="Alert2">
+        个人账户
     </div>
         
 </template>
@@ -31,8 +31,8 @@
     }
   }
 </script>
-<style scoped>
-.UserSituation{
+<style lang="scss" scoped>
+.Alert2{
     margin-top: 50px;
 }
 </style>

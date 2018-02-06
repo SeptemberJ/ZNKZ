@@ -1,7 +1,10 @@
 *{padding: 0;margin: 0;}
 html,body{  
-    min-height: 100% !important;  
+    min-height: 100% !important;
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+ 
 }
+
 /**{ overflow-x: hidden; overflow-y: auto; }*/
 
 /*html {
@@ -22,9 +25,27 @@ body{
 /*@media only handheld{
   body{width: 100%;background: yellow;}
 }*/
-input{
-        color: #fff !important;
-      }
+#particlesLogin input{
+  color: #fff !important;
+}
+#particlesModify input{
+  color: #fff !important;
+}
+#particlesSign input{
+  color: #fff !important;
+}
+.shadow{
+  -webkit-box-shadow: 0 0 9px rgba(0,0,0,.25);
+  -moz-box-shadow: 0 0 9px rgba(0,0,0,.25);
+  box-shadow: 0 0 9px rgba(0,0,0,.25);
+}
+.AvatarIcon{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-top: 10px;
+}
 .BlockWrap{
   width: 100%;
   float: left;
@@ -49,13 +70,22 @@ input{
 .ivu-card-head{
     border-bottom: 0px !important;
 }
-
-
-/*@media (min-width: 1280px){
-  body{min-width: 1280px;background: pink;}
+.ivu-form .ivu-form-item-label{
+    font-weight: bold !important;
 }
-@media screen (min-width:320x) and (max-width:767px){
-  body{min-width: 100%;width:100%;background: red;}
+
+
+/*@media (max-width: 768px){
+  *{
+    color: red;
+    font-size: 10px;
+  }
+}*/
+/*@media screen (min-width:320x) and (max-width:767px){
+  *{
+    color: red;
+    font-size: 12px;
+  }
 }*/
 .cursorPointer{
   cursor: pointer;
@@ -71,6 +101,9 @@ input{
     font-size: 14px;
 }
 
+.active{
+  color: #39f;
+}
 .colorRed{
     color: #ff150e;
 }

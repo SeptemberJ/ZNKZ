@@ -59,7 +59,7 @@
         {{activeRoute}}
         <span v-if="ChangeShow" class="ChangePlantMask">切换</span>
     </div> -->
-</div>
+
     <!-- <div class="layout">
         <Layout>
             <Sider :style="{float:'left',overflow:'hidden'}" ref="side1" hide-trigger collapsible :collapsed-width="0" v-model="isCollapsed">
@@ -83,10 +83,11 @@
                 </Menu>
             </Sider>
             <Layout>
+                
+                <Content :style="{margin: '20px', background: '#fff', minHeight: '260px'}">
                 <Header :style="{padding: 0}" class="layout-header-bar">
                     <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '20px 20px 0'}" type="navicon-round" size="24"></Icon>
                 </Header>
-                <Content :style="{margin: '20px', background: '#fff', minHeight: '260px'}">
                     <transition>
                         <router-view class="child-view"></router-view>
                     </transition>
@@ -94,6 +95,7 @@
             </Layout>
         </Layout>
     </div> -->
+    </div>
 </template>
 <script>
     export default {
@@ -120,9 +122,9 @@
            }
         },
         methods: {
-            // collapsedSider () {
-            //     this.$refs.side1.toggleCollapse();
-            // }
+            collapsedSider () {
+                this.$refs.side1.toggleCollapse();
+            }
         }
     }
 </script>

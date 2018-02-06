@@ -1,6 +1,6 @@
 <template>
-    <div class="UserSituation">
-        用户情况
+    <div class="EnterpriseInfo">
+        EnterpriseInfo
     </div>
         
 </template>
@@ -31,8 +31,8 @@
     }
   }
 </script>
-<style scoped>
-.UserSituation{
+<style lang="scss" scoped>
+.EnterpriseInfo{
     margin-top: 50px;
 }
 </style>

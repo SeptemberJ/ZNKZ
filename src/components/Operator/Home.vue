@@ -116,6 +116,7 @@ import SchatPie from '../../components/Common/SchatPie.vue'
   }
 </script>
 <style lang="scss" scoped>
-.DataBlock{
+.Home{
+    margin-top: 50px;
 }
 </style>

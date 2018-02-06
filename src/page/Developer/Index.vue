@@ -1,11 +1,18 @@
 <template>
 <div class="com-app">
 <div class="layout">
-<SiderBar v-on:SideMenu-click="listenFromSideMenu"/>
+    <SiderBar v-on:SideMenu-click="listenFromSideMenu"  v-on:SideStatus="listenSideStatus"/>
         <Layout>
-                <Header :style="{padding: 0}" class="layout-header-bar">
-                    <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '20px 20px 0'}" type="navicon-round" size="24"></Icon>
-                    <Dropdown trigger="click" :style="{marginRight: '20px'}">
+            <Content :style="{ minWidth: '678px',marginLeft:LeftDistance?'0px':'200px'}">
+                <Header class="shadow" :style="{position: 'fixed',top:0,left:LeftDistance?'0px':'200px', width: '100%',background:'#fff',zIndex:999}">
+                    <Icon v-if="LeftDistance" @click.native="collapsedSider" class="menu-icon" :style="{margin: '2px 20px 0'}" type="navicon-round" size="24"></Icon>
+                    <Icon v-if="!LeftDistance" @click.native="collapsedSider" class="rotate-icon" :style="{margin: '2px 2px 0'}" type="chevron-left" size="24"></Icon>
+                    <div :style="{float: 'right',marginRight:LeftDistance?'0px':'200px'}">
+                        <Button @click="GoDeveloper" type="text" :class="{active:activeRoute=='开发者平台'}">开发平台</Button>
+                        |
+                        <Button @click="GoOperator" type="text" :class="{active:activeRoute=='运营者平台'}">运营平台</Button>
+                    </div>
+                    <!-- <Dropdown trigger="click" :style="{marginRight: '20px'}">
                         <a href="javascript:void(0)">
                             <Icon type="android-person" size="24"></Icon>
                             欢迎您，用户
@@ -16,12 +23,13 @@
                             <DropdownItem>企业信息</DropdownItem>
                             <DropdownItem>退出</DropdownItem>
                         </DropdownMenu>
-                    </Dropdown>
+                    </Dropdown> -->
                 </Header>
-                <Content :style="{margin: '20px', background: '#fff', minHeight: '260px'}">
-                    <Card :bordered="false" shadow>
+                <Card :bordered="false" shadow>
                     <div :style="{height: '600px',background: '#fff'}">
                         <Home v-if="curMneu == '首页'"></Home>
+                        <IndividualAccount v-if="curMneu == '个人账号'"></IndividualAccount>
+                        <EnterpriseInfo v-if="curMneu == '企业信息'"></EnterpriseInfo>
                         <ApplicationManagement v-if="curMneu == '应用管理'"></ApplicationManagement>
                         <ProductManagement v-if="curMneu == '产品管理'"></ProductManagement>
                         <AgreementManagement v-if="curMneu == '协议管理'"></AgreementManagement>
@@ -41,8 +49,8 @@
                         <Community v-if="curMneu == '极客社区'"></Community>
                     </div>
                 </Card>
-                </Content>
-            </Layout>
+            </Content>
+        </Layout>
     </div>
     <div class="ChangePlant" :style="{display: 'none'}">运营者平台</div>
 </div>
@@ -52,6 +60,8 @@ import Vue from 'vue'
 import axios from 'axios'
 import SiderBar from '../../components/Developer/SiderBar.vue'
 import Home from '../../components/Developer/Home.vue'
+import IndividualAccount from '../../components/Common/IndividualAccount.vue'
+import EnterpriseInfo from '../../components/Common/EnterpriseInfo.vue'
 import ApplicationManagement from '../../components/Developer/ApplicationManagement.vue'
 import ProductManagement from '../../components/Developer/ProductManagement.vue'
 import AgreementManagement from '../../components/Developer/AgreementManagement.vue'
@@ -74,6 +84,7 @@ import Community from '../../components/Developer/Community.vue'
     data: function () {
       return {
         isCollapsed: false,
+        LeftDistance:false
       }
     },
     mounted: function () {
@@ -113,6 +124,8 @@ import Community from '../../components/Developer/Community.vue'
     components: {
         SiderBar,
         Home,
+        IndividualAccount,
+        EnterpriseInfo,
         ApplicationManagement,
         ProductManagement,
         AgreementManagement,
@@ -138,9 +151,19 @@ import Community from '../../components/Developer/Community.vue'
         listenFromSideMenu(MENU){
             this.curMneu = MENU
         },
+        listenSideStatus(Status){
+            this.LeftDistance = Status
+        },
         collapsedSider () {
+            this.LeftDistance = !this.LeftDistance
             this.$children[0].$refs.side1.toggleCollapse();
-        }
+        },
+        GoDeveloper(){
+            this.$router.push({name:'开发者平台'})
+        },
+        GoOperator(){
+            this.$router.push({name:'运营者平台'})
+        },
      
 
     }
@@ -150,23 +173,7 @@ import Community from '../../components/Developer/Community.vue'
 ::-webkit-scrollbar{
   display:none;
 }
-.fixedSider{
-    /*border-right: 1px solid #eee;*/
-    -webkit-box-shadow: 0 0 9px rgba(0,0,0,.25);
-    -moz-box-shadow: 0 0 9px rgba(0,0,0,.25);
-    box-shadow: 0 0 9px rgba(0,0,0,.25);
-}
-.fixedHeader{
-    width: 100%;
-     /*width: calc(100% + 200px);*/
-     left: 0;
-     z-index:999;
-}
-.shadow{
-    -webkit-box-shadow: 0 0 9px rgba(0,0,0,.25);
-    -moz-box-shadow: 0 0 9px rgba(0,0,0,.25);
-    box-shadow: 0 0 9px rgba(0,0,0,.25);
-}
+
 .ChangePlant{
     position:fixed;
     top:50%;
@@ -181,8 +188,6 @@ import Community from '../../components/Developer/Community.vue'
     background-image: -webkit-linear-gradient(bottom left, #FBDA61 0%, #FF5ACD 100%);
     background-image: -o-linear-gradient(bottom left, #FBDA61 0%, #FF5ACD 100%);
     background-image: linear-gradient(to top right, #FBDA61 0%, #FF5ACD 100%);
-
-
 }
 .layout{
     /*border: 1px solid #d7dde4;

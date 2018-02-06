@@ -1,58 +1,65 @@
 <template>
-<Sider :style="{float:'left',overflow:'hidden'}" ref="side1" hide-trigger collapsible :collapsed-width="0" v-model="isCollapsed" :on-collapse="onCollapse">
-                <Menu :active-name="ActiveName" theme="light" width="auto" accordion @on-select="SideMenuChange" :class="menuitemClasses">
-                    <MenuItem name="首页">
-                        <Icon type="home" size="22"></Icon>
-                        首页
-                    </MenuItem>
-                    <Submenu name="用户管理">
-                        <template slot="title">
-                            <Icon type="person-stalker" size="22"></Icon>
-                            用户管理
-                        </template>
-                        <MenuItem name="用户情况">用户情况</MenuItem>
-                        <MenuItem name="活跃用户">活跃用户</MenuItem>
-                    </Submenu>
-                    <Submenu name="设备管理">
-                        <template slot="title">
-                            <Icon type="monitor" size="22"></Icon>
-                            设备管理
-                        </template>
-                        <MenuItem name="设备情况">设备情况</MenuItem>
-                        <MenuItem name="设备授权">设备授权</MenuItem>
-                    </Submenu>
-                    <MenuItem name="警告管理">
-                        <Icon type="alert" size="22"></Icon>
-                        警告管理
-                    </MenuItem>
-                    <MenuItem name="APK升级">
-                        <Icon type="social-android-outline" size="22"></Icon>
-                        APK升级
-                    </MenuItem>
-                    <MenuItem name="固件升级">
-                        <Icon type="android-archive" size="22"></Icon>
-                        固件升级
-                    </MenuItem>
-                    <MenuItem name="消息推送">
-                        <Icon type="chatboxes" size="22"></Icon>
-                        消息推送
-                    </MenuItem>
-                    <MenuItem name="用户反馈">
-                        <Icon type="ios-paper-outline" size="22"></Icon>
-                        用户反馈
-                    </MenuItem>
-                    <MenuItem name="邮件模板">
-                        <Icon type="email" size="22"></Icon>
-                        邮件模板
-                    </MenuItem>
-                    <MenuItem name="常见问题管理">
-                        <Icon type="help" size="22"></Icon>
-                        常见问题管理
-                    </MenuItem>
-                </Menu>
-            </Sider>
-
-        
+<Sider class="fixedSider" :style="{}" ref="side1" hide-trigger collapsible :collapsed-width="0" v-model="isCollapsed" :on-collapse="onCollapse">
+    <img :style="{width: '200px',height: '40px'}" src="static/img/logo2.png">
+    <Menu :active-name="ActiveName" theme="light" width="auto" accordion @on-select="SideMenuChange" :class="menuitemClasses">
+        <MenuItem name="首页">
+            <Icon type="home" size="22"></Icon>
+            首页
+        </MenuItem>
+        <Submenu name="账户管理">
+            <template slot="title">
+                <Icon type="social-buffer" size="22"></Icon>
+                账户管理
+            </template>
+            <MenuItem name="个人账号">个人账号</MenuItem>
+            <MenuItem name="企业信息">企业信息</MenuItem>
+        </Submenu>
+        <Submenu name="用户管理">
+            <template slot="title">
+                <Icon type="ios-people" size="22"></Icon>
+                用户管理
+            </template>
+            <MenuItem name="用户情况">用户情况</MenuItem>
+            <MenuItem name="活跃用户">活跃用户</MenuItem>
+        </Submenu>
+        <Submenu name="设备管理">
+            <template slot="title">
+                <Icon type="monitor" size="22"></Icon>
+                设备管理
+            </template>
+            <MenuItem name="设备情况">设备情况</MenuItem>
+            <MenuItem name="设备授权">设备授权</MenuItem>
+        </Submenu>
+        <MenuItem name="警告管理">
+            <Icon type="alert" size="22"></Icon>
+            警告管理
+        </MenuItem>
+        <MenuItem name="APK升级">
+            <Icon type="social-android-outline" size="22"></Icon>
+            APK升级
+        </MenuItem>
+        <MenuItem name="固件升级">
+            <Icon type="android-archive" size="22"></Icon>
+            固件升级
+        </MenuItem>
+        <MenuItem name="消息推送">
+            <Icon type="chatboxes" size="22"></Icon>
+            消息推送
+        </MenuItem>
+        <MenuItem name="用户反馈">
+            <Icon type="ios-paper-outline" size="22"></Icon>
+            用户反馈
+        </MenuItem>
+        <MenuItem name="邮件模板">
+            <Icon type="email" size="22"></Icon>
+            邮件模板
+        </MenuItem>
+        <MenuItem name="常见问题管理">
+            <Icon type="help" size="22"></Icon>
+            常见问题管理
+        </MenuItem>
+    </Menu>
+</Sider>
 </template>
 <script>
 
@@ -77,7 +84,13 @@
         },
         ActiveName(){
           return this.$store.state.OperatorMenuCur
-        }
+        },
+        rotateIcon(){
+            return [
+                'menu-icon',
+                this.isCollapsed ? 'rotate-icon' : '123'
+            ];
+        },
       
     },
     watch: {
@@ -88,11 +101,11 @@
     methods: {
         SideMenuChange(Smenu){
           this.$emit('SideMenu-click',Smenu)
-          this.$refs.side1.toggleCollapse();
-          this.onCollapse(true)
+          // this.$refs.side1.toggleCollapse();
+          // this.onCollapse(true)
         },
         onCollapse(Status){
-        	this.$emit('SideStatus',Status)  //true 关闭sider
+        	//this.$emit('SideStatus',Status)  //true 关闭sider
         }
         
 
@@ -104,68 +117,51 @@
   display:none;
 }
 .fixedSider{
-    height: calc(100% - 60px);
-    z-index: 999999;
+    position: fixed; 
+    height: 100%;
+    left:0;
+    top:0;
+    float:left;
+    overflow:auto;
+    z-index: 999;
     -webkit-box-shadow: 0 0 9px rgba(0,0,0,.25);
     -moz-box-shadow: 0 0 9px rgba(0,0,0,.25);
     box-shadow: 0 0 9px rgba(0,0,0,.25);
 }
-.shadow{
-    -webkit-box-shadow: 0 0 9px rgba(0,0,0,.25);
-    -moz-box-shadow: 0 0 9px rgba(0,0,0,.25);
-    box-shadow: 0 0 9px rgba(0,0,0,.25);
+.ivu-layout-sider{
+    height: 100%;
+    background-color: #fff;
 }
-.ivu-menu-submenu-title{
-        background: pink !important;
-    }
-    .layout{
-        border: 1px solid #d7dde4;
-        background: #f5f7f9;
-        position: relative;
-        border-radius: 4px;
-        overflow: hidden;
-    }
-    .layout-header-bar{
-        background: #fff;
-        box-shadow: 0 1px 1px rgba(0,0,0,.1);
-    }
-    .layout-logo-left{
-        width: 90%;
-        height: 30px;
-        background: #5b6270;
-        border-radius: 3px;
-        margin: 15px auto;
-    }
-    .menu-icon{
-        transition: all .3s;
-    }
-    .rotate-icon{
-        transform: rotate(-90deg);
-    }
-    .menu-item span{
-        display: inline-block;
-        overflow: hidden;
-        width: 69px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        vertical-align: bottom;
-        transition: width .2s ease .2s;
-    }
-    .menu-item i{
-        transform: translateX(0px);
-        transition: font-size .2s ease, transform .2s ease;
-        vertical-align: middle;
-        font-size: 16px;
-    }
-    .collapsed-menu span{
-        width: 0px;
-        transition: width .2s ease;
-    }
-    .collapsed-menu i{
-        transform: translateX(5px);
-        transition: font-size .2s ease .2s, transform .2s ease .2s;
-        vertical-align: middle;
-        font-size: 22px;
-    }
+.menu-icon{
+    transition: all .3s;
+}
+.rotate-icon{
+    transform: rotate(-90deg);
+}
+.menu-item span{
+    display: inline-block;
+    overflow: hidden;
+    width: 69px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom;
+    transition: width .2s ease .2s;
+}
+.menu-item i{
+    transform: translateX(0px);
+    transition: font-size .2s ease, transform .2s ease;
+    vertical-align: middle;
+    font-size: 16px;
+}
+.collapsed-menu span{
+    width: 0px;
+    transition: width .2s ease;
+}
+.collapsed-menu i{
+    transform: translateX(5px);
+    transition: font-size .2s ease .2s, transform .2s ease .2s;
+    vertical-align: middle;
+    font-size: 22px;
+}
     
 </style>

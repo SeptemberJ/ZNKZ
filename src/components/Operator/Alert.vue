@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="Alert">
         警告管理
     </div>
         
@@ -31,6 +31,8 @@
     }
   }
 </script>
-<style scoped>
-    
+<style lang="scss" scoped>
+.Alert{
+    margin-top: 50px;
+}
 </style>
