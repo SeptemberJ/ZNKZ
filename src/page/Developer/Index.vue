@@ -7,23 +7,18 @@
                 <Header class="shadow" :style="{position: 'fixed',top:0,left:LeftDistance?'0px':'200px', width: '100%',background:'#fff',zIndex:999}">
                     <Icon v-if="LeftDistance" @click.native="collapsedSider" class="menu-icon" :style="{margin: '2px 20px 0'}" type="navicon-round" size="24"></Icon>
                     <Icon v-if="!LeftDistance" @click.native="collapsedSider" class="rotate-icon" :style="{margin: '2px 2px 0'}" type="chevron-left" size="24"></Icon>
+                    <Button @click="GoDeveloper" type="text" :class="{active:activeRoute=='开发者平台'}">开发平台</Button>
+                    |
+                    <Button @click="GoOperator" type="text" :class="{active:activeRoute=='运营者平台'}">运营平台</Button>
+
+                    
+
                     <div :style="{float: 'right',marginRight:LeftDistance?'0px':'200px'}">
-                        <Button @click="GoDeveloper" type="text" :class="{active:activeRoute=='开发者平台'}">开发平台</Button>
-                        |
-                        <Button @click="GoOperator" type="text" :class="{active:activeRoute=='运营者平台'}">运营平台</Button>
+                        <Button @click="Logout" type="text">shbt
+                            <Icon type="power" size="14"></Icon>
+                            退出
+                        </Button>
                     </div>
-                    <!-- <Dropdown trigger="click" :style="{marginRight: '20px'}">
-                        <a href="javascript:void(0)">
-                            <Icon type="android-person" size="24"></Icon>
-                            欢迎您，用户
-                            <Icon type="arrow-down-b"></Icon>
-                        </a>
-                        <DropdownMenu slot="list">
-                            <DropdownItem>个人账号</DropdownItem>
-                            <DropdownItem>企业信息</DropdownItem>
-                            <DropdownItem>退出</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown> -->
                 </Header>
                 <Card :bordered="false" shadow>
                     <div :style="{height: '600px',background: '#fff'}">
@@ -164,6 +159,9 @@ import Community from '../../components/Developer/Community.vue'
         GoOperator(){
             this.$router.push({name:'运营者平台'})
         },
+        Logout(){
+            this.$router.push({name:'登录'})
+        }
      
 
     }

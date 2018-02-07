@@ -22,6 +22,8 @@ const routes = [
     component: Appyl,
     children: [
       {path: '/Appyl', name: '测试', component: Appyl},
+      {path: '/Login', name: '登录', component: Login},
+      {path: '/Sign', name: '注册', component: Sign},
       {path: '/Developer', name: '开发者平台', component: Developer,meta: {requireAuth: false}},
       {path: '/Operator', name: '运营者平台', component: Operator,meta: {requireAuth: false}},
       {path:'*', redirect: '/Operator'}

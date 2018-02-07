@@ -7,11 +7,20 @@
                 <Header class="shadow" :style="{position: 'fixed',top:0,left:LeftDistance?'0px':'200px', width: '100%',background:'#fff',zIndex:999}">
                     <Icon v-if="LeftDistance" @click.native="collapsedSider" class="menu-icon" :style="{margin: '2px 20px 0'}" type="navicon-round" size="24"></Icon>
                     <Icon v-if="!LeftDistance" @click.native="collapsedSider" class="rotate-icon" :style="{margin: '2px 2px 0'}" type="chevron-left" size="24"></Icon>
+
+                    <Button @click="GoDeveloper" type="text" :class="{active:activeRoute=='开发者平台'}">开发平台</Button>
+                    |
+                    <Button @click="GoOperator" type="text" :class="{active:activeRoute=='运营者平台'}">运营平台</Button>
+
+                    
+
                     <div :style="{float: 'right',marginRight:LeftDistance?'0px':'200px'}">
-                        <Button @click="GoDeveloper" type="text" :class="{active:activeRoute=='开发者平台'}">开发平台</Button>
-                        |
-                        <Button @click="GoOperator" type="text" :class="{active:activeRoute=='运营者平台'}">运营平台</Button>
+                        <Button @click="Logout" type="text">shbt
+                            <Icon type="power" size="14"></Icon>
+                            退出
+                        </Button>
                     </div>
+
                     <!-- <Dropdown trigger="click" :style="{marginRight: '20px'}">
                         <a href="javascript:void(0)">
                             <Icon type="android-person" size="24"></Icon>
@@ -29,6 +38,7 @@
                     <div>
                         <Home v-if="curMneu == '首页'"></Home>
                         <IndividualAccount v-if="curMneu == '个人账号'"></IndividualAccount>
+                        <!-- <ModifyInfo v-if="curMneu == '修改个人信息'"></ModifyInfo> -->
                         <EnterpriseInfo v-if="curMneu == '企业信息'"></EnterpriseInfo>
                         <UserSituation v-if="curMneu == '用户情况'"></UserSituation>
                         <ActiveUser v-if="curMneu == '活跃用户'"></ActiveUser>
@@ -57,6 +67,7 @@ import axios from 'axios'
 import SiderBar from '../../components/Operator/SiderBar.vue'
 import Home from '../../components/Operator/Home.vue'
 import IndividualAccount from '../../components/Common/IndividualAccount.vue'
+// import ModifyInfo from '../../components/Common/ModifyInfo.vue'
 import EnterpriseInfo from '../../components/Common/EnterpriseInfo.vue'
 import Alert from '../../components/Operator/Alert.vue'
 import UserSituation from '../../components/Operator/UserSituation.vue'
@@ -88,22 +99,22 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
     },
     computed: {
         activeRoute(){
-        return this.$store.state.activeRoute
-       },
-       curMneu: {
-        get: function () {
-          return this.$store.state.DeveloperMenuCur
+            return this.$store.state.activeRoute
         },
-        set: function (newValue) {
-          this.$store.state.DeveloperMenuCur = newValue
-        }
-       },
-       rotateIcon () {
-            return [
-                'menu-icon',
-                this.isCollapsed ? 'rotate-icon' : ''
-            ];
+        curMneu: {
+            get: function () {
+              return this.$store.state.OperatorMenuCur
+            },
+            set: function (newValue) {
+              this.$store.state.OperatorMenuCur = newValue
+            }
         },
+        // rotateIcon () {
+        //     return [
+        //         'menu-icon',
+        //         this.isCollapsed ? 'rotate-icon' : ''
+        //     ];
+        // },
 
 
       
@@ -114,6 +125,7 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
         SiderBar,
         Home,
         IndividualAccount,
+        //ModifyInfo,
         EnterpriseInfo,
         UserSituation,
         ActiveUser,
@@ -144,6 +156,9 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
         GoOperator(){
             this.$router.push({name:'运营者平台'})
         },
+        Logout(){
+            this.$router.push({name:'登录'})
+        }
         // ChangeDropdown(NAME){
         //     switch(NAME){
         //       case 'individualAccount':

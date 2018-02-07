@@ -1,21 +1,23 @@
 <template>
     <div class="UserSituation">
-        用户情况
+        <ColorfulBlock :Info="UserSituation.overview"/>
     </div>
         
 </template>
 <script>
-
+import axios from 'axios'
+import ColorfulBlock from '../../components/Common/ColorfulBlock.vue'
   export default{
     data: function () {
       return {
+        UserSituation:''
       }
     },
     mounted: function () {
       
     },
-    created: function () {
-      
+    created() {
+        this.GetUserSituationData()
     },
     computed: {
       
@@ -24,8 +26,17 @@
       
     },
     components: {
+        ColorfulBlock
     },
     methods: {
+        GetUserSituationData(KIND){
+            axios.get('static/json/UserSituation.json'
+              ).then((res)=> {
+                this.UserSituation = res.data.Info
+            }).catch((error)=> {
+              console.log(error)
+            })
+        },
      
 
     }
