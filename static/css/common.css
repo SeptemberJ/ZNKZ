@@ -48,6 +48,7 @@ body{
 }
 .BlockWrap{
   width: 100%;
+  display: block;
   float: left;
   padding-top: 0px;  
   padding-bottom: 0px; 
@@ -143,6 +144,9 @@ body{
 }
 .marginT_10{
     margin-top: 10px;
+}
+.marginL_10{
+    margin-left: 10px;
 }
 .marginT_20{
     margin-top: 20px;

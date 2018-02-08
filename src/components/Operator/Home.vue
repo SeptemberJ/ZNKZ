@@ -1,23 +1,19 @@
 <template>
     <div class="Home">
+        <!-- 概览 -->
         <ColorfulBlock :Info="HomeData.overview"/>
-        <!-- equipmentTrend -->
-        <Schat :Info="equipmentTrend"/>
-        <Schat :Info="userTrend"/>
-        <SchatPie :Info="activationData"/>
-        <SchatPie :Info="onlineData"/>
-        <SchatPie :Info="modelData"/>
-        <!-- <Row :gutter="16">
-            <Col :xs="{ span: 24}" :lg="{ span: 8}">
-                <SchatPie/>
-            </Col>
-            <Col :xs="{ span: 24}" :lg="{ span: 8}">
-                <SchatPie/>
-            </Col>
-            <Col :xs="{ span: 24}" :lg="{ span: 8}">
-                <SchatPie/>
-            </Col>
-        </Row> -->
+        <!-- 设备趋势-->
+        <LineChart :Info="equipmentTrend"/>
+        <!-- 用户趋势 -->
+        <LineChart :Info="userTrend"/>
+        <!--  三大数据图 -->
+        <PieChart :Info="activationData"/>
+        <PieChart :Info="onlineData"/>
+        <PieChart :Info="modelData"/>
+        <!-- map分布图 -->
+        <!-- <MapChart/> -->
+
+        
 
     </div>
         
@@ -25,7 +21,9 @@
 <script>
 import axios from 'axios'
 import ColorfulBlock from '../../components/Common/ColorfulBlock.vue'
-import Schat from '../../components/Common/Schat.vue'
+import LineChart from '../../components/Common/LineChart.vue'
+import PieChart from '../../components/Common/PieChart.vue'
+import MapChart from '../../components/Common/MapChart.vue'
 import SchatPie from '../../components/Common/SchatPie.vue'
   export default{
     data: function () {
@@ -50,18 +48,21 @@ import SchatPie from '../../components/Common/SchatPie.vue'
         },
         activationData:{
             'Htit':'激活数据',
-            'colorList':['#C2ED92','#81D125'],
-            'kind':'activationData'
+            'colorList':['#ff7f50','#87cefa'],
+            'kind':'activationData',
+            'url':'PieChart1'
         },
         onlineData:{
             'Htit':'在线数据',
-            'colorList':['#FAD2AF','#F18F48'],
-            'kind':'onlineData'
+            'colorList':['#da70d6','#32cd32'],
+            'kind':'onlineData',
+            'url':'PieChart2'
         },
         modelData:{
             'Htit':'机型数据',
-            'colorList':['#A7E2FF','#32B9FC'],
-            'kind':'modelData'
+            'colorList':['#6495ed','#ff69b4','#ba55d3', '#cd5c5c', '#ffa500'],
+            'kind':'modelData',
+            'url':'PieChart3'
         },
 
       }
@@ -81,7 +82,9 @@ import SchatPie from '../../components/Common/SchatPie.vue'
     },
     components: {
         ColorfulBlock,
-        Schat,
+        LineChart,
+        PieChart,
+        MapChart,
         SchatPie
     },
     methods: {

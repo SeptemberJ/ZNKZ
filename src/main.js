@@ -11,6 +11,9 @@ import iView from 'iview';
 import '../my-theme/dist/iview.css';
 import CryptoJS from 'crypto-js'
 import particles from 'particles.js'
+// import echarts from 'echarts'
+
+
 Vue.use(particles)
 
 

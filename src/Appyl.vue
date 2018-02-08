@@ -1,3 +1,42 @@
+<template>
+    <div class="com-app">
+        <transition>
+            <router-view class="child-view"></router-view>
+        </transition>
+        <BackTop></BackTop>
+    </div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+                isCollapsed: false
+            }
+        },
+        computed: {
+            rotateIcon () {
+                return [
+                    'menu-icon',
+                    this.isCollapsed ? 'rotate-icon' : ''
+                ];
+            },
+            menuitemClasses () {
+                return [
+                    'menu-item',
+                    this.isCollapsed ? 'collapsed-menu' : ''
+                ]
+            },
+            activeRoute(){
+            return this.$store.state.activeRoute
+           }
+        },
+        methods: {
+            collapsedSider () {
+                this.$refs.side1.toggleCollapse();
+            }
+        }
+    }
+</script>
 <style scoped>
     
     .layout{
@@ -50,81 +89,3 @@
         font-size: 22px;
     }
 </style>
-<template>
-<div class="com-app">
-    <transition>
-        <router-view class="child-view"></router-view>
-    </transition>
-    <!-- <div v-if="activeRoute!='登录' && activeRoute!='注册' && activeRoute!='修改密码'" class="ChangePlant" @mouseover="OverShow" @mouseout="OutHide"  @click="ChangePlatform">
-        {{activeRoute}}
-        <span v-if="ChangeShow" class="ChangePlantMask">切换</span>
-    </div> -->
-
-    <!-- <div class="layout">
-        <Layout>
-            <Sider :style="{float:'left',overflow:'hidden'}" ref="side1" hide-trigger collapsible :collapsed-width="0" v-model="isCollapsed">
-                <Menu active-name="1-2" theme="dark" width="auto" :class="menuitemClasses">
-                    <MenuItem name="1-1">
-                        <Icon type="ios-navigate"></Icon>
-                        <span>Option 1</span>
-                    </MenuItem>
-                    <Submenu name="用户管理">
-                        <template slot="title">
-                            <Icon type="person-stalker" size="22"></Icon>
-                            用户管理
-                        </template>
-                        <MenuItem name="用户情况">用户情况</MenuItem>
-                        <MenuItem name="活跃用户">活跃用户</MenuItem>
-                    </Submenu>
-                    <MenuItem name="1-3">
-                        <Icon type="settings"></Icon>
-                        <span>Option 3</span>
-                    </MenuItem>
-                </Menu>
-            </Sider>
-            <Layout>
-                
-                <Content :style="{margin: '20px', background: '#fff', minHeight: '260px'}">
-                <Header :style="{padding: 0}" class="layout-header-bar">
-                    <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '20px 20px 0'}" type="navicon-round" size="24"></Icon>
-                </Header>
-                    <transition>
-                        <router-view class="child-view"></router-view>
-                    </transition>
-                </Content>
-            </Layout>
-        </Layout>
-    </div> -->
-    </div>
-</template>
-<script>
-    export default {
-        data () {
-            return {
-                isCollapsed: false
-            }
-        },
-        computed: {
-            rotateIcon () {
-                return [
-                    'menu-icon',
-                    this.isCollapsed ? 'rotate-icon' : ''
-                ];
-            },
-            menuitemClasses () {
-                return [
-                    'menu-item',
-                    this.isCollapsed ? 'collapsed-menu' : ''
-                ]
-            },
-            activeRoute(){
-            return this.$store.state.activeRoute
-           }
-        },
-        methods: {
-            collapsedSider () {
-                this.$refs.side1.toggleCollapse();
-            }
-        }
-    }
-</script>

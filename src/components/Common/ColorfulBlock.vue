@@ -82,5 +82,9 @@ import axios from 'axios'
 </script>
 <style lang="scss">
 .ColorfulBlock{
+  width: 100%;
+  display: block;
+  float: left;
+  clear: both;
 }
 </style>

@@ -11,6 +11,8 @@
                     <Button @click="GoDeveloper" type="text" :class="{active:activeRoute=='开发者平台'}">开发平台</Button>
                     |
                     <Button @click="GoOperator" type="text" :class="{active:activeRoute=='运营者平台'}">运营平台</Button>
+                    
+                    
 
                     
 
@@ -19,6 +21,10 @@
                             <Icon type="power" size="14"></Icon>
                             退出
                         </Button>
+                        <b>当前应用:</b>
+                        <Select v-model="CurrentApplication" style="width:200px;marginRight:10px;">
+                            <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                        </Select>
                     </div>
 
                     <!-- <Dropdown trigger="click" :style="{marginRight: '20px'}">
@@ -84,7 +90,18 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
     data: function () {
       return {
         isCollapsed: false,
-        LeftDistance:false
+        LeftDistance:false,
+        CurrentApplication:1,
+        cityList: [
+            {
+                value: 0,
+                label: '声控开关'
+            },
+            {
+                value: 1,
+                label: '电子门禁'
+            },
+        ]
       }
     },
     mounted: function () {
@@ -202,6 +219,11 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
     position: relative;
     border-radius: 4px;
     /*overflow: hidden;*/
+}
+.ivu-layout-header{
+    height: 45px;
+    line-height: 45px;
+
 }
 .layout-header-bar{
     background: #fff;

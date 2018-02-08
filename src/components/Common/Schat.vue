@@ -1,7 +1,7 @@
 <template>
 	<div class="Schat">
     <h2>{{Info.Htit}}</h2>
-    <div class="BlockWrap marginTB_20">
+    <div class="BlockWrap marginTB_20 PaddingTB_50">
         <Row type="flex" justify="space-around" class="code-row-bg">
             <Col class="marginTB_10 TextCenter" :xs="{ span: 24,offset: 0}" :lg="{ span: 24}">
                 <ButtonGroup shape="circle">
@@ -70,13 +70,13 @@ import axios from 'axios'
     },
     methods: {
       BtTab(VALUE,IDX){
-        console.log(IDX)
+        console.log(IDX+'---'+VALUE)
         this.BtCur = IDX
         switch(IDX){
-          case '0':
+          case 0:
           this.GetSchatData('Schat')
           break
-          case '1':
+          case 1:
           this.GetSchatData('Schat2')
           break
           default:
