@@ -1,7 +1,7 @@
 <template>
     <div class="Home">
         <!-- 概览 -->
-        <ColorfulBlock :Info="HomeData.overview"/>
+        <ColorfulBlock :Info="OverView"/>
         <!-- 设备趋势-->
         <LineChart :Info="equipmentTrend"/>
         <!-- 用户趋势 -->
@@ -19,7 +19,9 @@
         
 </template>
 <script>
+import Vue from 'vue'
 import axios from 'axios'
+import CryptoJS from "crypto-js"
 import ColorfulBlock from '../../components/Common/ColorfulBlock.vue'
 import LineChart from '../../components/Common/LineChart.vue'
 import PieChart from '../../components/Common/PieChart.vue'
@@ -28,7 +30,7 @@ import SchatPie from '../../components/Common/SchatPie.vue'
   export default{
     data: function () {
       return {
-        HomeData:'',
+        OverView:'',
         equipmentTrend:{
             'Htit':'设备趋势',
             'Sdata':[
@@ -71,7 +73,7 @@ import SchatPie from '../../components/Common/SchatPie.vue'
       
     },
     created() {
-        this.GetUserSituationData()
+        this.GetOverViewData()
       
     },
     computed: {
@@ -88,10 +90,10 @@ import SchatPie from '../../components/Common/SchatPie.vue'
         SchatPie
     },
     methods: {
-        GetUserSituationData(KIND){
-            axios.get('static/json/Home.json'
+        GetOverViewData(KIND){
+            axios.post(R_PRE_URL + 'selectnumber'
               ).then((res)=> {
-                this.HomeData = res.data.Info
+                this.OverView = res.data.info.overview
             }).catch((error)=> {
               console.log(error)
             })

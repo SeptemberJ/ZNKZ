@@ -1,6 +1,6 @@
 <template>
 <Sider class="fixedSider" :style="{}" ref="side1" hide-trigger collapsible :collapsed-width="0" v-model="isCollapsed" :on-collapse="onCollapse">
-    <img :style="{width: '200px',height: '40px'}" src="static/img/logo2.png">
+    <img :style="{width: '200px',height: '40px'}" src="static/img/logo1.png">
     <Menu :active-name="ActiveName" theme="light" width="auto" accordion @on-select="SideMenuChange" :class="menuitemClasses">
         <MenuItem name="首页">
             <Icon type="home" size="22"></Icon>

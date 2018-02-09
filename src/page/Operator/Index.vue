@@ -2,66 +2,78 @@
 <div class="com-app">
 <div class="layout">
     <SiderBar v-on:SideMenu-click="listenFromSideMenu"  v-on:SideStatus="listenSideStatus"/>
-        <Layout>
-            <Content :style="{ minWidth: '678px',marginLeft:LeftDistance?'0px':'200px'}">
-                <Header class="shadow" :style="{position: 'fixed',top:0,left:LeftDistance?'0px':'200px', width: '100%',background:'#fff',zIndex:999}">
-                    <Icon v-if="LeftDistance" @click.native="collapsedSider" class="menu-icon" :style="{margin: '2px 20px 0'}" type="navicon-round" size="24"></Icon>
-                    <Icon v-if="!LeftDistance" @click.native="collapsedSider" class="rotate-icon" :style="{margin: '2px 2px 0'}" type="chevron-left" size="24"></Icon>
+    <Layout>
+        <Content :style="{ minWidth: '678px',marginLeft:LeftDistance?'0px':'200px'}">
+            <Header class="shadow" :style="{position: 'fixed',top:0,left:LeftDistance?'0px':'200px', width: '100%',background:'#fff',zIndex:999,overflow:'hidden'}">
+                <Icon v-if="LeftDistance" @click.native="collapsedSider" class="menu-icon" :style="{margin: '2px 20px 0'}" type="navicon-round" size="24"></Icon>
+                <Icon v-if="!LeftDistance" @click.native="collapsedSider" class="rotate-icon" :style="{margin: '2px 2px 0'}" type="chevron-left" size="24"></Icon>
 
-                    <Button @click="GoDeveloper" type="text" :class="{active:activeRoute=='开发者平台'}">开发平台</Button>
-                    |
-                    <Button @click="GoOperator" type="text" :class="{active:activeRoute=='运营者平台'}">运营平台</Button>
-                    
-                    
+                <Button @click="GoDeveloper" type="text" :class="{active:activeRoute=='开发者平台'}">开发平台</Button>
+                |
+                <Button @click="GoOperator" type="text" :class="{active:activeRoute=='运营者平台'}">运营平台</Button>
+                
+                
 
-                    
+                
 
-                    <div :style="{float: 'right',marginRight:LeftDistance?'0px':'200px'}">
-                        <Button @click="Logout" type="text">shbt
-                            <Icon type="power" size="14"></Icon>
-                            退出
-                        </Button>
-                        <b>当前应用:</b>
-                        <Select v-model="CurrentApplication" style="width:200px;marginRight:10px;">
-                            <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                        </Select>
+                <div :style="{float: 'right',marginRight:LeftDistance?'0px':'200px'}">
+                    <Button @click="Logout" type="text">
+                        {{UserName}}
+                        <Icon type="power" size="14"></Icon>
+                        退出
+                    </Button>
+                    <div style="display: inline-block;" v-if="curMneu != '首页' && curMneu != '个人账号' && curMneu != '企业信息'">
+                        <span v-if="curMneu == '用户情况' || curMneu == '活跃用户' || curMneu == 'APK升级' || curMneu == '消息推送' || curMneu == '用户反馈' || curMneu == '邮件模板' || curMneu == '常见问题管理'">
+                            <b>当前应用:</b>
+                            <Select v-model="CurrentApplication" style="width:200px;marginRight:10px;">
+                                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                            </Select>
+                        </span>
+                        <span v-else>
+                            <b>当前产品:</b>
+                            <Select v-model="CurrentApplication" style="width:200px;marginRight:10px;">
+                                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                            </Select>
+                        </span>
                     </div>
+                    
+                </div>
 
-                    <!-- <Dropdown trigger="click" :style="{marginRight: '20px'}">
-                        <a href="javascript:void(0)">
-                            <Icon type="android-person" size="24"></Icon>
-                            欢迎您，用户
-                            <Icon type="arrow-down-b"></Icon>
-                        </a>
-                        <DropdownMenu slot="list">
-                            <DropdownItem>个人账号</DropdownItem>
-                            <DropdownItem>企业信息</DropdownItem>
-                            <DropdownItem>退出</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown> -->
-                </Header>
-                <Card :bordered="false" dis-hover>
-                    <div>
-                        <Home v-if="curMneu == '首页'"></Home>
-                        <IndividualAccount v-if="curMneu == '个人账号'"></IndividualAccount>
-                        <!-- <ModifyInfo v-if="curMneu == '修改个人信息'"></ModifyInfo> -->
-                        <EnterpriseInfo v-if="curMneu == '企业信息'"></EnterpriseInfo>
-                        <UserSituation v-if="curMneu == '用户情况'"></UserSituation>
-                        <ActiveUser v-if="curMneu == '活跃用户'"></ActiveUser>
-                        <EquipmentCondition v-if="curMneu == '设备情况'"></EquipmentCondition>
-                        <EquipmentAuthorization v-if="curMneu == '设备授权'"></EquipmentAuthorization>
-                        <Alert v-if="curMneu == '警告管理'"></Alert>
-                        <ApkUpgrade v-if="curMneu == 'APK升级'"></ApkUpgrade>
-                        <FirmwareUpdate v-if="curMneu == '固件升级'"></FirmwareUpdate>
-                        <MessagePush v-if="curMneu == '消息推送'"></MessagePush>
-                        <UserFeedback v-if="curMneu == '用户反馈'"></UserFeedback>
-                        <MailTemplate v-if="curMneu == '邮件模板'"></MailTemplate>
-                        <CommonProblem v-if="curMneu == '常见问题管理'"></CommonProblem>
-                        
-                    </div>
-                </Card>
-            </Content>
-        </Layout>
+                <!-- <Dropdown trigger="click" :style="{marginRight: '20px'}">
+                    <a href="javascript:void(0)">
+                        <Icon type="android-person" size="24"></Icon>
+                        欢迎您，用户
+                        <Icon type="arrow-down-b"></Icon>
+                    </a>
+                    <DropdownMenu slot="list">
+                        <DropdownItem>个人账号</DropdownItem>
+                        <DropdownItem>企业信息</DropdownItem>
+                        <DropdownItem>退出</DropdownItem>
+                    </DropdownMenu>
+                </Dropdown> -->
+            </Header>
+            <Card :bordered="false" dis-hover>
+                <div>
+                    <Home v-if="curMneu == '首页'"></Home>
+                    <IndividualAccount v-if="curMneu == '个人账号'"></IndividualAccount>
+                    <!-- <ModifyInfo v-if="curMneu == '修改个人信息'"></ModifyInfo> -->
+                    <EnterpriseInfo v-if="curMneu == '企业信息'"></EnterpriseInfo>
+                    <UserSituation v-if="curMneu == '用户情况'"></UserSituation>
+                    <ActiveUser v-if="curMneu == '活跃用户'"></ActiveUser>
+                    <EquipmentCondition v-if="curMneu == '设备情况'"></EquipmentCondition>
+                    <EquipmentAuthorization v-if="curMneu == '设备授权'"></EquipmentAuthorization>
+                    <Alert v-if="curMneu == '警告管理'"></Alert>
+                    <ApkUpgrade v-if="curMneu == 'APK升级'"></ApkUpgrade>
+                    <FirmwareUpdate v-if="curMneu == '固件升级'"></FirmwareUpdate>
+                    <MessagePush v-if="curMneu == '消息推送'"></MessagePush>
+                    <UserFeedback v-if="curMneu == '用户反馈'"></UserFeedback>
+                    <MailTemplate v-if="curMneu == '邮件模板'"></MailTemplate>
+                    <CommonProblem v-if="curMneu == '常见问题管理'"></CommonProblem>
+                    
+                </div>
+            </Card>
+        </Content>
+    </Layout>
     </div>
     <div class="ChangePlant" :style="{display: 'none'}">运营者平台</div>
     
@@ -70,6 +82,7 @@
 <script>
 import Vue from 'vue'
 import axios from 'axios'
+import CryptoJS from "crypto-js"
 import SiderBar from '../../components/Operator/SiderBar.vue'
 import Home from '../../components/Operator/Home.vue'
 import IndividualAccount from '../../components/Common/IndividualAccount.vue'
@@ -115,6 +128,9 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
       
     },
     computed: {
+        UserName(){
+            return CryptoJS.AES.decrypt(this.$store.state.userInfo.username,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
+        },
         activeRoute(){
             return this.$store.state.activeRoute
         },

@@ -40,14 +40,15 @@
     </div>
 </template>
 <script>
-import particles from 'particles.js'
+import Vue from 'vue'
+import axios from 'axios'
+import CryptoJS from "crypto-js"
   export default{
     data: function () {
       return {
-        IfSeeKey:false,
-        IfInfo:false,
+        ID:'',
         formInfo: {
-            EId:'35395',
+            EId:'',
             EName: '',
             EKind: '',
             Contact: '',
@@ -71,10 +72,9 @@ import particles from 'particles.js'
       }
     },
     mounted() {
-       //particlesJS.load('particlesEnterpriseInfo','/static/particlesDataE.js');
     },
     created() {
-      
+      this.GetEnterpriseInfo()
     },
     computed: {
       
@@ -85,18 +85,26 @@ import particles from 'particles.js'
     components: {
     },
     methods: {
-        SeeKey(){
-            this.IfSeeKey = true
-        },
-        RestKey(){
-
-        },
-        InfoInfo(){
-            this.IfInfo = true
-            //this.$store.state.OperatorMenuCur = '修改个人信息'
-        },
-         BackInfo(){
-            this.IfInfo = false
+        GetEnterpriseInfo(){
+            let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
+            axios.get(R_PRE_URL+'selectuser?id='+ID
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  let Info = res.data.userlist[0]
+                  this.ID = Info.id
+                  this.formInfo.EId = Info.company_id,
+                  this.formInfo.EName = Info.company_name
+                  this.formInfo.EKind = Info.company_type
+                  this.formInfo.Contact = Info.company_contact
+                  this.formInfo.Phone = Info.company_mobile
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                }
+            }).catch((error)=> {
+            console.log(error)
+            })
         },
         handleBeforeUpload(event){
             var _this = this
@@ -111,8 +119,32 @@ import particles from 'particles.js'
         InfoSubmit (name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    console.log(this.formInfo)
-                    this.$Message.success('修改个人账号信息成功!');
+                    let EnterpriseInfo = {
+                        id:this.ID,
+                        company_name:this.formInfo.EName,
+                        comany_type :this.formInfo.EKind,
+                        company_contact:this.formInfo.Contact,
+                        company_mobile:this.formInfo.Phone
+                    }
+                    let DATA ={'users':EnterpriseInfo}
+                    axios.post(R_PRE_URL+'updatecompany',DATA
+                    ).then((res)=> {
+                        switch(res.data.result){
+                          case 1:
+                          
+                          this.$Message.success('修改个人账号信息成功!');
+                          break
+                          case 0:
+                          
+                          this.$Message.success('修改个人账号信息失败!');
+                          break
+                          default:
+                          this.$Message.error('系统繁忙!')
+                        }
+                    }).catch((error)=> {
+                    console.log(error)
+                    })
+                    
                 } else {
                     this.$Message.error('带*号为必填项!');
                 }

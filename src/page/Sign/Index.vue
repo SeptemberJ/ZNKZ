@@ -62,6 +62,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import particles from 'particles.js'
+import CryptoJS from "crypto-js"
 
   export default{
     data: function () {
@@ -69,6 +70,7 @@ import particles from 'particles.js'
         ifSpin:false,
         disabled:false,
         timerCount:"获取验证码",
+        RealCode:'',
         formSign: {
             phone: '',
             code: '',
@@ -135,15 +137,17 @@ import particles from 'particles.js'
         if (this.disabled){
         return false
         }
+        
         //倒计时
         var countdown = 10;
         var _this = this
+        this.GetRealCode()
         settime()
         function settime() {
           if (countdown == 0) {
               _this.disabled = false
               _this.timerCount = '获取验证码'
-              countdown = 10;
+              countdown = 10
           } else {
               _this.disabled = true,
               _this.timerCount = "重新发送(" + countdown + ")"
@@ -157,33 +161,58 @@ import particles from 'particles.js'
           }, 1000)
         }
       },
+      GetRealCode(){
+        axios.get(R_PRE_URL+'smsSend?fmobile='+this.formSign.phone
+          ).then((res)=> {
+            if(res.data.result == 1){
+              this.RealCode = res.data.code
+            }else{
+              this.$Message.error('信息发送失败请稍后重试!');
+            }
+        }).catch((error)=> {
+          console.log(error)
+        })
+      },
       handleSubmit(name) {
           this.$refs[name].validate((valid) => {
               if (valid) {
-                 let SignInfo = this.formSign
-                 if(SignInfo.psd!=SignInfo.psdAgain){
-                  this.$Message.error('两次输入的密码不一致!')
-                  return false
+                 let SignInfo = {
+                  fmobile:this.formSign.phone,
+                  fusername:this.formSign.name,
+                  fcompanyname:this.formSign.company,
+                  fpassword:CryptoJS.MD5(this.formSign.psd).toString(),
                  }
-                // axios.get(R_PRE_URL+'/Sign.do?username='+SignInfo.user+'&psw='+SignInfo.password
-                //   ).then((res)=> {
-                //     switch(res.data.result){
-                //       case ('2'):
-                //       localStorage.setItem("Station_user_Name",SignInfo.user)
-                //       this.$store.state.userInfo.Name = SignInfo.user
-                //       this.$Message.success('欢迎登录!')
-                //       this.$router.push({name:'车辆列表'})
-                //       break
-                //       case ('4'):
-                //       this.$Message.error('用户名或密码错误!')
-                //       break
-                //       default:
-                //       this.$Message.error('系统繁忙!')
-                //     }
-                //   }).catch((error)=> {
-                //     console.log(error)
-                //   })
-                this.ToLogin()
+
+                 // if(this.formSign.code!=this.RealCode){
+                 //  this.$Message.error('手机验证码不正确!')
+                 //  return false
+                 // }
+                 let DATA = {'users':SignInfo}
+
+                 if(this.formSign.psd!=this.formSign.psdAgain){
+                    this.$Message.error('两次输入的密码不一致!')
+                    return false
+                 }
+                axios.post(R_PRE_URL+'register1?',DATA
+                  ).then((res)=> {
+                    switch(res.data.result){
+                      case 0:
+                      this.$Message.error('注册失败!')
+                      break
+                      case 1:
+                      this.$Message.success('注册成功!')
+                      this.ToLogin()
+                      break
+                      case 2:
+                      this.$Message.error('改手机号已注册!')
+                      break
+                      default:
+                      this.$Message.error('系统繁忙!')
+                    }
+                  }).catch((error)=> {
+                    console.log(error)
+                  })
+                
               } else {
                   this.$Message.error('请确保信息已全部填写!');
               }

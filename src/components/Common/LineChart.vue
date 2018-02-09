@@ -5,11 +5,24 @@
         <div  class="BlockWrap marginTB_20 PaddingTB_50">
           <Row type="flex" justify="space-around" class="code-row-bg">
               <Col class="marginTB_10 TextCenter" :xs="{ span: 24,offset: 0}" :lg="{ span: 24}">
-                  <ButtonGroup shape="circle">
+                <Row type="flex" justify="center" class="code-row-bg">
+                  <Col span="12">
+                    <ButtonGroup shape="circle">
                       <Button :type="BtCur == BtIdx?'primary':'ghost'" @click.prevent="BtTab(Bt.value,BtIdx)" v-for="(Bt,BtIdx) in Info.Sdata">
                           {{Bt.BtName}}
                       </Button>
-                  </ButtonGroup>
+                    </ButtonGroup>
+                  </Col>
+                  <Col span="4">
+                    <Select v-model="Day">
+                        <Option value="0">前7天</Option>
+                        <Option value="1">前15天</Option>
+                        <Option value="2">前30天</Option>
+                    </Select>
+                  </Col>
+                </Row>
+                  
+                  
               </Col>
               <Col class="marginTB_10 TextCenter" :xs="{ span: 24,offset: 0}" :lg="{ span: 24}">
                   <div :id="Info.Htit" style="width: 100%;height: 500px;padding: 0 20px;"></div>
@@ -30,6 +43,7 @@ import echarts from 'echarts'
     props:['Info'],
     data: function () {
       return {
+        Day:0,
         BtCur:0,
         charts: '',
         data:''
@@ -79,7 +93,7 @@ import echarts from 'echarts'
           ).then((res)=> {
             let onlyData = res.data.info
             for (var i = 1; i < 7; i++) {
-                var now = new Date(base += oneDay)
+                var now = new Date(base -= oneDay)
                 var dayStr = [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('-')
                 data.push([dayStr, onlyData[i]])
             }

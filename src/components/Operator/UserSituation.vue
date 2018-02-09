@@ -34,7 +34,6 @@
 import axios from 'axios'
 import ColorfulBlock from '../../components/Common/ColorfulBlock.vue'
 import LineChart from '../../components/Common/LineChart.vue'
-import MapChart from '../../components/Common/MapChart.vue'
   export default{
     data: function () {
       return {
@@ -89,8 +88,7 @@ import MapChart from '../../components/Common/MapChart.vue'
     },
     components: {
         ColorfulBlock,
-        LineChart,
-        MapChart
+        LineChart
     },
     methods: {
         GetUserSituationData(KIND){

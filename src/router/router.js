@@ -21,12 +21,12 @@ const routes = [
     path: '/',
     component: Appyl,
     children: [
-      {path: '/Appyl', name: '测试', component: Appyl},
+      {path: '/Modify', name: '修改密码', component: Modify},
       {path: '/Login', name: '登录', component: Login},
       {path: '/Sign', name: '注册', component: Sign},
-      {path: '/Developer', name: '开发者平台', component: Developer,meta: {requireAuth: false}},
-      {path: '/Operator', name: '运营者平台', component: Operator,meta: {requireAuth: false}},
-      {path:'*', redirect: '/Operator'}
+      {path: '/Developer', name: '开发者平台', component: Developer,meta: {requireAuth: true}},
+      {path: '/Operator', name: '运营者平台', component: Operator,meta: {requireAuth: true}},
+      {path:'*', redirect: '/Login'}
     ]
   }
 ]

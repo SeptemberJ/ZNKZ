@@ -38,6 +38,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import particles from 'particles.js'
+import CryptoJS from "crypto-js"
 import {setCookie,getCookie,getCryptoJsCookie,Encrypt,Decrypt} from '../../util/utils'
 
   export default{
@@ -62,18 +63,9 @@ import {setCookie,getCookie,getCryptoJsCookie,Encrypt,Decrypt} from '../../util/
      particlesJS.load('particlesLogin','/static/particlesData.js');
     },
    created() {
-    // axios.get(PRE_URL+'static/json/Index.json'
-    //   ).then((res)=> {
-    //     this.IndexInfor = res.data
-    // }).catch((error)=> {
-    //   console.log(error)
-    // })
      
    },
    computed: {
-    // isMobile(){
-    //   return this.$store.state.isMobile
-    //  }
     
    },
     components: {
@@ -93,27 +85,34 @@ import {setCookie,getCookie,getCryptoJsCookie,Encrypt,Decrypt} from '../../util/
           this.$refs[name].validate((valid) => {
               if (valid) {
                 let cookieStr = this.formLogin.phone.toString() + this.formLogin.password.toString()
-                // let LoginInfo = this.formLogin
-                // axios.get(R_PRE_URL+'/login.do?username='+LoginInfo.user+'&psw='+LoginInfo.password
-                //   ).then((res)=> {
-                //     switch(res.data.result){
-                //       case ('2'):
-                //       localStorage.setItem("Station_user_Name",LoginInfo.user)
-                //       this.$store.state.userInfo.Name = LoginInfo.user
-                //       this.$Message.success('欢迎登录!')
-                //       this.$router.push({name:'车辆列表'})
-                //       break
-                //       case ('4'):
-                //       this.$Message.error('用户名或密码错误!')
-                //       break
-                //       default:
-                //       this.$Message.error('系统繁忙!')
-                //     }
-                //   }).catch((error)=> {
-                //     console.log(error)
-                //   })
-                setCookie('btznkz',Encrypt(cookieStr),1)
-                this.$router.push({name:'运营者平台'})
+                let LoginInfo = {
+                  fmobile:this.formLogin.phone,
+                  fpassword:CryptoJS.MD5(this.formLogin.password).toString(),
+                }
+                let DATA = {'users':LoginInfo}
+                axios.post(R_PRE_URL+'login',DATA
+                  ).then((res)=> {
+                    switch(res.data.result){
+                      case 1:
+                      let Encryption_name = CryptoJS.AES.encrypt(res.data.fname,this.$store.state.PlainText).toString()
+                      let Encryption_id = CryptoJS.AES.encrypt(res.data.ID,this.$store.state.PlainText).toString()
+                      localStorage.setItem("BT_name",Encryption_name)
+                      localStorage.setItem("BT_id",Encryption_id)
+                      this.$store.state.userInfo.username = Encryption_name
+                      this.$store.state.userInfo.userID = Encryption_id
+                      setCookie('btznkz',Encrypt(cookieStr),1)
+                      this.$router.push({name:'运营者平台'})
+                      break
+                      case 0:
+                      this.$Message.error('用户名或密码错误!')
+                      break
+                      default:
+                      this.$Message.error('系统繁忙!')
+                    }
+                  }).catch((error)=> {
+                    console.log(error)
+                  })
+
               } else {
                   this.$Message.error('请输入用户名或密码!');
               }

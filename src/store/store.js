@@ -3,16 +3,18 @@ import Vuex from 'vuex'
 import "babel-polyfill"
 import * as types from "./types.js"
 import * as Storage from "../util/storage.js";
+import CryptoJS from "crypto-js";
 import {setCookie,getCookie} from '../util/utils'
 
 Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
+    PlainText:'柏田科技2018',
     // token:localStorage.getItem("user_token"),//登录token
     userInfo:{
-        username:localStorage.getItem("user_name"),
-        member_id:localStorage.getItem("member_id"),
-        register_type:localStorage.getItem("register_type"),
+        username:localStorage.getItem("BT_name"),
+        userID:localStorage.getItem("BT_id"),
+        //register_type:localStorage.getItem("register_type"),
         // useravatar:localStorage.getItem("user_avatar"),
     },
     //MessageCount:11,

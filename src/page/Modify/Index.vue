@@ -52,12 +52,14 @@
 import Vue from 'vue'
 import axios from 'axios'
 import particles from 'particles.js'
+import CryptoJS from "crypto-js"
 
   export default{
     data: function () {
       return {
         ifSpin:false,
         disabled:false,
+        RealCode:'',
         timerCount:"获取验证码",
         formModify: {
             phone: '',
@@ -85,18 +87,9 @@ import particles from 'particles.js'
      particlesJS.load('particlesModify','/static/particlesData.js');
     },
    created() {
-    // axios.get(PRE_URL+'static/json/Index.json'
-    //   ).then((res)=> {
-    //     this.IndexInfor = res.data
-    // }).catch((error)=> {
-    //   console.log(error)
-    // })
      
    },
    computed: {
-    // isMobile(){
-    //   return this.$store.state.isMobile
-    //  }
     
    },
     components: {
@@ -120,6 +113,7 @@ import particles from 'particles.js'
         //倒计时
         var countdown = 10;
         var _this = this
+        this.GetRealCode()
         settime()
         function settime() {
           if (countdown == 0) {
@@ -139,33 +133,42 @@ import particles from 'particles.js'
           }, 1000)
         }
       },
+      GetRealCode(){
+        axios.get(R_PRE_URL+'smsSend?fmobile='+this.formModify.phone
+          ).then((res)=> {
+            if(res.data.result == 1){
+              this.RealCode = res.data.code
+            }else{
+              this.$Message.error('信息发送失败请稍后重试!');
+            }
+        }).catch((error)=> {
+          console.log(error)
+        })
+      },
       handleSubmit(name) {
           this.$refs[name].validate((valid) => {
               if (valid) {
-                 let ModifyInfo = this.formModify
-                 if(ModifyInfo.psd!=ModifyInfo.psdAgain){
+                 if(this.formModify.psd!=this.formModify.psdAgain){
                   this.$Message.error('两次输入的密码不一致!')
                   return false
                  }
-                // axios.get(R_PRE_URL+'/login.do?username='+LoginInfo.user+'&psw='+LoginInfo.password
-                //   ).then((res)=> {
-                //     switch(res.data.result){
-                //       case ('2'):
-                //       localStorage.setItem("Station_user_Name",LoginInfo.user)
-                //       this.$store.state.userInfo.Name = LoginInfo.user
-                //       this.$Message.success('欢迎登录!')
-                //       this.$router.push({name:'车辆列表'})
-                //       break
-                //       case ('4'):
-                //       this.$Message.error('用户名或密码错误!')
-                //       break
-                //       default:
-                //       this.$Message.error('系统繁忙!')
-                //     }
-                //   }).catch((error)=> {
-                //     console.log(error)
-                //   })
-                this.ToLogin()
+                 let ModifyInfo = {
+                  fmobile:this.formModify.phone,
+                  fpassword:CryptoJS.MD5(this.formModify.psd).toString(),
+                 }
+                 let DATA = {'users':ModifyInfo}
+                  axios.post(R_PRE_URL+'lostpassword?',DATA
+                  ).then((res)=> {
+                    switch(res.data.result){
+                      case 1:
+                      this.$Message.success('修改密码成功!')
+                      this.ToLogin()
+                      default:
+                      this.$Message.error('系统繁忙!')
+                    }
+                  }).catch((error)=> {
+                    console.log(error)
+                  })
               } else {
                   this.$Message.error('请确保信息已全部填写!');
               }
