@@ -4,6 +4,12 @@
             <router-view class="child-view"></router-view>
         </transition>
         <BackTop></BackTop>
+        <div v-if="IfLoading">
+            <Spin fix>
+                <Icon type="load-c" size=38 class="demo-spin-icon-load"></Icon>
+                <div>Loading</div>
+            </Spin>
+        </div>
     </div>
 </template>
 <script>
@@ -27,7 +33,10 @@
                 ]
             },
             activeRoute(){
-            return this.$store.state.activeRoute
+                return this.$store.state.activeRoute
+           },
+           IfLoading(){
+                return this.$store.state.IfLoading
            }
         },
         methods: {
@@ -37,8 +46,23 @@
         }
     }
 </script>
-<style scoped>
-    
+<style scoped lang="scss">
+.demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
+}
+@keyframes ani-demo-spin {
+    from { transform: rotate(0deg);}
+    50%  { transform: rotate(180deg);}
+    to   { transform: rotate(360deg);}
+}
+.demo-spin-col{
+    height: 100px;
+    position: relative;
+    border: 1px solid #eee;
+}
+.ivu-spin-fix{
+    background: transparent !important;
+}
     .layout{
         border: 1px solid #d7dde4;
         background: #f5f7f9;

@@ -5,7 +5,7 @@
             <div class="BlockWrap marginTB_20">
                 <Row type="flex" justify="center" class="code-row-bg">
                     <Col :xs="12" :sm="12" :md="10" :lg="9">
-                        <div class="SmallBgBlock" :style="{background: 'url(static/img/card.png)',backgroundRepeat:'no-repeat'}"></div>
+                        <div class="SmallBgBlock" :style="{background: 'url(static/img/card.png)',backgroundRepeat:'no-repeat',height:'100vh'}"></div>
                     </Col>
                     <Col :xs="12" :sm="12" :md="14" :lg="15">
                         <Form label-position="left" ref="formInfo" :model="formInfo" :rules="ruleValidateInfo" :label-width="120">
@@ -139,6 +139,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import CryptoJS from "crypto-js"
+import {clearCookie} from '../../util/utils'
   export default{
     data: function () {
       return {
@@ -307,14 +308,20 @@ import CryptoJS from "crypto-js"
                         id:this.formInfo.ID,
                         fusername:this.formModify.Name,
                         head_pic:this.formModify.Avatar == this.formInfo.Avatar?'':this.formModify.Avatar,
-                        fpassword:this.formModify.Psd
+                        fpassword:this.formModify.Psd == this.formInfo.Psd?this.formInfo.Psd:CryptoJS.MD5(this.formModify.Psd).toString(),
                     }
                     let DATA = {'users':ModifyInfo}
-                    axios.post(R_PRE_URL+'updateuser2',DATA
+                    axios.post(R_PRE_URL+'updateuser',DATA
                     ).then((res)=> {
                         switch(res.data.result){
                           case 1:
-                          this.$Message.success('信息修改成功!')
+                          this.$Message.success('修改个人账号信息成功!')
+                          let Encryption_name = CryptoJS.AES.encrypt(this.formModify.Name,this.$store.state.PlainText).toString()
+                          localStorage.setItem("BT_name",Encryption_name)
+                          this.$store.state.userInfo.username = Encryption_name
+                          // localStorage.clear()
+                          // clearCookie('btznkz')
+                          // this.$router.push({name:'登录'})
                           break
                           case 0:
                           this.$Message.error('信息修改失败!')
@@ -325,7 +332,7 @@ import CryptoJS from "crypto-js"
                     }).catch((error)=> {
                     console.log(error)
                     })
-                    this.$Message.success('修改个人账号信息成功!');
+                    
             //     } else {
             //         this.$Message.error('带*号为必填项!');
             //     }

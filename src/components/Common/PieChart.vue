@@ -1,5 +1,5 @@
 <template>
-<div class="PieChart">
+  <div class="PieChart">
     <h2>{{Info.Htit}}</h2>
     <div  class="BlockWrap marginTB_20 PaddingTB_50">
       <Row type="flex" justify="space-around" class="code-row-bg">

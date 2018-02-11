@@ -89,6 +89,7 @@ import {setCookie,getCookie,getCryptoJsCookie,Encrypt,Decrypt} from '../../util/
                   fmobile:this.formLogin.phone,
                   fpassword:CryptoJS.MD5(this.formLogin.password).toString(),
                 }
+                this.$store.state.IfLoading = true
                 let DATA = {'users':LoginInfo}
                 axios.post(R_PRE_URL+'login',DATA
                   ).then((res)=> {
@@ -109,6 +110,7 @@ import {setCookie,getCookie,getCryptoJsCookie,Encrypt,Decrypt} from '../../util/
                       default:
                       this.$Message.error('系统繁忙!')
                     }
+                    this.$store.state.IfLoading = false
                   }).catch((error)=> {
                     console.log(error)
                   })

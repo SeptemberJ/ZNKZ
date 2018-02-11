@@ -4,7 +4,7 @@
         <div class="BlockWrap marginTB_20">
         <Row type="flex" justify="center" class="code-row-bg">
             <Col :xs="8" :sm="8" :md="8" :lg="6">
-                <div class="SmallBgBlock" :style="{background: 'url(static/img/cardSide.png)',backgroundRepeat:'no-repeat'}"></div>
+                <div class="SmallBgBlock" :style="{background: 'url(static/img/cardSide.png)',backgroundRepeat:'no-repeat',height:'100vh'}"></div>
             </Col>
             <Col :xs="16" :sm="16" :md="16" :lg="18">
                 <Form label-position="left" ref="formInfo" :model="formInfo" :rules="ruleValidateInfo" :label-width="120">
@@ -16,12 +16,7 @@
                 </FormItem>
                 <FormItem label="企业类别" prop="EKind">
                     <Select v-model="formInfo.EKind" placeholder="请选择企业类别">
-                        <Option value="0">互联网</Option>
-                        <Option value="1">工业</Option>
-                        <Option value="2">农业</Option>
-                        <Option value="3">医疗</Option>
-                        <Option value="4">物联网</Option>
-                        <Option value="5">家居</Option>
+                        <Option v-for="(TypeItem,TypeIdx) in TypeList" :value="TypeItem.typename">{{TypeItem.typename}}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="联系人" prop="Contact">
@@ -47,6 +42,7 @@ import CryptoJS from "crypto-js"
     data: function () {
       return {
         ID:'',
+        TypeList:'',
         formInfo: {
             EId:'',
             EName: '',
@@ -75,6 +71,7 @@ import CryptoJS from "crypto-js"
     },
     created() {
       this.GetEnterpriseInfo()
+      this.GetEnterpriseKind()
     },
     computed: {
       
@@ -98,6 +95,20 @@ import CryptoJS from "crypto-js"
                   this.formInfo.EKind = Info.company_type
                   this.formInfo.Contact = Info.company_contact
                   this.formInfo.Phone = Info.company_mobile
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                }
+            }).catch((error)=> {
+            console.log(error)
+            })
+        },
+        GetEnterpriseKind(){
+            axios.post(R_PRE_URL+'selectcompanytype'
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.TypeList = res.data.companytypelist
                   break
                   default:
                   this.$Message.error('系统繁忙!')
@@ -131,12 +142,10 @@ import CryptoJS from "crypto-js"
                     ).then((res)=> {
                         switch(res.data.result){
                           case 1:
-                          
                           this.$Message.success('修改个人账号信息成功!');
                           break
                           case 0:
-                          
-                          this.$Message.success('修改个人账号信息失败!');
+                          this.$Message.error('修改个人账号信息失败!');
                           break
                           default:
                           this.$Message.error('系统繁忙!')

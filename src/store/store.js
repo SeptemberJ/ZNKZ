@@ -10,6 +10,7 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     PlainText:'柏田科技2018',
+    IfLoading:false,  //mark loading
     // token:localStorage.getItem("user_token"),//登录token
     userInfo:{
         username:localStorage.getItem("BT_name"),

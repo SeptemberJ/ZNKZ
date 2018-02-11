@@ -83,6 +83,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import CryptoJS from "crypto-js"
+import {clearCookie} from '../../util/utils'
 import SiderBar from '../../components/Operator/SiderBar.vue'
 import Home from '../../components/Operator/Home.vue'
 import IndividualAccount from '../../components/Common/IndividualAccount.vue'
@@ -190,6 +191,8 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
             this.$router.push({name:'运营者平台'})
         },
         Logout(){
+            localStorage.clear()
+            clearCookie('btznkz')
             this.$router.push({name:'登录'})
         }
         // ChangeDropdown(NAME){
