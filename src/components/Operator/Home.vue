@@ -77,6 +77,10 @@ import SchatPie from '../../components/Common/SchatPie.vue'
       
     },
     computed: {
+        ID(){
+            let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
+            return ID
+        }
       
     },
     watch: {
@@ -91,7 +95,7 @@ import SchatPie from '../../components/Common/SchatPie.vue'
     },
     methods: {
         GetOverViewData(KIND){
-            axios.post(R_PRE_URL + 'selectnumber'
+            axios.get(R_PRE_URL + 'selectnumber?userid='+this.ID
               ).then((res)=> {
                 this.OverView = res.data.info.overview
             }).catch((error)=> {

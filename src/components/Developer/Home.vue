@@ -28,19 +28,6 @@
                 width: 60,
                 align: 'center'
             },
-            // {
-            //     title: '文件',
-            //     key: 'name',
-            //     render: (h, params) => {
-            //         return h('img', {
-            //             // h('Icon', {
-            //                 props: {
-            //                     src: 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-            //                 }
-            //             // }),
-            //         });
-            //     }
-            // },
             {
                 title: '文件',
                 key: 'name',

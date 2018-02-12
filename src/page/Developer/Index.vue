@@ -3,7 +3,7 @@
 <div class="layout">
     <SiderBar v-on:SideMenu-click="listenFromSideMenu"  v-on:SideStatus="listenSideStatus"/>
         <Layout>
-            <Content :style="{ minWidth: '678px',marginLeft:LeftDistance?'0px':'200px'}">
+            <Content :style="{ minWidth: '1080px',marginLeft:LeftDistance?'0px':'200px'}">
                 <Header class="shadow" :style="{position: 'fixed',top:0,left:LeftDistance?'0px':'200px', width: '100%',background:'#fff',zIndex:999}">
                     <Icon v-if="LeftDistance" @click.native="collapsedSider" class="menu-icon" :style="{margin: '2px 20px 0'}" type="navicon-round" size="24"></Icon>
                     <Icon v-if="!LeftDistance" @click.native="collapsedSider" class="rotate-icon" :style="{margin: '2px 2px 0'}" type="chevron-left" size="24"></Icon>

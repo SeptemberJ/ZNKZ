@@ -101,7 +101,7 @@ import {setCookie,getCookie,getCryptoJsCookie,Encrypt,Decrypt} from '../../util/
                       localStorage.setItem("BT_id",Encryption_id)
                       this.$store.state.userInfo.username = Encryption_name
                       this.$store.state.userInfo.userID = Encryption_id
-                      setCookie('btznkz',Encrypt(cookieStr),1)
+                      setCookie('btznkz',Encrypt(cookieStr),6)
                       this.$router.push({name:'运营者平台'})
                       break
                       case 0:
