@@ -6,8 +6,8 @@
                 <Button type="error" icon="android-add" @click="AddApplication">新建应用</Button>
             </Col>
             <Col span="20" class="TextRight">
-                <Input class="InlineBlock" v-model="A_keyword" placeholder="查找相关应用" style="width: 250px;"></Input>
-                <Button type="primary" icon="ios-search">Search</Button>
+                <Input class="InlineBlock" v-model="A_keyword" :clearable="A_keyword==''?false:true" @on-change="ChangeKeyword" placeholder="查找相关应用" style="width: 250px;"></Input>
+                <Button type="primary" icon="ios-search" @click="SearchAppliction">查询</Button>
             </Col>
         </Row>
         <!-- 应用列表 -->
@@ -17,7 +17,7 @@
                 <Col :xs="12" :sm="12" :md="12" :lg="8" class="marginB_20" v-for="(Application,Idx) in ApplicationList">
                     <Card>
                         <p slot="title" style="height: 100%">
-                            <img class="SmallImg" :src="Application.apply_icon?Application.apply_icon:'https://file.iviewui.com/dist/76ecb6e76d2c438065f90cd7f8fa7371.png'">
+                            <img class="SmallImg" :src="Application.apply_icon?Application.apply_icon:'/static/img/icon/application.png'">
                         </p>
                         <div slot="extra"  style="width: 150px">
                             <h3 class="Ellipsis">{{Application.apply_name}}</h3>
@@ -28,70 +28,19 @@
                             </p>
                         </div>
 
-                        <Button type="text"  icon="ios-search" class="BigIcon"></Button>
-                        <Button type="text"  icon="compose" class="BigIcon FloatRight" @click="Detail_A(Idx)"></Button>
+                        <Button type="text"  icon="ios-search" class="BigIcon" @click="Detail_A(Idx)"></Button>
+                        <Button type="text"  icon="compose" class="BigIcon FloatRight" @click="Modify_A(Idx)"></Button>
                     </Card>
                 </Col>
             </Row>
         </div>
         <!-- 创建新应用 -->
-        <CreateApplication :OriginType="0"/>
+        <CreateApplication :OriginType="0" v-on:refreshApplication="Refresh"/>
         <!-- 编辑应用信息 -->
+        <EditApplicaiton :EditInfo="EditInfo"/>
         <!-- <EditApplicaiton :AppId="AppId" :EditInfo="EditInfo" v-if="ifShow"/> -->
-        <!-- 创建新应用 -->
-        <Modal v-model="ifEdit" width="600" :mask-closable="false" @on-visible-change="">
-            <p slot="header">
-                <Icon type="information-circled"></Icon>
-                <span>创建新应用</span>
-            </p>
-            <div style="">
-                <Form ref="formEdit" :model="formEdit" :rules="ruleEdit"  label-position="left" :label-width="100">
-                    <FormItem label="应用分类" prop="A_kind">
-                        <Select v-model="formEdit.A_kind" placeholder="请选择应用类别">
-                            <Option value="智能家居">智能家居</Option>
-                            <Option value="智慧社区">智慧社区</Option>
-                            <Option value="智能硬件">智能硬件</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem label="应用名称" prop="A_name">
-                        <Input v-model="formEdit.A_name"></Input>
-                    </FormItem>
-                    <FormItem label="应用说明" prop="A_introduction">
-                        <Input v-model="formEdit.A_introduction" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入应用说明"></Input>
-                    </FormItem>
-                    <FormItem label="应用图标" prop="A_img">
-                        <div class="demo-upload-list">
-                            <template>
-                                <img :src="formEdit.A_img?formEdit.A_img:'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'">
-                            </template>
-                        </div>
-                        <Upload
-                            :max-size="2048"
-                            :on-format-error="handleFormatError"
-                            :on-exceeded-size="handleMaxSize"
-                            :before-upload="handleBeforeUpload"
-                            multiple
-                            type="drag"
-                            action=""
-                            style="display: inline-block;width:58px;">
-                            <div style="width: 58px;height:58px;line-height: 58px;">
-                                <Icon type="camera" size="20"></Icon>
-                            </div>
-                        </Upload>
-                    </FormItem>
-                    <FormItem label="应用包名" prop="A_android">
-                        <Input v-model="formEdit.A_android" placeholder="请输入应用包名（50字以内）"></Input>
-                    </FormItem>
-                    <FormItem label="应用包名" prop="A_ios">
-                        <Input v-model="formEdit.A_ios" placeholder="请输入Bundle Id（50字以内）"></Input>
-                    </FormItem>
-                </Form>
-            </div>
-            <div slot="footer" style="text-align:center">
-                <Button type="error" size="large" :loading="modal_loading" @click="handleEdit('formEdit')">保存</Button>
-                <Button type="primary" size="large"  @click="Del()">删除</Button>
-            </div>
-        </Modal>
+        <!-- 查看应用信息 -->
+        <SeeApplicaiton :DetailInfo="DetailInfo"/>
     </div>
         
 </template>
@@ -101,6 +50,7 @@ import axios from 'axios'
 import CryptoJS from "crypto-js"
 import CreateApplication from "./Create/CreateApplicaiton"
 import EditApplicaiton from "./Edit/EditApplicaiton"
+import SeeApplicaiton from "./See/SeeApplicaiton"
   export default{
     data: function () {
       return {
@@ -108,7 +58,8 @@ import EditApplicaiton from "./Edit/EditApplicaiton"
         A_keyword:'',
         ApplicationList:[],
         AppId:'',
-        EditInfo:'123',
+        EditInfo:'',
+        DetailInfo:'',
         formEdit:{
             A_kind:'',
             A_name:'',
@@ -156,21 +107,63 @@ import EditApplicaiton from "./Edit/EditApplicaiton"
     },
     components: {
         CreateApplication,
-        EditApplicaiton
+        EditApplicaiton,
+        SeeApplicaiton
     },
     methods: {
         AddApplication(){
             this.$store.state.M_CreateApplication = true
         },
+        //查询
+        ChangeKeyword(){
+            if(this.A_keyword == ''){
+                this.GetApplication()
+            }else{
+                return false
+            }
+
+        },
+        Refresh(){
+            this.GetApplication()
+        },
+        SearchAppliction(){
+            let Keywords = {
+                userid:this.ID,
+                apply_name:this.A_keyword
+            }
+            let DATA = {'users':Keywords}
+            axios.post(R_PRE_URL+'mohuselectapply',DATA
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.ApplicationList = res.data.applylist
+                  break
+                  case 0:
+                  this.$Message.error('获取应用列表失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
+            }).catch((error)=> {
+                console.log(error)
+            })
+        },
         Detail_A(Idx){
             let Info = this.ApplicationList[Idx]
-            this.formEdit.A_kind = Info.apply_type
-            this.formEdit.A_name = Info.apply_name
-            this.formEdit.A_introduction = Info.apply_introduction
-            this.formEdit.A_img = Info.apply_icon
-            this.formEdit.A_android = Info.android_name
-            this.formEdit.A_ios = Info.ios_name
-            this.ImgSource = Info.apply_icon
+            this.DetailInfo = Info
+            this.$store.state.M_SeeApplication = true
+        },
+        Modify_A(Idx){
+             let Info = this.ApplicationList[Idx]
+            // this.formEdit.A_kind = Info.apply_type
+            // this.formEdit.A_name = Info.apply_name
+            // this.formEdit.A_introduction = Info.apply_introduction
+            // this.formEdit.A_img = Info.apply_icon
+            // this.formEdit.A_android = Info.android_name
+            // this.formEdit.A_ios = Info.ios_name
+            // this.ImgSource = Info.apply_icon
+            this.EditInfo = Info
             this.$store.state.M_EditApplication = true
         },
         // GetApplicationInfo(){

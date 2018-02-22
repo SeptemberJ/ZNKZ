@@ -3,43 +3,38 @@
     <Modal v-model="ifShowModal" width="600" :mask-closable="false">
         <p slot="header">
             <Icon type="information-circled"></Icon>
-            <span>创建新产品</span>
+            <span>修改产品信息</span>
         </p>
         <div style="">
             <Form ref="formCreate" :model="formCreate" :rules="ruleCreate"  label-position="left" :label-width="100">
-                <FormItem label="所属应用" prop="P_belongKind">
-                    <Select v-model="formCreate.P_belongKind" placeholder="请选择所属应用">
-                        <Option value="声控开关">声控开关</Option>
-                        <Option value="门禁系统">门禁系统</Option>
+                <FormItem label="所属应用">
+                    <Select v-model="P_belongKind" disabled placeholder="请选择所属应用">
+                        <Option v-for="item in ApplicationList" :value="item.id" :key="item.id">{{ item.apply_name }}</Option>
                     </Select>
+                </Select>
                 </FormItem>
                 <FormItem label="产品名称" prop="P_name"  placeholder="请输入产品名称">
                     <Input v-model="formCreate.P_name"></Input>
                 </FormItem>
                 <FormItem label="设备类别" prop="P_kind">
                     <Select v-model="formCreate.P_kind" placeholder="请选择设备类别">
-                        <Option value="安防硬件">安防硬件</Option>
-                        <Option value="办公设备">办公设备</Option>
+                        <Option v-for="item in EquipmentKinds" :value="item.typename" >{{ item.typename }}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="WiFi模块" prop="P_wifi">
                     <Select v-model="formCreate.P_wifi" placeholder="请选择WiFi模块">
-                        <Option value="汉枫LPB100">汉枫LPB100</Option>
-                        <Option value="LPT220">LPT220</Option>
+                        <Option v-for="item in WifiModules" :value="item.typename" >{{ item.typename }}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="技术方案" prop="P_programme">
                     <RadioGroup v-model="formCreate.P_programme">
-                        <Radio label="WiFi"></Radio>
-                        <Radio label="ZigBee"></Radio>
-                        <Radio label="蓝牙"></Radio>
-                        <Radio label="2/3/4g"></Radio>
+                        <Radio v-for="item in technologyProgrammes" :label="item.typename"></Radio>
                     </RadioGroup>
                 </FormItem>
                 <FormItem label="应用图标" prop="A_img">
                     <div class="demo-upload-list">
                         <template>
-                            <img :src="formCreate.P_img?formCreate.P_img:'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'">
+                            <img :src="formCreate.P_img?formCreate.P_img:'/static/img/icon/application.png'">
                         </template>
                     </div>
                     <Upload
@@ -66,14 +61,17 @@
         
 </template>
 <script>
-
+import Vue from 'vue'
+import axios from 'axios'
   export default{
-    props:['OriginType'],
+    props:['EditInfo'],
     data: function () {
       return {
         modal_loading:false,
+        EquipmentKinds:[],
+        WifiModules:[],
+        technologyProgrammes:[],
         formCreate:{
-            P_belongKind:'',
             P_name:'',
             P_kind:'',
             P_wifi:'',
@@ -81,9 +79,6 @@
             P_img:''
         },
         ruleCreate: {
-            P_belongKind: [
-                { required: true, message: '请选择所属应用', trigger: 'change' }
-            ],
             P_name: [
                 { required: true, message: '产品名称不能为空', trigger: 'blur' }
             ],
@@ -103,6 +98,9 @@
       
     },
     created() {
+        this.GetEquipmentKinds()  
+        this.GetWifiModules()  
+        this.GettechnologyProgrammes()
       
     },
     computed: {
@@ -112,12 +110,23 @@
         },
         ifShowModal: {
             get: function () {
-              return this.$store.state.M_CreateProduction
+              return this.$store.state.M_EditProduction
             },
             set: function (newValue) {
-              this.$store.state.M_CreateProduction = false
+              this.$store.state.M_EditProduction = false
             }
         },
+        ApplicationList(){
+            return this.Applications
+        },
+        P_belongKind: {
+            get: function () {
+              return this.CurApplication
+            },
+            set: function (newValue) {
+              this.CurApplication = newValue
+            }
+        }
       
     },
     watch: {
@@ -126,6 +135,64 @@
     components: {
     },
     methods: {
+        //获取设备类别
+        GetEquipmentKinds(){
+            axios.post(R_PRE_URL+'selectsblb'
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.EquipmentKinds = res.data.sblblist
+                  break
+                  case 0:
+                  this.$Message.error('获取设备类别失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
+            }).catch((error)=> {
+                console.log(error)
+            })
+        },
+        //获取wifi模块
+        GetWifiModules(){
+            axios.post(R_PRE_URL+'selectWiFimk'
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.WifiModules = res.data.WiFimklist
+                  break
+                  case 0:
+                  this.$Message.error('获取Wifi模块失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
+            }).catch((error)=> {
+                console.log(error)
+            })
+        },
+        //获取技术方案
+        GettechnologyProgrammes(){
+            axios.post(R_PRE_URL+'selectjsfa'
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.technologyProgrammes = res.data.jsfalist
+                  this.formCreate.P_programme = res.data.jsfalist[0].typename
+                  break
+                  case 0:
+                  this.$Message.error('获取技术方案失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
+            }).catch((error)=> {
+                console.log(error)
+            })
+        },
         handleFormatError (file) {
             this.$Notice.warning({
                 title: '提示',
@@ -145,27 +212,33 @@
             var reader = new FileReader();   
             reader.readAsDataURL(file);   
             reader.onload = function(e){
-              _this.formCreate.A_img = this.result
+              _this.formCreate.P_img = this.result
             } 
         },
         handleCreate (name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
+                    //let App_id = this.Applications.filter(item => item.id == this.CurApplication)[0].id
                     let CreatInfo = {
-                      app_id:this.formCreate.P_belongKind,
+                      applyid:this.CurApplication,
                       product_name:this.formCreate.P_name,
                       product_kind:this.formCreate.P_kind,
                       WiFi_module:this.formCreate.P_wifi,
                       Technical_scheme:this.formCreate.P_programme,
-                      product_pic:this.formCreate.P_img
+                      product_pic:this.formCreate.P_img,
+                      //apply_type:this.P_belongKind
                     }
-                    this.modal_loading = true
+                    //this.modal_loading = true
                     let DATA = {'users':CreatInfo}
                     axios.post(R_PRE_URL+'insertproducts',DATA
                     ).then((res)=> {
                         switch(res.data.result){
                           case 1:
                           this.$Message.success('创建新产品成功!')
+                          this.modal_loading = false
+                          break
+                          case 2:
+                          this.$Message.error('该产品名称已已存在!')
                           this.modal_loading = false
                           break
                           case 0:

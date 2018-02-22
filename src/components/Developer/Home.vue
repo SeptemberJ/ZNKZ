@@ -18,7 +18,8 @@
     </div>
 </template>
 <script>
-
+import Vue from 'vue'
+import axios from 'axios'
   export default{
     data: function () {
       return {
@@ -56,29 +57,29 @@
                             },
                             style: {
                                 //marginRight: '20px',
-                                display:this.DownData[params.index].kind == 'ck'?'':'none'
+                                display:this.DownData[params.index].lianjie != ''?'':'none'
                             },
                             on: {
                                 click: () => {
-                                    this.show(params.index)
+                                    this.show(this.DownData[params.index].lianjie)
                                 }
                             }
                         }, '查看'),
-                        h('Button', {
-                            props: {
-                                type: 'error',
-                                icon:'archive'
-                            },
-                            style: {
-                                //marginRight: '20px',
-                                display:this.DownData[params.index].kind == 'xz'?'':'none'
-                            },
-                            on: {
-                                click: () => {
-                                    this.remove(params.index)
-                                }
-                            }
-                        }, '下载'),
+                        // h('Button', {
+                        //     props: {
+                        //         type: 'error',
+                        //         icon:'archive'
+                        //     },
+                        //     style: {
+                        //         //marginRight: '20px',
+                        //         display:this.DownData[params.index].kind == 'xz'?'':'none'
+                        //     },
+                        //     on: {
+                        //         click: () => {
+                        //             this.remove(params.index)
+                        //         }
+                        //     }
+                        // }, '下载'),
                         h('Button', {
                             props: {
                                 type: 'text',
@@ -86,7 +87,7 @@
                             },
                             style: {
                                 //marginRight: '20px',
-                                display:this.DownData[params.index].kind == 'wait'?'':'none'
+                                display:this.DownData[params.index].lianjie == ''?'':'none'
                             },
                             on: {
                                 click: () => {
@@ -99,46 +100,14 @@
             }
         ],
         DownData: [
-            {
-                name: '开发文档浏览',
-                kind:'ck'
-            },
-            {
-                name: 'Android SDK下载',
-                kind:'xz'
-            },
-            {
-                name: 'iOS SDK下载',
-                kind:'xz'
-            },
-            {
-                name: '硬件模拟器',
-                kind:'xz'
-            },
-            {
-                name: '硬件SDK下载',
-                kind:'wait'
-            },
-            {
-                name: 'Android调试APP',
-                kind:'ck'
-            },
-            {
-                name: 'iOS调试APP',
-                kind:'ck'
-            },
-            {
-                name: '产测工具',
-                kind:'wait'
-            }
         ]
       }
     },
     mounted: function () {
       
     },
-    created: function () {
-      
+    created() {
+      this.GetGuideFile()
     },
     computed: {
       
@@ -149,6 +118,19 @@
     components: {
     },
     methods: {
+        GetGuideFile(KIND){
+            axios.post(R_PRE_URL + 'selectdevelopment'
+              ).then((res)=> {
+                this.DownData = res.data.info.overview
+            }).catch((error)=> {
+              console.log(error)
+            })
+        },
+        //查看指南
+        show(LINK){
+            window.open(LINK)
+
+        }
      
 
     }

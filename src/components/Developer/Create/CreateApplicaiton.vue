@@ -23,7 +23,7 @@
                 <FormItem label="应用图标" prop="A_img">
                     <div class="demo-upload-list">
                         <template>
-                            <img :src="formCreate.A_img?formCreate.A_img:'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'">
+                            <img :src="formCreate.A_img?formCreate.A_img:'/static/img/icon/application.png'">
                         </template>
                     </div>
                     <Upload
@@ -151,6 +151,11 @@ import CryptoJS from "crypto-js"
                           case 1:
                           this.$Message.success('创建成功!')
                           this.$store.state.M_CreateApplication = false
+                          this.modal_loading = false
+                          this.$emit('refreshApplication')
+                          break
+                          case 2:
+                          this.$Message.error('应用名称重复!')
                           this.modal_loading = false
                           break
                           case 0:

@@ -33,6 +33,11 @@ const store = new Vuex.Store({
     M_EditProduction:false,
     M_EditAgreement:false,
     M_EditWarning:false,
+    M_SeeApplication:false,
+    M_SeeProduction:false,
+    M_SeeAgreement:false,
+    M_SeeWarning:false,
+
     // newsKind:'1',
     // newsPage:1,
     // isMobile:'',

@@ -7,8 +7,8 @@
             </Col>
             <Col span="20" class="TextRight">
                 当前应用：
-                <Select v-model="CurApplication" style="width:250px;text-align: left">
-                    <Option v-for="item in ApplicationList" :value="item.value" :key="item.value">{{ item.name }}</Option>
+                <Select v-model="CurApplication" @on-change="ChangeCurApplication" style="width:250px;text-align: left">
+                    <Option v-for="item in ApplicationList" :value="item.id" :key="item.id">{{ item.apply_name }}</Option>
                 </Select>
             </Col>
         </Row>
@@ -19,7 +19,9 @@
             <Page class="marginT_20 marginB_150" :total="Total" show-total style="float: right;" :current="page_num" @on-change="changePage" @on-page-size-change="changePageSize" show-sizer></Page>
         </div>
         <!-- 创建新产品 -->
-        <CreateProduction :OriginType="0"/>
+        <CreateProduction :CurApplication="CurApplication"  :Applications="ApplicationList"/>
+        <!-- 编辑产品信息 -->
+        <EditProduction :EditInfo="EditInfo"/>
     </div>
 </template>
 <script>
@@ -27,6 +29,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import CryptoJS from "crypto-js"
 import CreateProduction from "./Create/CreateProduction"
+import EditProduction from "./Edit/EditProduction"
   export default{
     data: function () {
       return {
@@ -34,10 +37,7 @@ import CreateProduction from "./Create/CreateProduction"
         Total:10,
         page_num:1,  //页数
         number:10,   //每页条数
-        ApplicationList:[
-            {name:'声控开关',value:'声控开关'},
-            {name:'门禁系统',value:'门禁系统'},
-        ],
+        ApplicationList:[],
         ProductionColumns: [
             {
                 type: 'index',
@@ -47,12 +47,12 @@ import CreateProduction from "./Create/CreateProduction"
             {
                 title: '产品图片',
                 width: 90,
-                key: 'P_img',
+                key: 'product_pic',
                 render: (h, params) => {
                     return h('div', [
                         h('img', {
                             attrs: {
-                                src: 'https://i.loli.net/2017/08/21/599a521472424.jpg',//params.row.headimg,
+                                src: '/static/img/icon/application.png',//params.row.headimg,
                                 style: 'width: 40px;height: 40px;border-radius: 2px;margin: 10px auto'
                             },
                         }),
@@ -61,23 +61,23 @@ import CreateProduction from "./Create/CreateProduction"
             },
             {
                 title: '产品名称',
-                key: 'P_name'
+                key: 'product_name'
             },
             {
                 title: '产品ID',
-                key: 'P_id'
+                key: 'id'
             },
             {
                 title: '所属应用',
-                key: 'P_belongApplicaiton'
+                key: 'apply_type'
             },
             {
                 title: '设备类别',
-                key: 'P_kind'
+                key: 'product_kind'
             },
             {
                 title: 'WIFI模块',
-                key: 'P_wifi'
+                key: 'wifi_module'
             },
             {
                 title: '操作',
@@ -97,7 +97,7 @@ import CreateProduction from "./Create/CreateProduction"
                             },
                             on: {
                                 click: () => {
-                                    this.show(params.index)
+                                    this.EditProduction(params.index)
                                 }
                             }
                         }, '查看'),
@@ -111,7 +111,7 @@ import CreateProduction from "./Create/CreateProduction"
                             },
                             on: {
                                 click: () => {
-                                    this.remove(params.index)
+                                    this.removeProduction(params.index)
                                 }
                             }
                         }, '删除')
@@ -119,23 +119,14 @@ import CreateProduction from "./Create/CreateProduction"
                 }
             }
         ],
-        ProductionData: [
-            {
-                P_img: '',
-                P_name:'开发调试用硬件开发调试用硬件',
-                P_id:'22',
-                P_belongApplicaiton:'33',
-                P_kind:'44',
-                P_wifi:'55'
-            },
-            
-        ]
+        ProductionData: []
       }
     },
     mounted() {
       
     },
     created() {
+        this.GetApplication()
       
     },
     computed: {
@@ -149,14 +140,56 @@ import CreateProduction from "./Create/CreateProduction"
       
     },
     components: {
-        CreateProduction
+        CreateProduction,
+        EditProduction
     },
     methods: {
-        //查询所有应用
+        //切换当前应用
+        ChangeCurApplication(){
+            this.GetProduction()
+        },
+        //获取所有应用
         GetApplication(){
             axios.get(R_PRE_URL+'selectallapply?userid='+this.ID
             ).then((res)=> {
-
+                switch(res.data.result){
+                  case 1:
+                  this.CurApplication = res.data.applylist[0].id
+                  this.ApplicationList = res.data.applylist
+                  this.GetProduction()
+                  break
+                  case 0:
+                  this.$Message.error('获取应用列表失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
+            }).catch((error)=> {
+                console.log(error)
+            })
+        },
+        //获取对应产品列表
+        GetProduction(){
+            let info = {
+                applyid:this.CurApplication,
+                page:this.page_num,
+                number:20//this.number
+            }
+            let DATA = {'users':info}
+            axios.post(R_PRE_URL+'selectproducts',DATA
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.ProductionData = res.data.productlist
+                  break
+                  case 0:
+                  this.$Message.error('获取产品列表失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
             }).catch((error)=> {
                 console.log(error)
             })
@@ -167,13 +200,18 @@ import CreateProduction from "./Create/CreateProduction"
         //分页
         changePage(event){
           this.page_num = event
-          //this.getDataOrder()
+          this.GetProduction()
         },
         //切换每页条数
         changePageSize(event){
           this.number = event
-          //this.getDataOrder()
+          this.GetProduction()
         },
+        //编辑产品信息
+        EditProduction(IDX){
+            this.EditInfo = this.ProductionData[IDX]
+            this.$store.state.M_EditProduction = true
+        }
      
 
     }
