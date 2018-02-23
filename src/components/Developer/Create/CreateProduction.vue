@@ -236,6 +236,8 @@ import axios from 'axios'
                           case 1:
                           this.$Message.success('创建新产品成功!')
                           this.modal_loading = false
+                          this.$store.state.M_CreateProduction = false
+                          this.$emit('refreshApplication')
                           break
                           case 2:
                           this.$Message.error('该产品名称已已存在!')

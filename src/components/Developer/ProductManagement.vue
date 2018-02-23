@@ -15,13 +15,13 @@
         <!-- 产品列表 -->
         <h2>产品列表</h2>
         <div  class="BlockWrap marginTB_20">
-            <Table border :columns="ProductionColumns" :data="ProductionData"></Table>
-            <Page class="marginT_20 marginB_150" :total="Total" show-total style="float: right;" :current="page_num" @on-change="changePage" @on-page-size-change="changePageSize" show-sizer></Page>
+            <Table border :loading="table_loading" :columns="ProductionColumns" :data="ProductionData"></Table>
+            <Page  v-if="Total>0" class="marginT_20 marginB_150" :total="Total" show-total style="float: right;" :current="page_num" @on-change="changePage" @on-page-size-change="changePageSize" show-sizer></Page>
         </div>
         <!-- 创建新产品 -->
-        <CreateProduction :CurApplication="CurApplication"  :Applications="ApplicationList"/>
+        <CreateProduction :CurApplication="CurApplication"  :Applications="ApplicationList" v-on:refreshApplication="Refresh"/>
         <!-- 编辑产品信息 -->
-        <EditProduction :EditInfo="EditInfo"/>
+        <EditProduction :EditInfo="EditInfo" :CurApplication="CurApplication" :Applications="ApplicationList" v-on:refreshApplication="Refresh"/>
     </div>
 </template>
 <script>
@@ -33,7 +33,8 @@ import EditProduction from "./Edit/EditProduction"
   export default{
     data: function () {
       return {
-        CurApplication:'',
+        table_loading:true,
+        EditInfo:'',
         Total:10,
         page_num:1,  //页数
         number:10,   //每页条数
@@ -111,7 +112,7 @@ import EditProduction from "./Edit/EditProduction"
                             },
                             on: {
                                 click: () => {
-                                    this.removeProduction(params.index)
+                                    this.removeProduction(params.row.id)
                                 }
                             }
                         }, '删除')
@@ -134,6 +135,14 @@ import EditProduction from "./Edit/EditProduction"
             let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
             return ID
         },
+        CurApplication: {
+            get: function () {
+              return this.$store.state.CurApplication
+            },
+            set: function (newValue) {
+              this.$store.state.CurApplication = newValue
+            }
+        },
       
     },
     watch: {
@@ -154,7 +163,7 @@ import EditProduction from "./Edit/EditProduction"
             ).then((res)=> {
                 switch(res.data.result){
                   case 1:
-                  this.CurApplication = res.data.applylist[0].id
+                  this.CurApplication = this.$store.state.CurApplication == ''?res.data.applylist[0].id:this.$store.state.CurApplication
                   this.ApplicationList = res.data.applylist
                   this.GetProduction()
                   break
@@ -174,7 +183,7 @@ import EditProduction from "./Edit/EditProduction"
             let info = {
                 applyid:this.CurApplication,
                 page:this.page_num,
-                number:20//this.number
+                number:this.number
             }
             let DATA = {'users':info}
             axios.post(R_PRE_URL+'selectproducts',DATA
@@ -182,6 +191,8 @@ import EditProduction from "./Edit/EditProduction"
                 switch(res.data.result){
                   case 1:
                   this.ProductionData = res.data.productlist
+                  this.Total = res.data.sunmun
+                  this.table_loading = false
                   break
                   case 0:
                   this.$Message.error('获取产品列表失败!')
@@ -211,7 +222,41 @@ import EditProduction from "./Edit/EditProduction"
         EditProduction(IDX){
             this.EditInfo = this.ProductionData[IDX]
             this.$store.state.M_EditProduction = true
-        }
+        },
+        //删除产品
+        removeProduction(ID){
+            this.$Modal.confirm({
+                title: '删除提醒',
+                content: '<p>确定删除该产品？</p>',
+                onOk: () => {
+                    axios.get(R_PRE_URL+'deleteproducts?id=' + ID
+                    ).then((res)=> {
+                        switch(res.data.result){
+                          case 1:
+                          this.$Message.success('产品删除成功!')
+                          this.Refresh()
+                          break
+                          case 0:
+                          this.$Message.error('产品删除失败!')
+                          break
+                          default:
+                          this.$Message.error('系统繁忙!')
+                          this.modal_loading = false
+                        }
+                    }).catch((error)=> {
+                        console.log(error)
+                        this.$Message.error('系统繁忙!')
+                        this.modal_loading = false
+                    })
+                },
+                onCancel: () => {
+                    //this.$Message.info('Clicked cancel');
+                }
+            })
+        },
+        Refresh(){
+            this.GetProduction()
+        },
      
 
     }

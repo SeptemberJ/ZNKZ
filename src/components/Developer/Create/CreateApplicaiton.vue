@@ -150,8 +150,8 @@ import CryptoJS from "crypto-js"
                         switch(res.data.result){
                           case 1:
                           this.$Message.success('创建成功!')
-                          this.$store.state.M_CreateApplication = false
                           this.modal_loading = false
+                          this.$store.state.M_CreateApplication = false
                           this.$emit('refreshApplication')
                           break
                           case 2:
@@ -168,6 +168,8 @@ import CryptoJS from "crypto-js"
                         }
                     }).catch((error)=> {
                         console.log(error)
+                        this.$Message.error('系统繁忙，创建应用失败!')
+                        this.modal_loading = false
                     })
                     
                 } else {

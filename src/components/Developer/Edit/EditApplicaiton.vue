@@ -185,18 +185,19 @@ import CryptoJS from "crypto-js"
                       Android_name:this.formEdit.A_android,
                       ios_name:this.formEdit.A_ios
                     }
-                    //this.modal_loading = true
+                    this.modal_loading = true
                     let DATA = {'users':CreatInfo}
                     axios.post(R_PRE_URL+'updateapply',DATA
                     ).then((res)=> {
                         switch(res.data.result){
                           case 1:
-                          this.$Message.success('保存成功!')
+                          this.$Message.success('应用信息修改成功!')
                           this.$store.state.M_EditApplication = false
                           this.modal_loading = false
+                          this.$emit('refreshApplication')
                           break
                           case 0:
-                          this.$Message.error('保存失败!')
+                          this.$Message.error('应用信息修改失败!')
                           this.modal_loading = false
                           break
                           default:
@@ -205,6 +206,8 @@ import CryptoJS from "crypto-js"
                         }
                     }).catch((error)=> {
                         console.log(error)
+                        this.$Message.error('系统繁忙，应用信息修改失败!')
+                        this.modal_loading = false
                     })
                     
                 } else {

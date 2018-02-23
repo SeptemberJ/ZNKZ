@@ -3,10 +3,10 @@
     <Modal v-model="ifShowModal" width="700" :mask-closable="false">
         <p slot="header">
             <Icon type="information-circled"></Icon>
-            <span>创建新协议</span>
+            <span>编辑协议信息</span>
         </p>
         <div style="">
-            <Form ref="formCreate" :model="formCreate" :rules="ruleCreate"  label-position="left" :label-width="100">
+            <Form ref="formEdit" :model="formEdit" :rules="ruleCreate"  label-position="left" :label-width="100">
                 <Tag type="dot" color="yellow">协议信息</Tag>
                 <FormItem label="所属产品">
                     <Select v-model="P_belongKind" disabled placeholder="请选择应用类别">
@@ -14,99 +14,99 @@
                     </Select>
                 </FormItem>
                 <FormItem label="协议名称" prop="Agm_name">
-                    <Input v-model="formCreate.Agm_name"></Input>
+                    <Input v-model="formEdit.Agm_name"></Input>
                 </FormItem>
                 <FormItem label="双向/单向" prop="Agm_T2I">
-                    <RadioGroup v-model="formCreate.Agm_T2I">
-                        <Radio label="双向指令"></Radio>
-                        <Radio label="下发指令"></Radio>
-                        <Radio label="上报指令"></Radio>
+                    <RadioGroup v-model="formEdit.Agm_T2I">
+                        <Radio label="双向指令" disabled></Radio>
+                        <Radio label="下发指令" disabled></Radio>
+                        <Radio label="上报指令" disabled></Radio>
                     </RadioGroup>
                 </FormItem>
 
-                <Row v-if="formCreate.Agm_T2I == '双向指令'">
+                <Row v-if="formEdit.Agm_T2I == '双向指令'">
                     <Col span="10">
                         <Tag type="dot" color="yellow">下发设备</Tag>
                         <FormItem label="功能码" prop="Agr_functionCode_D">
-                            <Input v-model="formCreate.Agr_functionCode_D" placeholder='（格式为10xx）'></Input>
+                            <Input disabled v-model="formEdit.Agr_functionCode_D" placeholder='（格式为10xx）'></Input>
                         </FormItem>
                         <FormItem label="数据类型" prop="Agr_dataType_D">
-                            <Select v-model="formCreate.Agr_dataType_D">
+                            <Select v-model="formEdit.Agr_dataType_D">
                                 <Option v-for="item in dataTypeList" :value="item.typename" :key="item.typename">{{ item.typename }}</Option>
                             </Select>
                         </FormItem>
                         <FormItem label="字节数" prop="Agr_byte_D">
-                            <Input v-model="formCreate.Agr_byte_D" placeholder='请填写字节数'></Input>
+                            <Input disabled v-model="formEdit.Agr_byte_D" placeholder='请填写字节数'></Input>
                         </FormItem>
                         <FormItem label="单位符号" prop="Agr_unitSymbol_D">
-                            <Input v-model="formCreate.Agr_unitSymbol_D"  placeholder='请填写单位符号'></Input>
+                            <Input v-model="formEdit.Agr_unitSymbol_D"  placeholder='请填写单位符号'></Input>
                         </FormItem>
                         <FormItem label="描述" prop="Agr_describe_D">
-                            <Input type="textarea" :autosize="true" :maxlength='100' v-model="formCreate.Agr_describe_D" placeholder='请输入协议说明（100字以内）...'></Input>
+                            <Input type="textarea" :autosize="true" :maxlength='100' v-model="formEdit.Agr_describe_D" placeholder='请输入协议说明（100字以内）...'></Input>
                         </FormItem>
                     </Col>
                     <Col span="10" offset="4">
                         <Tag type="dot" color="yellow">设备上报</Tag>
                         <FormItem label="功能码" prop="Agr_functionCode_U">
-                            <Input v-model="formCreate.Agr_functionCode_U"  placeholder='（格式为18xx）'></Input>
+                            <Input disabled v-model="formEdit.Agr_functionCode_U"  placeholder='（格式为18xx）'></Input>
                         </FormItem>
                         <FormItem label="数据类型" prop="Agr_dataType_U">
-                            <Select v-model="formCreate.Agr_dataType_U">
+                            <Select v-model="formEdit.Agr_dataType_U">
                                 <Option v-for="item in dataTypeList" :value="item.typename" :key="item.typename">{{ item.typename }}</Option>
                             </Select>
                         </FormItem>
                         <FormItem label="字节数" prop="Agr_byte_U">
-                            <Input v-model="formCreate.Agr_byte_U" placeholder='请填写字节数'></Input>
+                            <Input disabled v-model="formEdit.Agr_byte_U" placeholder='请填写字节数'></Input>
                         </FormItem>
                         <FormItem label="单位符号" prop="Agr_unitSymbol_U">
-                            <Input v-model="formCreate.Agr_unitSymbol_U" placeholder='请填写单位符号'></Input>
+                            <Input v-model="formEdit.Agr_unitSymbol_U" placeholder='请填写单位符号'></Input>
                         </FormItem>
                         <FormItem label="描述" prop="Agr_describe_U">
-                            <Input type="textarea" :autosize="true" :maxlength='100' v-model="formCreate.Agr_describe_U" placeholder='请输入协议说明（100字以内）...'></Input>
+                            <Input type="textarea" :autosize="true" :maxlength='100' v-model="formEdit.Agr_describe_U" placeholder='请输入协议说明（100字以内）...'></Input>
                         </FormItem>
                     </Col>
                 </Row>
-                <Row v-if="formCreate.Agm_T2I == '下发指令'">
+                <Row v-if="formEdit.Agm_T2I == '下发指令'">
                     <Col span="12">
                         <Tag type="dot" color="yellow">下发设备</Tag>
                         <FormItem label="功能码" prop="Agr_functionCode_D">
-                            <Input v-model="formCreate.Agr_functionCode_D" placeholder='（格式为10xx）'></Input>
+                            <Input disabled v-model="formEdit.Agr_functionCode_D" placeholder='（格式为10xx）'></Input>
                         </FormItem>
                         <FormItem label="数据类型" prop="Agr_dataType_D">
-                            <Select v-model="formCreate.Agr_dataType_D">
+                            <Select v-model="formEdit.Agr_dataType_D">
                                 <Option v-for="item in dataTypeList" :value="item.typename" :key="item.typename">{{ item.typename }}</Option>
                             </Select>
                         </FormItem>
                         <FormItem label="字节数" prop="Agr_byte_D">
-                            <Input v-model="formCreate.Agr_byte_D" placeholder='请填写字节数'></Input>
+                            <Input disabled v-model="formEdit.Agr_byte_D" placeholder='请填写字节数'></Input>
                         </FormItem>
                         <FormItem label="单位符号" prop="Agr_unitSymbol_D">
-                            <Input v-model="formCreate.Agr_unitSymbol_D"  placeholder='请填写单位符号'></Input>
+                            <Input v-model="formEdit.Agr_unitSymbol_D"  placeholder='请填写单位符号'></Input>
                         </FormItem>
                         <FormItem label="描述" prop="Agr_describe_D">
-                            <Input type="textarea" :autosize="true" :maxlength='100' v-model="formCreate.Agr_describe_D" placeholder='请输入协议说明（100字以内）...'></Input>
+                            <Input type="textarea" :autosize="true" :maxlength='100' v-model="formEdit.Agr_describe_D" placeholder='请输入协议说明（100字以内）...'></Input>
                         </FormItem>
                     </Col>
                 </Row>
-                <Row v-if="formCreate.Agm_T2I == '上报指令'">
+                <Row v-if="formEdit.Agm_T2I == '上报指令'">
                     <Col span="12">
                         <Tag type="dot" color="yellow">设备上报</Tag>
                         <FormItem label="功能码" prop="Agr_functionCode_U">
-                            <Input v-model="formCreate.Agr_functionCode_U"  placeholder='（格式为18xx）'></Input>
+                            <Input disabled v-model="formEdit.Agr_functionCode_U"  placeholder='（格式为18xx）'></Input>
                         </FormItem>
                         <FormItem label="数据类型" prop="Agr_dataType_U">
-                            <Select v-model="formCreate.Agr_dataType_U">
+                            <Select v-model="formEdit.Agr_dataType_U">
                                 <Option v-for="item in dataTypeList" :value="item.typename" :key="item.typename">{{ item.typename }}</Option>
                             </Select>
                         </FormItem>
                         <FormItem label="字节数" prop="Agr_byte_U">
-                            <Input v-model="formCreate.Agr_byte_U" placeholder='请填写字节数'></Input>
+                            <Input disabled v-model="formEdit.Agr_byte_U" placeholder='请填写字节数'></Input>
                         </FormItem>
                         <FormItem label="单位符号" prop="Agr_unitSymbol_U">
-                            <Input v-model="formCreate.Agr_unitSymbol_U" placeholder='请填写单位符号'></Input>
+                            <Input v-model="formEdit.Agr_unitSymbol_U" placeholder='请填写单位符号'></Input>
                         </FormItem>
                         <FormItem label="描述" prop="Agr_describe_U">
-                            <Input type="textarea" :autosize="true" :maxlength='100' v-model="formCreate.Agr_describe_U" placeholder='请输入协议说明（100字以内）...'></Input>
+                            <Input type="textarea" :autosize="true" :maxlength='100' v-model="formEdit.Agr_describe_U" placeholder='请输入协议说明（100字以内）...'></Input>
                         </FormItem>
                     </Col>
                 </Row>
@@ -115,7 +115,7 @@
             </Form>
         </div>
         <div slot="footer" style="text-align:center">
-            <Button type="error" size="large" :loading="modal_loading" @click="handleCreate('formCreate')">确定创建</Button>
+            <Button type="error" size="large" :loading="modal_loading" @click="handleEdit('formEdit')">确定创建</Button>
             <Button type="primary" size="large"  @click="Next()">下一步</Button>
         </div>
     </Modal>
@@ -126,93 +126,31 @@ import Vue from 'vue'
 import axios from 'axios'
 import CryptoJS from "crypto-js"
   export default{
-    props:['CurProduction','Productions'],
+    props:['EditInfo','CurProduction','Productions'],
     data: function () {
-        //验证
-        const validateAgr_functionCode_U = (rule, value, callback) => {
-            if (value === '' && this.formCreate.Agm_T2I!='下发指令') {
-                callback(new Error('请输入功能码'));
-            }else{
-                callback();
-            }
-        };
-        const validateAgr_dataType_U = (rule, value, callback) => {
-            if (value === '' && this.formCreate.Agm_T2I!='下发指令') {
-                callback(new Error('请选择数据类型'));
-            }else{
-                callback();
-            }
-        };
-        const validateAgr_byte_U = (rule, value, callback) => {
-            if (value === '' && this.formCreate.Agm_T2I!='下发指令') {
-                callback(new Error('请选择数据类型'));
-            }else{
-                callback();
-            }
-        };
-        const validateAgr_functionCode_D = (rule, value, callback) => {
-            if (value === '' && this.formCreate.Agm_T2I!='上发指令') {
-                callback(new Error('请输入功能码'));
-            }else{
-                callback();
-            }
-        };
-        const validateAgr_dataType_D = (rule, value, callback) => {
-            if (value === '' && this.formCreate.Agm_T2I!='上发指令') {
-                callback(new Error('请选择数据类型'));
-            }else{
-                callback();
-            }
-        };
-        const validateAgr_byte_D = (rule, value, callback) => {
-            if (value === '' && this.formCreate.Agm_T2I!='上发指令') {
-                callback(new Error('请选择数据类型'));
-            }else{
-                callback();
-            }
-        };
       return {
         modal_loading:false,
-        formCreate:{
-            Agm_name:'',
-            Agm_T2I:'双向指令',
-            Agr_functionCode_U:'',
-            Agr_dataType_U:'',
-            Agr_byte_U:'',
-            Agr_unitSymbol_U:'',
-            Agr_describe_U:'',
-            Agr_functionCode_D:'',
-            Agr_dataType_D:'',
-            Agr_byte_D:'',
-            Agr_unitSymbol_D:'',
-            Agr_describe_D:'',
-        },
+        // formEdit:{
+        //     Agm_name:'',
+        //     Agm_T2I:'双向指令',
+        //     Agr_functionCode_U:'',
+        //     Agr_dataType_U:'',
+        //     Agr_byte_U:'',
+        //     Agr_unitSymbol_U:'',
+        //     Agr_describe_U:'',
+        //     Agr_functionCode_D:'',
+        //     Agr_dataType_D:'',
+        //     Agr_byte_D:'',
+        //     Agr_unitSymbol_D:'',
+        //     Agr_describe_D:'',
+        // },
         ruleCreate: {
-            Agm_name: [
-                { required: true, message: '请填写协议名称', trigger: 'blur' }
+            A_kind: [
+                { required: true, message: '请选择应用类别', trigger: 'change' }
             ],
-            Agm_T2I: [
-                { required: true, message: '', trigger: 'change' }
+            A_name: [
+                { required: true, message: '应用名称不能为空', trigger: 'blur' }
             ],
-            Agr_functionCode_U:[
-                { validator: validateAgr_functionCode_U, message: '请输入功能码', trigger: 'blur' }
-            ],
-            Agr_dataType_U:[
-                { validator: validateAgr_dataType_U, message: '请选择数据类型', trigger: 'change' }
-            ],
-            Agr_byte_U:[
-                { validator: validateAgr_byte_U, message: '请输入字节数', trigger: 'blur' }
-            ],
-            Agr_functionCode_D:[
-                { validator: validateAgr_functionCode_D, message: '请输入功能码', trigger: 'blur' }
-            ],
-            Agr_dataType_D:[
-                { validator: validateAgr_dataType_D, message: '请选择数据类型', trigger: 'change' }
-            ],
-            Agr_byte_D:[
-                { validator: validateAgr_byte_D, message: '请输入字节数', trigger: 'blur' }
-            ],
-            
         },
         dataTypeList:[]
       }
@@ -231,10 +169,10 @@ import CryptoJS from "crypto-js"
         },
         ifShowModal: {
             get: function () {
-              return this.$store.state.M_CreateAgreement
+              return this.$store.state.M_EditAgreement
             },
             set: function (newValue) {
-              this.$store.state.M_CreateAgreement = false
+              this.$store.state.M_EditAgreement = false
             }
         },
         ProductionList(){
@@ -247,6 +185,23 @@ import CryptoJS from "crypto-js"
             set: function (newValue) {
               this.CurProduction = newValue
             }
+        },
+        formEdit(){
+            let Info = {
+                Agm_name:this.EditInfo.agreement_name,
+                Agm_T2I:this.EditInfo.double_or_single,
+                Agr_functionCode_U:this.EditInfo.function_code_upper,
+                Agr_dataType_U:this.EditInfo.data_kind_upper,
+                Agr_byte_U:this.EditInfo.byte_upper,
+                Agr_unitSymbol_U:this.EditInfo.unit_symbol_upper,
+                Agr_describe_U:this.EditInfo.describe_upper,
+                Agr_functionCode_D:this.EditInfo.function_code_lower,
+                Agr_dataType_D:this.EditInfo.data_kind_lower,
+                Agr_byte_D:this.EditInfo.byte_lower,
+                Agr_unitSymbol_D:this.EditInfo.unit_symbol_lower,
+                Agr_describe_D:this.EditInfo.describe_lower,
+            }
+            return Info
         }
       
     },
@@ -275,32 +230,33 @@ import CryptoJS from "crypto-js"
                 this.$Message.error('系统繁忙，获取数据类型失败!')
             })
         },
-        handleCreate (name) {
+        handleEdit (name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    let CreatInfo = {
+                    let EditInfo = {
+                      agreement_id:this.EditInfo.id,
                       product_id:this.CurProduction,
-                      agreement_name:this.formCreate.Agm_name,
-                      double_or_single:this.formCreate.Agm_T2I,
-                      function_code_lower:this.formCreate.Agr_functionCode_D,
-                      data_kind_lower:this.formCreate.Agr_dataType_D,
-                      byte_lower:this.formCreate.Agr_byte_D,
-                      Unit_symbol_lower:this.formCreate.Agr_unitSymbol_D,
-                      describe_lower:this.formCreate.Agr_describe_D,
-                      function_code_upper:this.formCreate.Agr_functionCode_U,
-                      data_kind_upper:this.formCreate.Agr_dataType_U,
-                      byte_upper:this.formCreate.Agr_byte_U,
-                      Unit_symbol_upper:this.formCreate.Agr_unitSymbol_U,
-                      describe_upper:this.formCreate.Agr_describe_U,
+                      agreement_name:this.formEdit.Agm_name,
+                      double_or_single:this.formEdit.Agm_T2I,
+                      function_code_lower:this.formEdit.Agr_functionCode_D,
+                      data_kind_lower:this.formEdit.Agr_dataType_D,
+                      byte_lower:this.formEdit.Agr_byte_D,
+                      Unit_symbol_lower:this.formEdit.Agr_unitSymbol_D,
+                      describe_lower:this.formEdit.Agr_describe_D,
+                      function_code_upper:this.formEdit.Agr_functionCode_U,
+                      data_kind_upper:this.formEdit.Agr_dataType_U,
+                      byte_upper:this.formEdit.Agr_byte_U,
+                      Unit_symbol_upper:this.formEdit.Agr_unitSymbol_U,
+                      describe_upper:this.formEdit.Agr_describe_U,
                     }
-                    //this.modal_loading = true
-                    let DATA = {'users':CreatInfo}
-                    axios.post(R_PRE_URL+'insertagreement',DATA
+                    this.modal_loading = true
+                    let DATA = {'users':EditInfo}
+                    axios.post(R_PRE_URL+'updateagreement',DATA
                     ).then((res)=> {
                         switch(res.data.result){
                           case 1:
-                          this.$Message.success('创建协议成功!')
-                          this.$store.state.M_CreateAgreement = false
+                          this.$Message.success('修改协议信息成功!')
+                          this.$store.state.M_EditAgreement = false
                           this.modal_loading = false
                           this.$emit('refreshApplication')
                           break
@@ -309,7 +265,7 @@ import CryptoJS from "crypto-js"
                           this.modal_loading = false
                           break
                           case 0:
-                          this.$Message.error('创建协议失败!')
+                          this.$Message.error('修改协议信息失败!')
                           this.modal_loading = false
                           break
                           default:
@@ -318,7 +274,7 @@ import CryptoJS from "crypto-js"
                         }
                     }).catch((error)=> {
                         console.log(error)
-                        this.$Message.error('系统繁忙,创建协议失败!')
+                        this.$Message.error('系统繁忙,修改协议信息失败!')
                         this.modal_loading = false
                     })
                     
@@ -335,7 +291,6 @@ import CryptoJS from "crypto-js"
 <style scoped>
 .ivu-tag-dot{
     border: 0px solid #e3e8ee !important;
-    padding: 0 !important;
 }
 .demo-upload-list{
     display: inline-block;

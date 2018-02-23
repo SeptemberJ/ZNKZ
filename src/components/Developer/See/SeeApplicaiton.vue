@@ -7,7 +7,7 @@
         </p>
         <div style="">
             <Form ref="formSee" :model="formSee" label-position="left" :label-width="120">
-                <!-- <Tag type="dot"  color="blue">应用信息</Tag> -->
+                <Tag type="dot"  color="blue">应用信息</Tag>
                 <FormItem label="应用分类" prop="A_kind">
                     {{formSee.A_kind}}
                 </FormItem>
@@ -20,9 +20,11 @@
                 <FormItem label="应用图标" prop="A_img">
                     <img :src="formSee.A_img?formSee.A_img:'/static/img/icon/application.png'">
                 </FormItem>
+                <Tag type="dot"  color="blue">Android</Tag>
                 <FormItem label="Android应用包名" prop="A_android">
                     {{formSee.A_android}}
                 </FormItem>
+                <Tag type="dot"  color="blue">ios</Tag>
                 <FormItem label="ios应用包名" prop="A_ios">
                     {{formSee.A_ios}}
                 </FormItem>
@@ -38,8 +40,7 @@
             </Form>
         </div>
         <div slot="footer" style="text-align:center">
-            <!-- <Button type="error" size="large" :loading="modal_loading" @click="handleEdit('formSee')">保存</Button>
-            <Button type="primary" size="large"  @click="Del()">删除</Button> -->
+            <Button type="primary" size="large"  @click="Close()">关闭</Button>
         </div>
     </Modal>
         
@@ -80,10 +81,10 @@ import CryptoJS from "crypto-js"
             let Info = {
                 A_kind : this.DetailInfo.apply_type,
                 A_name : this.DetailInfo.apply_name,
-                A_introduction : this.DetailInfo.apply_introduction,
+                A_introduction : this.DetailInfo.apply_introduction.trim()?this.DetailInfo.apply_introduction:'------',
                 A_img : this.DetailInfo.apply_icon,
-                A_android : this.DetailInfo.android_name,
-                A_ios : this.DetailInfo.ios_name,
+                A_android : this.DetailInfo.android_name.trim()?this.DetailInfo.android_name:'------',
+                A_ios : this.DetailInfo.ios_name.trim()?this.DetailInfo.ios_name:'------',
                 A_appid : this.DetailInfo.appid,
                 A_appkey : this.DetailInfo.appkey,
                 A_create_time : this.DetailInfo.create_time,
@@ -101,12 +102,21 @@ import CryptoJS from "crypto-js"
     methods: {
         ChangeVisible(e){
             this.$store.state.M_SeeApplication = e
-            //console.log(this.$store.state.M_EditApplication)
         },
+        Close(){
+            this.$store.state.M_SeeApplication = false
+        }
     }
   }
 </script>
 <style scoped>
+.ivu-tag-dot{
+    border: 0px solid #e3e8ee !important;
+    padding: 0 !important;
+    font-size: 16px;
+    font-weight: bold !important;
+    
+}
 .demo-upload-list{
     display: inline-block;
     width: 60px;

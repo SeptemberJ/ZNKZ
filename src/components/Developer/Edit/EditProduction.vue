@@ -6,7 +6,7 @@
             <span>修改产品信息</span>
         </p>
         <div style="">
-            <Form ref="formCreate" :model="formCreate" :rules="ruleCreate"  label-position="left" :label-width="100">
+            <Form ref="formEdit" :model="formEdit" :rules="ruleEdit"  label-position="left" :label-width="100">
                 <FormItem label="所属应用">
                     <Select v-model="P_belongKind" disabled placeholder="请选择所属应用">
                         <Option v-for="item in ApplicationList" :value="item.id" :key="item.id">{{ item.apply_name }}</Option>
@@ -14,27 +14,27 @@
                 </Select>
                 </FormItem>
                 <FormItem label="产品名称" prop="P_name"  placeholder="请输入产品名称">
-                    <Input v-model="formCreate.P_name"></Input>
+                    <Input v-model="formEdit.P_name"></Input>
                 </FormItem>
                 <FormItem label="设备类别" prop="P_kind">
-                    <Select v-model="formCreate.P_kind" placeholder="请选择设备类别">
+                    <Select v-model="formEdit.P_kind" placeholder="请选择设备类别">
                         <Option v-for="item in EquipmentKinds" :value="item.typename" >{{ item.typename }}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="WiFi模块" prop="P_wifi">
-                    <Select v-model="formCreate.P_wifi" placeholder="请选择WiFi模块">
+                    <Select v-model="formEdit.P_wifi" placeholder="请选择WiFi模块">
                         <Option v-for="item in WifiModules" :value="item.typename" >{{ item.typename }}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="技术方案" prop="P_programme">
-                    <RadioGroup v-model="formCreate.P_programme">
+                    <RadioGroup v-model="formEdit.P_programme" @on-change="RadioChange">
                         <Radio v-for="item in technologyProgrammes" :label="item.typename"></Radio>
                     </RadioGroup>
                 </FormItem>
                 <FormItem label="应用图标" prop="A_img">
                     <div class="demo-upload-list">
                         <template>
-                            <img :src="formCreate.P_img?formCreate.P_img:'/static/img/icon/application.png'">
+                            <img :src="formEdit.P_img?formEdit.P_img:'/static/img/icon/application.png'">
                         </template>
                     </div>
                     <Upload
@@ -54,8 +54,7 @@
             </Form>
         </div>
         <div slot="footer" style="text-align:center">
-            <Button type="error" size="large" :loading="modal_loading" @click="handleCreate('formCreate')">确定创建</Button>
-            <Button type="primary" size="large"  @click="Next()">下一步</Button>
+            <Button type="error" size="large" :loading="modal_loading" @click="handleSave('formEdit')">保存修改</Button>
         </div>
     </Modal>
         
@@ -64,21 +63,14 @@
 import Vue from 'vue'
 import axios from 'axios'
   export default{
-    props:['EditInfo'],
+    props:['EditInfo','CurApplication','Applications'],
     data: function () {
       return {
         modal_loading:false,
         EquipmentKinds:[],
         WifiModules:[],
         technologyProgrammes:[],
-        formCreate:{
-            P_name:'',
-            P_kind:'',
-            P_wifi:'',
-            P_programme:'WiFi',
-            P_img:''
-        },
-        ruleCreate: {
+        ruleEdit: {
             P_name: [
                 { required: true, message: '产品名称不能为空', trigger: 'blur' }
             ],
@@ -126,6 +118,16 @@ import axios from 'axios'
             set: function (newValue) {
               this.CurApplication = newValue
             }
+        },
+        formEdit(){
+            let Info = {
+                P_name:this.EditInfo.product_name,
+                P_kind:this.EditInfo.product_kind,
+                P_wifi:this.EditInfo.wifi_module,
+                P_programme:this.EditInfo.technical_scheme,
+                P_img:this.EditInfo.product_pic
+            }
+            return Info
         }
       
     },
@@ -148,7 +150,6 @@ import axios from 'axios'
                   break
                   default:
                   this.$Message.error('系统繁忙!')
-                  this.modal_loading = false
                 }
             }).catch((error)=> {
                 console.log(error)
@@ -167,11 +168,14 @@ import axios from 'axios'
                   break
                   default:
                   this.$Message.error('系统繁忙!')
-                  this.modal_loading = false
                 }
             }).catch((error)=> {
                 console.log(error)
             })
+        },
+        RadioChange(Item){
+            console.log(Item)
+            this.EditInfo.technical_scheme = Item
         },
         //获取技术方案
         GettechnologyProgrammes(){
@@ -180,14 +184,12 @@ import axios from 'axios'
                 switch(res.data.result){
                   case 1:
                   this.technologyProgrammes = res.data.jsfalist
-                  this.formCreate.P_programme = res.data.jsfalist[0].typename
                   break
                   case 0:
                   this.$Message.error('获取技术方案失败!')
                   break
                   default:
                   this.$Message.error('系统繁忙!')
-                  this.modal_loading = false
                 }
             }).catch((error)=> {
                 console.log(error)
@@ -212,37 +214,40 @@ import axios from 'axios'
             var reader = new FileReader();   
             reader.readAsDataURL(file);   
             reader.onload = function(e){
-              _this.formCreate.P_img = this.result
+              _this.formEdit.P_img = this.result
             } 
         },
-        handleCreate (name) {
+        //保存修改
+        handleSave (name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     //let App_id = this.Applications.filter(item => item.id == this.CurApplication)[0].id
-                    let CreatInfo = {
+                    let EditInfo = {
                       applyid:this.CurApplication,
-                      product_name:this.formCreate.P_name,
-                      product_kind:this.formCreate.P_kind,
-                      WiFi_module:this.formCreate.P_wifi,
-                      Technical_scheme:this.formCreate.P_programme,
-                      product_pic:this.formCreate.P_img,
-                      //apply_type:this.P_belongKind
+                      product_name:this.formEdit.P_name,
+                      product_kind:this.formEdit.P_kind,
+                      WiFi_module:this.formEdit.P_wifi,
+                      Technical_scheme:this.formEdit.P_programme,
+                      product_pic:this.formEdit.P_img,
+                      productsid:this.EditInfo.id
                     }
-                    //this.modal_loading = true
-                    let DATA = {'users':CreatInfo}
-                    axios.post(R_PRE_URL+'insertproducts',DATA
+                    this.modal_loading = true
+                    let DATA = {'users':EditInfo}
+                    axios.post(R_PRE_URL+'updateproducts',DATA
                     ).then((res)=> {
                         switch(res.data.result){
                           case 1:
-                          this.$Message.success('创建新产品成功!')
+                          this.$Message.success('修改产品信息成功!')
                           this.modal_loading = false
+                          this.$store.state.M_EditProduction = false
+                          this.$emit('refreshApplication')
                           break
                           case 2:
-                          this.$Message.error('该产品名称已已存在!')
+                          this.$Message.error('该产品名称已存在!')
                           this.modal_loading = false
                           break
                           case 0:
-                          this.$Message.error('创建新产品失败!')
+                          this.$Message.error('修改产品信息失败!')
                           this.modal_loading = false
                           break
                           default:
@@ -251,6 +256,8 @@ import axios from 'axios'
                         }
                     }).catch((error)=> {
                         console.log(error)
+                        this.$Message.error('系统繁忙!')
+                        this.modal_loading = false
                     })
                     
                 } else {

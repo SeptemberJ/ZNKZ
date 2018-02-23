@@ -37,7 +37,7 @@
         <!-- 创建新应用 -->
         <CreateApplication :OriginType="0" v-on:refreshApplication="Refresh"/>
         <!-- 编辑应用信息 -->
-        <EditApplicaiton :EditInfo="EditInfo"/>
+        <EditApplicaiton :EditInfo="EditInfo" v-on:refreshApplication="Refresh"/>
         <!-- <EditApplicaiton :AppId="AppId" :EditInfo="EditInfo" v-if="ifShow"/> -->
         <!-- 查看应用信息 -->
         <SeeApplicaiton :DetailInfo="DetailInfo"/>
