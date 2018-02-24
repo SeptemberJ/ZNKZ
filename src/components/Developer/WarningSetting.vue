@@ -13,13 +13,13 @@
             </Col>
         </Row>
         <!-- 告警列表 -->
-        <h2>协议列表</h2>
-        <!-- <div  class="BlockWrap marginTB_20">
-            <Table border :loading="table_loading" :columns="AgreementColumns" :data="AgreementData"></Table>
+        <h2>告警列表</h2>
+        <div  class="BlockWrap marginTB_20">
+            <Table border :loading="table_loading" :columns="WarningColumns" :data="WarningData"></Table>
             <Page v-if="Total>0" class="marginT_20 marginB_150" :total="Total" show-total style="float: right;" :current="page_num" @on-change="changePage" @on-page-size-change="changePageSize" show-sizer></Page>
-        </div> -->
+        </div>
         <!-- 创建新告警 -->
-        <!-- <CreateAgreement  :CurProduction="CurProduction"  :Productions="ProductionList" v-on:refreshApplication="Refresh"/> -->
+        <CreateWarning  :CurProduction="CurProduction" :Productions="ProductionList" :Agreements="AgreementList" v-on:refreshApplication="Refresh"/>
         <!-- 编辑告警 -->
         <!-- <EditAgreement  :EditInfo='EditInfo' :CurProduction="CurProduction"  :Productions="ProductionList" v-on:refreshApplication="Refresh"/> -->
     </div>
@@ -28,7 +28,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import CryptoJS from "crypto-js"
-// import CreateAgreement from "./Create/CreateAgreement"
+import CreateWarning from "./Create/CreateWarning"
 // import EditAgreement from "./Edit/EditAgreement"
   export default{
     data: function () {
@@ -36,10 +36,97 @@ import CryptoJS from "crypto-js"
         table_loading:true,
         ifDeleteModal:false,
         ProductionList:[],
+        AgreementList:[],
         EditInfo:'',
         Total:10,
         page_num:1,  //页数
         number:10,   //每页条数
+        WarningData:[],
+        WarningColumns: [
+            {
+                type: 'index',
+                width: 60,
+                align: 'center'
+            },
+            {
+                title: '规则名称',
+                key: 'fname'
+            },
+            {
+                title: '所属协议',
+                key: 'fagreement_name'
+            },
+            {
+                title: '告警条件',
+                key: 'warningCondition',
+                render: (h, params) => {
+                    return h('div', params.row.fwarn_num+params.row.fwarn_condition);
+                }
+            },
+            {
+                title: '告警内容',
+                key: 'fwarn_content'
+            },
+            {
+                title: '告警类型',
+                key: 'fwarn_type'
+            },
+            {
+                title: '通知类型',
+                key: 'fnotice_type'
+            },
+            {
+                title: '状态',
+                key: 'fstatus'
+            },
+            {
+                title: '操作',
+                key: 'action',
+                width: 200,
+                align: 'center',
+                render: (h, params) => {
+                    return h('div', [
+                        h('Button', {
+                            props: {
+                                type: 'primary',
+                                size:'small',
+                                icon:'compose'
+                            },
+                            style: {
+                                marginRight: '20px',
+                            },
+                            on: {
+                                click: () => {
+                                    this.editAgreement(params.row)
+                                }
+                            }
+                        }, '编辑'),
+                        h('Button', {
+                            props: {
+                                type: 'error',
+                                size:'small',
+                                icon:'android-delete'
+                            },
+                            style: {
+                            },
+                            on: {
+                                click: () => {
+                                    this.$Modal.confirm({
+                                    title: '提示',
+                                    content: '<p>确定删除该协议？</p>',
+                                    onOk: () => {
+                                        this.removeAgreement(params.row)
+                                    },
+                                    onCancel: () => {
+                                    }
+                                });
+                                }
+                            }
+                        }, '删除')
+                    ]);
+                }
+            }
+        ],
       }
     },
     mounted: function () {
@@ -68,14 +155,38 @@ import CryptoJS from "crypto-js"
       
     },
     components: {
+        CreateWarning
     },
     methods: {
-        //切换当前应用
+        //切换当前产品
         ChangeCurProduction(){
             this.GetAllProduction()
         },
         AddWarning(){
-            this.$store.state.M_CreateWarning = true
+            if(this.AgreementList.length>0){
+                this.$store.state.M_CreateWarning = true
+            }else{
+                this.$Message.error('该产品下暂时还没有上报类型的协议,请先去添加!')
+            }
+        },
+        //获取对应协议列表
+        GetAgreementList(){
+            axios.get(R_PRE_URL+'selectagreements1?product_id='+this.CurProduction
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.AgreementList = res.data.arrlist
+                  break
+                  case 0:
+                  this.$Message.error('获取数据类型失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                }
+            }).catch((error)=> {
+                console.log(error)
+                this.$Message.error('系统繁忙，获取数据类型失败!')
+            })
         },
         //获取所有产品列表
         GetAllProduction(){
@@ -91,6 +202,8 @@ import CryptoJS from "crypto-js"
                   })
                   this.CurProduction = this.$store.state.CurProduction == ''?ListTemp[0].id:this.$store.state.CurProduction
                   this.ProductionList = ListTemp
+                  this.GetAgreementList()
+                  this.GetWarningList()
                   break
                   case 0:
                   this.$Message.error('获取产品列表失败!')
@@ -102,6 +215,36 @@ import CryptoJS from "crypto-js"
             }).catch((error)=> {
                 console.log(error)
             })
+        },
+        //获取对应告警列表
+        GetWarningList(){
+            let info = {
+                productid:this.CurProduction,
+                page:this.page_num,
+                number:this.number
+            }
+            let DATA = {'products':info}
+            axios.post(R_PRE_URL+'selectwarnings?',DATA
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.WarningData = res.data.warninglist
+                  //this.Total = res.data.sum
+                  this.table_loading = false
+                  break
+                  case 0:
+                  this.$Message.error('获取告警列表失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                }
+            }).catch((error)=> {
+                console.log(error)
+                this.$Message.error('系统繁忙，获取告警列表失败!')
+            })
+        },
+        Refresh(){
+            //this.GetAllProduction()
         },
      
 

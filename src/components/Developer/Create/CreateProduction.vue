@@ -1,5 +1,5 @@
 <template>
-    <!-- 创建新应用 -->
+    <!-- 创建新产品 -->
     <Modal v-model="ifShowModal" width="600" :mask-closable="false">
         <p slot="header">
             <Icon type="information-circled"></Icon>

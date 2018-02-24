@@ -1,95 +1,112 @@
 <template>
-    <Modal v-model="ifShowModal" width="600" :mask-closable="false">
-        <!-- 创建新应用 -->
-        <div v-if="Step == 0">
-            <p slot="header">
-                <Icon type="information-circled"></Icon>
-                <span>创建新应用</span>
-            </p>
-            <div style="">
-                <Form ref="formCreate" :model="formCreate" :rules="ruleCreate"  label-position="left" :label-width="100">
-                    <FormItem label="应用分类" prop="A_kind">
-                        <Select v-model="formCreate.A_kind" placeholder="请选择应用类别">
-                            <Option value="智能家居">智能家居</Option>
-                            <Option value="智慧社区">智慧社区</Option>
-                            <Option value="智能硬件">智能硬件</Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem label="应用名称" prop="A_name">
-                        <Input v-model="formCreate.A_name"></Input>
-                    </FormItem>
-                    <FormItem label="应用说明" prop="A_introduction">
-                        <Input v-model="formCreate.A_introduction" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入应用说明"></Input>
-                    </FormItem>
-                    <FormItem label="应用图标" prop="A_img">
-                        <div class="demo-upload-list">
-                            <template>
-                                <img :src="formCreate.A_img?formCreate.A_img:'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'">
-                            </template>
+    <div>
+        <!-- 创建新产品 -->
+        <Modal v-model="ifShowModal" width="600" :mask-closable="false">
+        <p slot="header">
+            <Icon type="information-circled"></Icon>
+            <span>创建新产品</span>
+        </p>
+        <div style="">
+            <Form ref="formCreate" :model="formCreate" :rules="ruleCreate"  label-position="left" :label-width="100">
+                <FormItem label="所属应用">
+                   <!--  <Select v-model="P_belongKind"  placeholder="请选择所属应用">
+                        <Option v-for="item in ApplicationList" :value="item.id" :key="item.id">{{ item.apply_name }}</Option>
+                    </Select> -->
+                    <Input v-model="P_belongKind" disabled></Input>
+                </Select>
+                </FormItem>
+                <FormItem label="产品名称" prop="P_name"  placeholder="请输入产品名称">
+                    <Input v-model="formCreate.P_name"></Input>
+                </FormItem>
+                <FormItem label="设备类别" prop="P_kind">
+                    <Select v-model="formCreate.P_kind" placeholder="请选择设备类别">
+                        <Option v-for="item in EquipmentKinds" :value="item.typename" >{{ item.typename }}</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="WiFi模块" prop="P_wifi">
+                    <Select v-model="formCreate.P_wifi" placeholder="请选择WiFi模块">
+                        <Option v-for="item in WifiModules" :value="item.typename" >{{ item.typename }}</Option>
+                    </Select>
+                </FormItem>
+                <FormItem label="技术方案" prop="P_programme">
+                    <RadioGroup v-model="formCreate.P_programme">
+                        <Radio v-for="item in technologyProgrammes" :label="item.typename"></Radio>
+                    </RadioGroup>
+                </FormItem>
+                <FormItem label="应用图标" prop="A_img">
+                    <div class="demo-upload-list">
+                        <template>
+                            <img :src="formCreate.P_img?formCreate.P_img:'/static/img/icon/application.png'">
+                        </template>
+                    </div>
+                    <Upload
+                        :max-size="2048"
+                        :on-format-error="handleFormatError"
+                        :on-exceeded-size="handleMaxSize"
+                        :before-upload="handleBeforeUpload"
+                        multiple
+                        type="drag"
+                        action=""
+                        style="display: inline-block;width:58px;">
+                        <div style="width: 58px;height:58px;line-height: 58px;">
+                            <Icon type="camera" size="20"></Icon>
                         </div>
-                        <Upload
-                            :max-size="2048"
-                            :on-format-error="handleFormatError"
-                            :on-exceeded-size="handleMaxSize"
-                            :before-upload="handleBeforeUpload"
-                            multiple
-                            type="drag"
-                            action=""
-                            style="display: inline-block;width:58px;">
-                            <div style="width: 58px;height:58px;line-height: 58px;">
-                                <Icon type="camera" size="20"></Icon>
-                            </div>
-                        </Upload>
-                    </FormItem>
-                    <FormItem label="应用包名" prop="A_android">
-                        <Input v-model="formCreate.A_android" placeholder="请输入应用包名（50字以内）"></Input>
-                    </FormItem>
-                    <FormItem label="应用包名" prop="A_ios">
-                        <Input v-model="formCreate.A_ios" placeholder="请输入Bundle Id（50字以内）"></Input>
-                    </FormItem>
-                </Form>
-            </div>
-            <div slot="footer" style="text-align:center">
-                <Button type="error" size="large" :loading="modal_loading" @click="handleCreate('formCreate')">确定创建</Button>
-                <Button type="primary" size="large"  @click="Next()">下一步</Button>
-            </div>
+                    </Upload>
+                </FormItem>
+            </Form>
         </div>
-        <!-- 创建新应用 -->
-        <div v-if="Step == 1">
-        创建新应用
+        <div slot="footer" style="text-align:center">
+            <Button type="error" size="large" :loading="modal_loading" @click="handleCreate('formCreate')">确定创建</Button>
+            <Button type="primary" size="large"  @click="Next()">下一步</Button>
         </div>
     </Modal>
+    </div>
         
 </template>
 <script>
-
+import Vue from 'vue'
+import axios from 'axios'
   export default{
-    props:['Step'],
+    props:['_CurApplication'],
     data: function () {
       return {
         modal_loading:false,
+        //Production
+        EquipmentKinds:[],
+        WifiModules:[],
+        technologyProgrammes:[],
         formCreate:{
-            A_kind:'',
-            A_name:'',
-            A_introduction:'',
-            A_img:'',
-            A_android:'',
-            A_ios:'',
+            P_name:'',
+            P_kind:'',
+            P_wifi:'',
+            P_programme:'WiFi',
+            P_img:''
         },
         ruleCreate: {
-            A_kind: [
-                { required: true, message: '请选择应用类别', trigger: 'change' }
+            P_name: [
+                { required: true, message: '产品名称不能为空', trigger: 'blur' }
             ],
-            A_name: [
-                { required: true, message: '应用名称不能为空', trigger: 'blur' }
+            P_kind: [
+                { required: true, message: '请选择设备类别', trigger: 'blur' }
+            ],
+            P_wifi: [
+                { required: true, message: '请选择WiFi模块', trigger: 'blur' }
+            ],
+            P_programme: [
+                { required: true, message: '请选择技术模块', trigger: 'blur' }
             ],
         }
+        //Agreement
       }
     },
     mounted() {
       
     },
     created() {
+        //Production
+        this.GetEquipmentKinds()  
+        this.GetWifiModules()  
+        this.GettechnologyProgrammes()
       
     },
     computed: {
@@ -97,6 +114,7 @@
             let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
             return ID
         },
+        //Production
         ifShowModal: {
             get: function () {
               return this.$store.state.M_CreateProduction
@@ -105,6 +123,20 @@
               this.$store.state.M_CreateProduction = false
             }
         },
+        // ApplicationList(){
+        //     console.log(this.Applications)
+        //     return this.Applications
+        // },
+        P_belongKind: {
+            get: function () {
+                console.log('this._CurApplication---'+this._CurApplication)
+              return this._CurApplication
+            },
+            set: function (newValue) {
+              this._CurApplication = newValue
+            }
+        },
+        //Agreement
       
     },
     watch: {
@@ -113,6 +145,65 @@
     components: {
     },
     methods: {
+        //Production
+        //获取设备类别
+        GetEquipmentKinds(){
+            axios.post(R_PRE_URL+'selectsblb'
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.EquipmentKinds = res.data.sblblist
+                  break
+                  case 0:
+                  this.$Message.error('获取设备类别失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
+            }).catch((error)=> {
+                console.log(error)
+            })
+        },
+        //获取wifi模块
+        GetWifiModules(){
+            axios.post(R_PRE_URL+'selectWiFimk'
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.WifiModules = res.data.WiFimklist
+                  break
+                  case 0:
+                  this.$Message.error('获取Wifi模块失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
+            }).catch((error)=> {
+                console.log(error)
+            })
+        },
+        //获取技术方案
+        GettechnologyProgrammes(){
+            axios.post(R_PRE_URL+'selectjsfa'
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.technologyProgrammes = res.data.jsfalist
+                  this.formCreate.P_programme = res.data.jsfalist[0].typename
+                  break
+                  case 0:
+                  this.$Message.error('获取技术方案失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
+            }).catch((error)=> {
+                console.log(error)
+            })
+        },
         handleFormatError (file) {
             this.$Notice.warning({
                 title: '提示',
@@ -128,37 +219,39 @@
         handleBeforeUpload (event) {
             var _this = this
             var file = event
-            //_this.formApplication.FileName = file.name
             var reader = new FileReader();   
             reader.readAsDataURL(file);   
             reader.onload = function(e){
-              _this.formCreate.A_img = this.result
+              _this.formCreate.P_img = this.result
             } 
         },
         handleCreate (name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     let CreatInfo = {
-                      userid:this.ID,
-                      apply_type:this.formCreate.A_kind,
-                      apply_name:this.formCreate.A_name,
-                      apply_introduction:this.formCreate.A_introduction,
-                      apply_icon:this.formCreate.A_img,
-                      Android_name:this.formCreate.A_android,
-                      ios_name:this.formCreate.A_ios
+                      applyid:this._CurApplication,
+                      product_name:this.formCreate.P_name,
+                      product_kind:this.formCreate.P_kind,
+                      WiFi_module:this.formCreate.P_wifi,
+                      Technical_scheme:this.formCreate.P_programme,
+                      product_pic:this.formCreate.P_img,
                     }
                     this.modal_loading = true
-                    let DATA = {'applications':CreatInfo}
-                    axios.post(R_PRE_URL+'insertapplication',DATA
+                    let DATA = {'users':CreatInfo}
+                    axios.post(R_PRE_URL+'insertproducts',DATA
                     ).then((res)=> {
                         switch(res.data.result){
                           case 1:
-                          this.$Message.success('创建成功!')
-                          this.M_LookFor = false
+                          this.$Message.success('创建新产品成功!')
+                          this.modal_loading = false
+                          this.$store.state.M_CreateProduction = false
+                          break
+                          case 2:
+                          this.$Message.error('该产品名称已已存在!')
                           this.modal_loading = false
                           break
                           case 0:
-                          this.$Message.error('创建应用失败!')
+                          this.$Message.error('创建新产品失败!')
                           this.modal_loading = false
                           break
                           default:
@@ -174,6 +267,7 @@
                 }
             })
         },
+        //Agreement
      
 
     }

@@ -81,10 +81,10 @@ import CryptoJS from "crypto-js"
             let Info = {
                 A_kind : this.DetailInfo.apply_type,
                 A_name : this.DetailInfo.apply_name,
-                A_introduction : this.DetailInfo.apply_introduction.trim()?this.DetailInfo.apply_introduction:'------',
+                A_introduction : this.DetailInfo.apply_introduction?this.DetailInfo.apply_introduction:'------',
                 A_img : this.DetailInfo.apply_icon,
-                A_android : this.DetailInfo.android_name.trim()?this.DetailInfo.android_name:'------',
-                A_ios : this.DetailInfo.ios_name.trim()?this.DetailInfo.ios_name:'------',
+                A_android : this.DetailInfo.android_name?this.DetailInfo.android_name:'------',
+                A_ios : this.DetailInfo.ios_name?this.DetailInfo.ios_name:'------',
                 A_appid : this.DetailInfo.appid,
                 A_appkey : this.DetailInfo.appkey,
                 A_create_time : this.DetailInfo.create_time,
