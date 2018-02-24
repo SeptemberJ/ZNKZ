@@ -231,12 +231,12 @@ import EditAgreement from "./Edit/EditAgreement"
         //分页
         changePage(event){
           this.page_num = event
-          //this.GetProduction()
+          //this.GetAllProduction()
         },
         //切换每页条数
         changePageSize(event){
           this.number = event
-          //this.GetProduction()
+          //this.GetAllProduction()
         },
         //获取所有产品列表
         GetAllProduction(){
@@ -253,8 +253,6 @@ import EditAgreement from "./Edit/EditAgreement"
                   this.CurProduction = this.$store.state.CurProduction == ''?ListTemp[0].id:this.$store.state.CurProduction
                   this.ProductionList = ListTemp
                   this.GetAgreement()
-
-                  //this.GetProduction()
                   break
                   case 0:
                   this.$Message.error('获取产品列表失败!')

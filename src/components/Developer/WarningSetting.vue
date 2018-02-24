@@ -75,7 +75,7 @@ import CryptoJS from "crypto-js"
             this.GetAllProduction()
         },
         AddWarning(){
-            
+            this.$store.state.M_CreateWarning = true
         },
         //获取所有产品列表
         GetAllProduction(){
@@ -91,7 +91,6 @@ import CryptoJS from "crypto-js"
                   })
                   this.CurProduction = this.$store.state.CurProduction == ''?ListTemp[0].id:this.$store.state.CurProduction
                   this.ProductionList = ListTemp
-                  //this.GetAgreement()
                   break
                   case 0:
                   this.$Message.error('获取产品列表失败!')
