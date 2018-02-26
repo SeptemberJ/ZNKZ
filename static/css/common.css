@@ -98,6 +98,9 @@ body{
   text-overflow:ellipsis;
   white-space: nowrap;
 }
+.wrap{
+  overflow-wrap: break-word;
+}
 .SmallImg{
   width: 80px !important;
   height: 80px !important;
@@ -234,7 +237,9 @@ body{
   border: 1px solid #ddd;
 }
 
-
+.BgDarkBlue{
+  background-color: #068DFF !important;
+}
 .BgLightGreen{
   background-color: #1AD3A8 !important;
 }

@@ -6,7 +6,7 @@
             <span>创建新告警规则</span>
         </p>
         <div style="">
-            <Form ref="formCreate" :model="formCreate" :rules="ruleCreate"  label-position="left" :label-width="100">
+            <Form ref="formEdit" :model="formEdit" :rules="ruleEdit"  label-position="left" :label-width="100">
                 <Tag type="dot" color="yellow">规则信息</Tag>
                 <FormItem label="所属产品">
                     <Select v-model="W_belongKind" disabled placeholder="请选择所属产品">
@@ -14,10 +14,10 @@
                     </Select>
                 </FormItem>
                 <FormItem label="规则名称" prop="W_name">
-                    <Input v-model="formCreate.W_name"></Input>
+                    <Input v-model="formEdit.W_name"></Input>
                 </FormItem>
                 <FormItem label="所属协议" prop="W_belongAgm">
-                    <Select v-model="formCreate.W_belongAgm" placeholder="请选择所属协议">
+                    <Select v-model="formEdit.W_belongAgm" placeholder="请选择所属协议">
                         <Option v-for="item in AgreementList" :value="item.agreement_name" :key="item.id">{{ item.agreement_name }}</Option>
                     </Select>
                 </FormItem>
@@ -27,35 +27,35 @@
                             <Input disabled value='数据值'></Input>
                         </Col>
                         <Col span="6">
-                            <Select v-model="formCreate.choose">
+                            <Select v-model="formEdit.choose">
                                 <Option v-for="item in chooseList" :value="item.value" :key="item.value">{{ item.value }}</Option>
                             </Select>
                         </Col>
                         <Col span="6">
-                            <Input v-model="formCreate.W_condition"></Input>
+                            <Input v-model="formEdit.W_condition"></Input>
                         </Col>
                     </Row>
                 </FormItem>
                 <FormItem label="告警内容" prop="W_content">
-                    <Input type="textarea" :autosize="true" :maxlength='250' v-model="formCreate.W_content" placeholder='请输入告警内容（250字以内）...'></Input>
+                    <Input type="textarea" :autosize="true" :maxlength='250' v-model="formEdit.W_content" placeholder='请输入告警内容（250字以内）...'></Input>
                 </FormItem>
                 <FormItem label="告警类型" prop="W_kind">
-                    <Select v-model="formCreate.W_kind" style="width:200px">
+                    <Select v-model="formEdit.W_kind" style="width:200px">
                         <Option v-for="item in kindList" :value="item.typename" :key="item.typename">{{ item.typename }}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="通知类型" prop="W_noticeKind">
-                    <Select v-model="formCreate.W_noticeKind" style="width:200px">
+                    <Select v-model="formEdit.W_noticeKind" style="width:200px">
                         <Option v-for="item in noticeKindList" :value="item.typename" :key="item.typename">{{ item.typename }}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="通知方式" prop="W_noticeWay">
-                    <RadioGroup v-model="formCreate.W_noticeWay">
+                    <RadioGroup v-model="formEdit.W_noticeWay">
                         <Radio label="极光推送"></Radio>
                     </RadioGroup>
                 </FormItem>
                 <FormItem label="状态" prop="W_status">
-                    <RadioGroup v-model="formCreate.W_status">
+                    <RadioGroup v-model="formEdit.W_status" @on-change="RadioChange">
                         <Radio label="禁用"></Radio>
                         <Radio label="启用"></Radio>
                     </RadioGroup>
@@ -65,7 +65,8 @@
             </Form>
         </div>
         <div slot="footer" style="text-align:center">
-            <Button type="error" size="large" :loading="modal_loading" @click="handleCreate('formCreate')">确定创建</Button>
+            <Button type="error" size="large" :loading="modal_loading" @click="handleEdit('formEdit')">确定创建</Button>
+            <Button type="primary" size="large"  @click="Next()">下一步</Button>
         </div>
     </Modal>
         
@@ -75,22 +76,22 @@ import Vue from 'vue'
 import axios from 'axios'
 import CryptoJS from "crypto-js"
   export default{
-    props:['CurProduction','Productions','Agreements'],
+    props:['EditInfo','CurProduction','Productions','Agreements'],
     data: function () {
       return {
         modal_loading:false,
-        formCreate:{
-            W_name:'',
-            W_belongAgm:'',
-            choose:'小于',
-            W_condition:'',
-            W_content:'',
-            W_kind:'',
-            W_noticeKind:'',
-            W_noticeWay:'极光推送',
-            W_status:'启用',
-        },
-        ruleCreate: {
+        // formEdit:{
+        //     W_name:'',
+        //     W_belongAgm:'',
+        //     choose:'小于',
+        //     W_condition:'',
+        //     W_content:'',
+        //     W_kind:'',
+        //     W_noticeKind:'',
+        //     W_noticeWay:'极光推送',
+        //     W_status:'启用',
+        // },
+        ruleEdit: {
             W_name: [
                 { required: true, message: '请填写规则名称', trigger: 'blur' }
             ],
@@ -132,10 +133,10 @@ import CryptoJS from "crypto-js"
         },
         ifShowModal: {
             get: function () {
-              return this.$store.state.M_CreateWarning
+              return this.$store.state.M_EditWarning
             },
             set: function (newValue) {
-              this.$store.state.M_CreateWarning = false
+              this.$store.state.M_EditWarning = false
             }
         },
         AgreementList(){
@@ -151,7 +152,21 @@ import CryptoJS from "crypto-js"
             set: function (newValue) {
               this.CurProduction = newValue
             }
-        }
+        },
+        formEdit(){
+            let Info = {
+                W_name:this.EditInfo.fname,
+                W_belongAgm:this.EditInfo.fagreement_name,
+                choose:this.EditInfo.fwarn_num,
+                W_condition:this.EditInfo.fwarn_condition,
+                W_content:this.EditInfo.fwarn_content,
+                W_kind:this.EditInfo.fwarn_type,
+                W_noticeKind:this.EditInfo.fnotice_type,
+                W_noticeWay:this.EditInfo.fnotice_fs,
+                W_status:this.EditInfo.fstatus,
+            }
+            return Info
+        },
       
     },
     watch: {
@@ -198,29 +213,33 @@ import CryptoJS from "crypto-js"
                 this.$Message.error('系统繁忙，获取通知类型失败!')
             })
         },
-        handleCreate (name) {
+        RadioChange(Item){
+            this.EditInfo.fstatus = Item
+        },
+        handleEdit (name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     let CreatInfo = {
-                      product_id:this.CurProduction,
-                      fname:this.formCreate.W_name,
-                      fagreement_name:this.formCreate.W_belongAgm,
-                      fwarn_condition:this.formCreate.W_condition,
-                      fwarn_content:this.formCreate.W_content,
-                      fwarn_type:this.formCreate.W_kind,
-                      fnotice_type:this.formCreate.W_noticeKind,
-                      fnotice_fs:this.formCreate.W_noticeWay,
-                      fstatus:this.formCreate.W_status,
-                      fwarn_num :this.formCreate.choose
+                        warningid:this.EditInfo.id,
+                        product_id:this.CurProduction,
+                        fname:this.formEdit.W_name,
+                        fagreement_name:this.formEdit.W_belongAgm,
+                        fwarn_condition:this.formEdit.W_condition,
+                        fwarn_content:this.formEdit.W_content,
+                        fwarn_type:this.formEdit.W_kind,
+                        fnotice_type:this.formEdit.W_noticeKind,
+                        fnotice_fs:this.formEdit.W_noticeWay,
+                        fstatus:this.formEdit.W_status,
+                        fwarn_num :this.formEdit.choose
                     }
-                    //this.modal_loading = true
+                    this.modal_loading = true
                     let DATA = {'warnings':CreatInfo}
-                    axios.post(R_PRE_URL+'insertwarning',DATA
+                    axios.post(R_PRE_URL+'updatewarning',DATA
                     ).then((res)=> {
                         switch(res.data.result){
                           case 1:
-                          this.$Message.success('创建新告警规则成功!')
-                          this.$store.state.M_CreateWarning = false
+                          this.$Message.success('修改告警规则成功!')
+                          this.$store.state.M_EditWarning = false
                           this.modal_loading = false
                           this.$emit('refreshApplication')
                           break
@@ -229,7 +248,7 @@ import CryptoJS from "crypto-js"
                           this.modal_loading = false
                           break
                           case 0:
-                          this.$Message.error('创建新告警规则失败!')
+                          this.$Message.error('修改告警规则失败!')
                           this.modal_loading = false
                           break
                           default:
@@ -238,7 +257,7 @@ import CryptoJS from "crypto-js"
                         }
                     }).catch((error)=> {
                         console.log(error)
-                        this.$Message.error('系统繁忙,创建新告警规则失败!')
+                        this.$Message.error('系统繁忙,修改告警规则失败!')
                         this.modal_loading = false
                     })
                     

@@ -55,7 +55,7 @@ import EditAgreement from "./Edit/EditAgreement"
                 key: 'double_or_single'
             },
             {
-                title: '功能码',
+                title: '功能码(设备上报)',
                 key: 'function_code',
                 render: (h, params) => {
                     return h('div', params.row.function_code_upper?params.row.function_code_upper:params.row.function_code_lower);
@@ -231,12 +231,12 @@ import EditAgreement from "./Edit/EditAgreement"
         //分页
         changePage(event){
           this.page_num = event
-          //this.GetAllProduction()
+          this.GetAllProduction()
         },
         //切换每页条数
         changePageSize(event){
           this.number = event
-          //this.GetAllProduction()
+          this.GetAllProduction()
         },
         //获取所有产品列表
         GetAllProduction(){

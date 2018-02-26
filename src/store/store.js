@@ -25,6 +25,7 @@ const store = new Vuex.Store({
     // ifLogined:(localStorage.getItem("member_id"))?true : false,
     loading:false,
     activeRoute:'首页', //导航显示路由名字
+    step:2,
     CurApplication:'',//当前应用
     CurProduction:'',//当前产品
     M_CreateApplication:false,

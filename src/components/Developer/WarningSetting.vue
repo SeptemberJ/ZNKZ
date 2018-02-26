@@ -21,7 +21,7 @@
         <!-- 创建新告警 -->
         <CreateWarning  :CurProduction="CurProduction" :Productions="ProductionList" :Agreements="AgreementList" v-on:refreshApplication="Refresh"/>
         <!-- 编辑告警 -->
-        <!-- <EditAgreement  :EditInfo='EditInfo' :CurProduction="CurProduction"  :Productions="ProductionList" v-on:refreshApplication="Refresh"/> -->
+        <EditWarning  :EditInfo='EditInfo' :CurProduction="CurProduction"  :Productions="ProductionList" :Agreements="AgreementList" v-on:refreshApplication="Refresh"/>
     </div>
 </template>
 <script>
@@ -29,7 +29,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import CryptoJS from "crypto-js"
 import CreateWarning from "./Create/CreateWarning"
-// import EditAgreement from "./Edit/EditAgreement"
+import EditWarning from "./Edit/EditWarning"
   export default{
     data: function () {
       return {
@@ -97,7 +97,7 @@ import CreateWarning from "./Create/CreateWarning"
                             },
                             on: {
                                 click: () => {
-                                    this.editAgreement(params.row)
+                                    this.editWarning(params.row)
                                 }
                             }
                         }, '编辑'),
@@ -115,7 +115,7 @@ import CreateWarning from "./Create/CreateWarning"
                                     title: '提示',
                                     content: '<p>确定删除该协议？</p>',
                                     onOk: () => {
-                                        this.removeAgreement(params.row)
+                                        this.removeWarning(params.row)
                                     },
                                     onCancel: () => {
                                     }
@@ -155,7 +155,8 @@ import CreateWarning from "./Create/CreateWarning"
       
     },
     components: {
-        CreateWarning
+        CreateWarning,
+        EditWarning
     },
     methods: {
         //切换当前产品
@@ -229,7 +230,7 @@ import CreateWarning from "./Create/CreateWarning"
                 switch(res.data.result){
                   case 1:
                   this.WarningData = res.data.warninglist
-                  //this.Total = res.data.sum
+                  this.Total = res.data.num
                   this.table_loading = false
                   break
                   case 0:
@@ -243,8 +244,46 @@ import CreateWarning from "./Create/CreateWarning"
                 this.$Message.error('系统繁忙，获取告警列表失败!')
             })
         },
+        //编辑告警规则
+        editWarning(Info){
+          console.log(Info)
+          this.EditInfo = Info
+          this.$store.state.M_EditWarning = true
+        },
+        //删除告警规则
+        removeWarning(Info){
+            axios.get(R_PRE_URL+'deletewarning?warningid=' + Info.id
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.$Message.success('删除告警规则成功!')
+                  this.Refresh()
+                  break
+                  case 0:
+                  this.$Message.error('删除告警规则失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
+            }).catch((error)=> {
+                console.log(error)
+                this.$Message.error('系统繁忙，删除告警规则失败!')
+                this.modal_loading = false
+            })
+        },
+        //分页
+        changePage(event){
+          this.page_num = event
+          this.GetAllProduction()
+        },
+        //切换每页条数
+        changePageSize(event){
+          this.number = event
+          this.GetAllProduction()
+        },
         Refresh(){
-            //this.GetAllProduction()
+            this.GetAllProduction()
         },
      
 

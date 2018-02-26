@@ -55,7 +55,7 @@
             </div>
         </Modal>
         <!-- 创建新产品 -->
-        <Create :_CurApplication="formCreate.A_name"  :Applications="ApplicationList"></Create>
+        <Create :_CurApplication="formCreate.A_name" :applicationId="application_id" :Applications="ApplicationList"></Create>
 
     </div>
 </template>
@@ -70,6 +70,7 @@ import Create from "./Create"
       return {
         modal_loading:false,
         ApplicationList:[],
+        application_id:'',
         formCreate:{
             A_kind:'',
             A_name:'',
@@ -159,6 +160,7 @@ import Create from "./Create"
                           this.$Message.success('创建成功!')
                           this.modal_loading = false
                           this.$store.state.M_CreateApplication = false
+                          this.application_id = res.data.id
                           this.$emit('refreshApplication')
                           break
                           case 2:
@@ -218,6 +220,10 @@ import Create from "./Create"
   }
 </script>
 <style scoped>
+.ivu-tag-dot{
+    border: 0px solid #e3e8ee !important;
+    padding: 0 !important;
+}
 .demo-upload-list{
     display: inline-block;
     width: 60px;

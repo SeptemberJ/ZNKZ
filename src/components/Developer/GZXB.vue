@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="GZXB">
         公子小白
     </div>
         
@@ -31,6 +31,8 @@
     }
   }
 </script>
-<style scoped>
-    
+<style lang="scss" scoped>
+.GZXB{
+    margin-top: 50px;
+}
 </style>
