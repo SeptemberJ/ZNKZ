@@ -2,7 +2,8 @@
 	<div class="ColorfulBlock">
             <h2>概览</h2>
             <div class="BlockWrap marginTB_20 PaddingTB_50">
-                <Row type="flex" justify="space-around" class="code-row-bg">
+            <Row :gutter="16">
+                <!-- <Row type="flex" justify="space-around" class="code-row-bg"> -->
                     <Col v-for="(overview,overviewIdx) in Info" class="marginTB_10" :xs="{ span: 10,offset: 1}" :lg="{ span: 4}">
                         <Card :bordered="true" shadow :class="{ 'BgLightGreen': overviewIdx==0, 'BgLightBlue': overviewIdx==1,'BgLightDarkGreen': overviewIdx==2,'BgLightOrange': overviewIdx==3 }">
                             <p slot="title" class="colorWhite">{{overview.name}}</p>

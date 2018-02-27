@@ -23,16 +23,18 @@
                         退出
                     </Button>
                     <div style="display: inline-block;" v-if="curMneu != '首页' && curMneu != '个人账号' && curMneu != '企业信息'">
+                        <!-- 当前应用 -->
                         <span v-if="curMneu == '用户情况' || curMneu == '活跃用户' || curMneu == 'APK升级' || curMneu == '消息推送' || curMneu == '用户反馈' || curMneu == '邮件模板' || curMneu == '常见问题管理'">
                             <b>当前应用:</b>
-                            <Select v-model="CurrentApplication" style="width:200px;marginRight:10px;">
-                                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                            <Select v-model="CurApplication" style="width:200px;marginRight:10px;">
+                                <Option v-for="item in ApplicationList" :value="item.id" :key="item.id">{{ item.apply_name }}</Option>
                             </Select>
                         </span>
+                        <!-- 当前产品 -->
                         <span v-else>
                             <b>当前产品:</b>
-                            <Select v-model="CurrentApplication" style="width:200px;marginRight:10px;">
-                                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                            <Select v-model="CurProduction" style="width:200px;marginRight:10px;">
+                                <Option v-for="item in ProductionList" :value="item.id" :key="item.id">{{ item.product_name }}</Option>
                             </Select>
                         </span>
                     </div>
@@ -105,7 +107,9 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
       return {
         isCollapsed: false,
         LeftDistance:false,
-        CurrentApplication:1,
+        // CurrentApplication:1,
+        ApplicationList:[], //应用列表
+        ProductionList:[], //产品列表
         cityList: [
             {
                 value: 0,
@@ -126,9 +130,15 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
           top: 82,
           duration: 1.5
       });
+      this.GetApplication()
+      this.GetAllProduction()
       
     },
     computed: {
+        ID(){
+            let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
+            return ID
+        },
         UserName(){
             return CryptoJS.AES.decrypt(this.$store.state.userInfo.username,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
         },
@@ -141,6 +151,22 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
             },
             set: function (newValue) {
               this.$store.state.OperatorMenuCur = newValue
+            }
+        },
+        CurApplication: {
+            get: function () {
+              return this.$store.state.CurApplication
+            },
+            set: function (newValue) {
+              this.$store.state.CurApplication = newValue
+            }
+        },
+        CurProduction: {
+            get: function () {
+              return this.$store.state.CurProduction
+            },
+            set: function (newValue) {
+              this.$store.state.CurProduction = newValue
             }
         },
         // rotateIcon () {
@@ -194,19 +220,57 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
             localStorage.clear()
             clearCookie('btznkz')
             this.$router.push({name:'登录'})
-        }
-        // ChangeDropdown(NAME){
-        //     switch(NAME){
-        //       case 'individualAccount':
-        //       break
-        //       case 'enterpriseInfo':
-        //       break
-        //       case 'logout':
-        //       localStorage.clear();
-        //       this.$router.push({name:'登录'})
-        //       break
-        //     }
-        // }
+        },
+        //获取所有应用
+        GetApplication(){
+            axios.get(R_PRE_URL+'selectallapply?userid='+this.ID
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.CurApplication = this.$store.state.CurApplication == ''?res.data.applylist[0].id:this.$store.state.CurApplication
+                  this.ApplicationList = res.data.applylist
+                  break
+                  case 0:
+                  this.$Message.error('获取应用列表失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
+            }).catch((error)=> {
+                console.log(error)
+                this.$Message.error('系统繁忙，获取应用列表失败!')
+                this.modal_loading = false
+            })
+        },
+        //获取所有产品列表
+        GetAllProduction(){
+            axios.get(R_PRE_URL+'selectallpro?userid='+this.ID
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  let ListTemp = []
+                  res.data.prolist.map(item=>{
+                    item.map(item_E=>{
+                        ListTemp.push(item_E)
+                    })
+                  })
+                  this.CurProduction = this.$store.state.CurProduction == ''?ListTemp[0].id:this.$store.state.CurProduction
+                  this.ProductionList = ListTemp
+                  break
+                  case 0:
+                  this.$Message.error('获取产品列表失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
+            }).catch((error)=> {
+                console.log(error)
+                this.$Message.error('系统繁忙,获取产品列表失败!')
+                this.modal_loading = false
+            })
+        },
      
 
     }

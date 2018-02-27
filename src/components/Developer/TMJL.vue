@@ -4,11 +4,25 @@
         <Card :bordered="true" class="marginTB_20">
             <div>
                 <Row>
-                    <Col span="8"><img src="http://manage.dtston.com/static/img/bg_yingshi_r.png"></Col>
+                    <Col span="8"><img src="http://manage.dtston.com/static/img/tianmao.png"></Col>
                     <Col span="16">
-                        <h1>莹石摄像头简介</h1>
-                        <p>莹石摄像头——互联网云台摄像机</p>
-                        <p>旨在让视频应用变得轻松、简单、安全，为家庭、用户提供传递关爱、尽享沟通、分享乐趣。</p>
+                        <h1>天猫精灵简介</h1>
+                        <p>天猫精灵——AI智能语音产品 </p>
+                        <p>可实现智能家居控制、语音购物、手机充值、叫外卖、音频音乐播放等，新一代人机交互贴心助手。</p>
+                        <Button type="primary" class="marginT_20" @click="OpenLink(Link_TMJL)">接入流程</Button>
+                    </Col>
+                </Row>
+            </div>
+        </Card>
+        <Card :bordered="true" class="marginTB_20">
+            <div>
+                <Row>
+                    <Col span="8"><img src="static/img/icon/contact.png"></Col>
+                    <Col span="16">
+                        <h1 class="marginB_10">联系方式</h1>
+                        <p>商务合作： 400-880-4428</p>
+                        <p>总机号码： 021-3100-7227</p>
+                        <p>邮箱地址： service@btzoon.com</p>
                     </Col>
                 </Row>
             </div>
@@ -21,12 +35,13 @@
   export default{
     data: function () {
       return {
+        Link_TMJL:'https://github.com/dtston-dtcloud/dtcloud-docs/blob/master/src/zh-cn/guidelines/tianmaojingling.md'
       }
     },
     mounted: function () {
       
     },
-    created: function () {
+    created(){
       
     },
     computed: {
@@ -38,6 +53,9 @@
     components: {
     },
     methods: {
+        OpenLink(LINK){
+            window.open(LINK)
+        }
      
 
     }

@@ -51,10 +51,10 @@
             <MenuItem name="iOS">iOS</MenuItem>
             <MenuItem name="OpenAPI">OpenAPI</MenuItem>
         </Submenu>
-        <MenuItem name="极客社区">
+        <!-- <MenuItem name="极客社区">
             <Icon type="ios-paw" size="22"></Icon>
             极客社区
-        </MenuItem>
+        </MenuItem> -->
     </Menu>
 </Sider>
 </template>
