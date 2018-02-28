@@ -42,7 +42,7 @@ import LineChart from '../../components/Common/LineChart.vue'
             'Htit':'数据趋势',
             'Sdata':[
                 {'BtName':'用户总数','value':'用户总数'},
-                {'BtName':'新增用户','value':'新增用户'}
+                {'BtName':'新增用户','value':'新增用户2'}
             ]
         },
         tableData1: [

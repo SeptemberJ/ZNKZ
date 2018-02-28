@@ -55,7 +55,7 @@
             </Form>
         </div>
         <div slot="footer" style="text-align:center">
-            <Button type="error" size="large" :loading="modal_loading" @click="handleCreate('formCreateP')">确定创建</Button>
+            <Button type="error" size="large" :loading="modal_loading" @click="handleCreateP('formCreateP')">确定创建</Button>
             <Button type="primary" size="large"  @click="Next_creatAgreement()">下一步</Button>
         </div>
     </Modal>
@@ -259,6 +259,7 @@
 <script>
 import Vue from 'vue'
 import axios from 'axios'
+import CryptoJS from "crypto-js"
   export default{
     props:['CurApplication','Applications'],
     data: function () {
@@ -564,13 +565,13 @@ import axios from 'axios'
                 if (valid) {
                     //let App_id = this.Applications.filter(item => item.id == this.CurApplication)[0].id
                     let CreatInfo = {
-                      applyid:this.CurApplication,
-                      product_name:this.formCreateP.P_name,
-                      product_kind:this.formCreateP.P_kind,
-                      WiFi_module:this.formCreateP.P_wifi,
-                      Technical_scheme:this.formCreateP.P_programme,
-                      product_pic:this.formCreateP.P_img,
-                      //apply_type:this.P_belongKind
+                        userid:this.ID,
+                        applyid:this.CurApplication,
+                        product_name:this.formCreateP.P_name,
+                        product_kind:this.formCreateP.P_kind,
+                        WiFi_module:this.formCreateP.P_wifi,
+                        Technical_scheme:this.formCreateP.P_programme,
+                        product_pic:this.formCreateP.P_img,
                     }
                     //this.modal_loading = true
                     let DATA = {'users':CreatInfo}

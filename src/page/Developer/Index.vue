@@ -14,7 +14,8 @@
                     
 
                     <div :style="{float: 'right',marginRight:LeftDistance?'0px':'200px'}">
-                        <Button @click="Logout" type="text">shbt
+                        <Button @click="Logout" type="text">
+                            {{UserName}}
                             <Icon type="power" size="14"></Icon>
                             退出
                         </Button>
@@ -53,6 +54,8 @@
 <script>
 import Vue from 'vue'
 import axios from 'axios'
+import CryptoJS from "crypto-js"
+import {clearCookie} from '../../util/utils'
 import SiderBar from '../../components/Developer/SiderBar.vue'
 import Home from '../../components/Developer/Home.vue'
 import IndividualAccount from '../../components/Common/IndividualAccount.vue'
@@ -93,7 +96,10 @@ import Community from '../../components/Developer/Community.vue'
       
     },
     computed: {
-      activeRoute(){
+        UserName(){
+            return CryptoJS.AES.decrypt(this.$store.state.userInfo.username,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
+        },
+        activeRoute(){
         return this.$store.state.activeRoute
        },
        curMneu: {
@@ -160,8 +166,10 @@ import Community from '../../components/Developer/Community.vue'
             this.$router.push({name:'运营者平台'})
         },
         Logout(){
+            localStorage.clear()
+            clearCookie('btznkz')
             this.$router.push({name:'登录'})
-        }
+        },
      
 
     }

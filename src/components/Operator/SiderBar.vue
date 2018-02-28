@@ -19,8 +19,9 @@
                 <Icon type="ios-people" size="22"></Icon>
                 用户管理
             </template>
-            <MenuItem name="用户情况">用户情况</MenuItem>
             <MenuItem name="活跃用户">活跃用户</MenuItem>
+            <MenuItem name="用户情况">用户情况</MenuItem>
+            <MenuItem name="子账户管理" v-if="Type=='大客户'">子账户管理</MenuItem>
         </Submenu>
         <Submenu name="设备管理">
             <template slot="title">
@@ -62,7 +63,7 @@
 </Sider>
 </template>
 <script>
-
+import CryptoJS from "crypto-js"
   export default{
     data: function () {
       return {
@@ -90,6 +91,10 @@
                 'menu-icon',
                 this.isCollapsed ? 'rotate-icon' : '123'
             ];
+        },
+        Type(){
+            let Type = CryptoJS.AES.decrypt(this.$store.state.userInfo.userType,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
+            return Type
         },
       
     },

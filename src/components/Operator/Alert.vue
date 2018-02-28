@@ -14,7 +14,7 @@
             </Col>
         </Row>
         <div  class="BlockWrap marginTB_20">
-            <Table border :columns="columnsAlert" :data="dataAlert"></Table>
+            <Table border :loading="table_loading" :columns="columnsAlert" :data="dataAlert"></Table>
             <Page v-if="Total>0" class="marginT_20 marginB_150" :total="Total" show-total style="float: right;" :current="page_num" @on-change="changePage" @on-page-size-change="changePageSize" show-sizer></Page>
         </div>
     </div>
@@ -28,6 +28,7 @@ import LineChart from '../../components/Common/LineChart.vue'
   export default{
     data: function () {
       return {
+        table_loading:true,
         signDate:'',
         Total:0,
         page_num:1,  //页数
@@ -44,29 +45,30 @@ import LineChart from '../../components/Common/LineChart.vue'
         columnsAlert: [
             {
                 title: 'MAC',
-                key: 'MAC'
+                key: 'fmac'
             },
             {
                 title: '告警内容',
-                key: 'content'
+                key: 'fwarnContent'
             },
             {
                 title: '发生时间',
-                key: 'date'
+                key: 'fhappenTime'
             },
             {
                 title: '告警类型',
-                key: 'kind'
+                key: 'fwarnType'
             },
         ],
-        dataAlert:[{'MAC':'123','content':'内容。。。','date':'2017-09-09','kind':'通知型'}]
+        dataAlert:[]
       }
     },
     mounted: function () {
       
     },
     created() {
-        //this.GetOverViewData()
+        this.GetOverViewData()
+        this.GetWarnList(this.signDate)
     },
     computed: {
         ID(){
@@ -87,30 +89,60 @@ import LineChart from '../../components/Common/LineChart.vue'
         GetOverViewData(){
             let Info = {
               userid:this.ID,
-              product_id:this.$store.state.CurProduction,
+              productid:this.$store.state.CurProduction,
             }
             let DATA = {'users':Info}
-            axios.post(R_PRE_URL + 'selectnumber1',DATA
+            axios.post(R_PRE_URL + 'yeswarning',DATA
               ).then((res)=> {
                 this.OverView = res.data.info.overview
             }).catch((error)=> {
               console.log(error)
             })
         },
+        //告警列表
+        GetWarnList(Date){
+            let Info = {
+              userid:this.ID,
+              productid:this.$store.state.CurProduction,
+              faddtime:Date?Date:'',
+              page:this.page_num,
+              number:this.number
+            }
+            let DATA = {'users':Info}
+            axios.post(R_PRE_URL + 'warningdetail',DATA
+              ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.dataAlert = res.data.warnlist
+                  this.Total = res.data.sunmun
+                  this.table_loading = false
+                  break
+                  case 0:
+                  this.$Message.error('获取告警明细列表失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
+            }).catch((error)=> {
+              console.log(error)
+              this.$Message.error('系统繁忙,获取告警明细列表失败!')
+            })
+        },
         //分页
         changePage(event){
           this.page_num = event
-          //this.GetAuthorizationList(this.signDate)
+          this.GetWarnList(this.signDate)
         },
         //切换每页条数
         changePageSize(event){
           this.number = event
-          //this.GetAuthorizationList(this.signDate)
+          this.GetWarnList(this.signDate)
         },
         //切换注册时间
         ChangeSignDate(Time){
             this.signDate = Time
-            //this.GetAuthorizationList(Time)
+            this.GetWarnList(Time)
         }
      
 

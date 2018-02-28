@@ -56,7 +56,7 @@ import SchatPie from '../../components/Common/SchatPie.vue'
         },
         onlineData:{
             'Htit':'在线数据',
-            'colorList':['#da70d6','#32cd32'],
+            'colorList':['#ff69b4','#333'],
             'kind':'onlineData',
             'url':'PieChart2'
         },

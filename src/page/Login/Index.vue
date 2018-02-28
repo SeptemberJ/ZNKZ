@@ -97,10 +97,13 @@ import {setCookie,getCookie,getCryptoJsCookie,Encrypt,Decrypt} from '../../util/
                       case 1:
                       let Encryption_name = CryptoJS.AES.encrypt(res.data.fname,this.$store.state.PlainText).toString()
                       let Encryption_id = CryptoJS.AES.encrypt(res.data.ID,this.$store.state.PlainText).toString()
+                      let Encryption_type = CryptoJS.AES.encrypt(res.data.fstatus,this.$store.state.PlainText).toString()
                       localStorage.setItem("BT_name",Encryption_name)
                       localStorage.setItem("BT_id",Encryption_id)
+                      localStorage.setItem("BT_type",Encryption_type)
                       this.$store.state.userInfo.username = Encryption_name
                       this.$store.state.userInfo.userID = Encryption_id
+                      this.$store.state.userInfo.userType = Encryption_type
                       setCookie('btznkz',Encrypt(cookieStr),6)
                       this.$router.push({name:'运营者平台'})
                       break

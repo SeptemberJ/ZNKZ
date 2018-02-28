@@ -15,6 +15,7 @@ const store = new Vuex.Store({
     userInfo:{
         username:localStorage.getItem("BT_name"),
         userID:localStorage.getItem("BT_id"),
+        userType:localStorage.getItem("BT_type"),
         //register_type:localStorage.getItem("register_type"),
         // useravatar:localStorage.getItem("user_avatar"),
     },
@@ -40,6 +41,7 @@ const store = new Vuex.Store({
     M_SeeProduction:false,
     M_SeeAgreement:false,
     M_SeeWarning:false,
+    M_CreateMessage:false,
 
     // newsKind:'1',
     // newsPage:1,

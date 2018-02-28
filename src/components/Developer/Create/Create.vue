@@ -567,12 +567,13 @@ import axios from 'axios'
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         let CreatInfo = {
-                          applyid:this.applicationId,
-                          product_name:this.formCreateP.P_name,
-                          product_kind:this.formCreateP.P_kind,
-                          WiFi_module:this.formCreateP.P_wifi,
-                          Technical_scheme:this.formCreateP.P_programme,
-                          product_pic:this.formCreateP.P_img,
+                            userid:this.ID,
+                            applyid:this.applicationId,
+                            product_name:this.formCreateP.P_name,
+                            product_kind:this.formCreateP.P_kind,
+                            WiFi_module:this.formCreateP.P_wifi,
+                            Technical_scheme:this.formCreateP.P_programme,
+                            product_pic:this.formCreateP.P_img,
                         }
                         this.modal_loading = true
                         let DATA = {'users':CreatInfo}

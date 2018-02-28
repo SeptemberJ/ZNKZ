@@ -46,6 +46,11 @@
                         <Icon type="ios-home-outline" slot="prepend" size="22"></Icon>
                     </Input>
                 </FormItem>
+                <FormItem prop="big_customer_id">
+                    <Input class="transparentBg" type="text" v-model="formSign.big_customer_id" placeholder="请输入所属大客户公司ID">
+                        <Icon type="ios-home-outline" slot="prepend" size="22"></Icon>
+                    </Input>
+                </FormItem>
                 <FormItem>
                     <Button type="primary" @click="handleSubmit('formSign')">注册</Button>
                     <Button class="colorWhite" type="text" @click="ToLogin">去登录</Button>
@@ -77,7 +82,8 @@ import CryptoJS from "crypto-js"
             psd:'',
             psdAgain:'',
             name:'',
-            company:''
+            company:'',
+            big_customer_id:''
         },
         ruleSign: {
             phone: [
@@ -181,6 +187,7 @@ import CryptoJS from "crypto-js"
                   fusername:this.formSign.name,
                   fcompanyname:this.formSign.company,
                   fpassword:CryptoJS.MD5(this.formSign.psd).toString(),
+                  big_customer_id:this.formSign.big_customer_id
                  }
 
                  // if(this.formSign.code!=this.RealCode){
@@ -188,7 +195,6 @@ import CryptoJS from "crypto-js"
                  //  return false
                  // }
                  let DATA = {'users':SignInfo}
-
                  if(this.formSign.psd!=this.formSign.psdAgain){
                     this.$Message.error('两次输入的密码不一致!')
                     return false
@@ -204,13 +210,14 @@ import CryptoJS from "crypto-js"
                       this.ToLogin()
                       break
                       case 2:
-                      this.$Message.error('改手机号已注册!')
+                      this.$Message.error('该手机号已注册!')
                       break
                       default:
                       this.$Message.error('系统繁忙!')
                     }
                   }).catch((error)=> {
                     console.log(error)
+                    this.$Message.error('系统繁忙!')
                   })
                 
               } else {

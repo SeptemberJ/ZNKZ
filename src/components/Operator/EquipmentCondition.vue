@@ -147,7 +147,7 @@ import LineChart from '../../components/Common/LineChart.vue'
                 number:this.number,
                 userid:this.ID,
                 product_id:this.$store.state.CurProduction,
-                date:Date
+                date:Date?Date:''
             }
             let DATA = {'users':Info}
             axios.post(R_PRE_URL + 'selectsbmx1',DATA

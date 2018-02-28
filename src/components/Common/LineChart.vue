@@ -78,28 +78,36 @@ import echarts from 'echarts'
         console.log(IDX+'---'+VALUE)
         this.BtCur = IDX
         switch(VALUE){
-          case '设备总数':
-          this.getChartData('selecteq')
-          break
-          case '设备激活数':
-          this.getChartData('selectjihuo')
-          break
-          case '设备活跃数':
-          this.getChartData('selecthuoyue')
-          break
-          //用户
-          case '累计用户':
-          this.getChartData('selectleijiuser')
-          break
-          case '新增用户':
-          this.getChartData('selectnewuser')
-          break
-          case '活跃用户':
-          this.getChartData('selecthuoyueuser')
-          break
-          case '已绑定设备用户':
-          this.getChartData('selectlockuser')
-          break
+          //首页
+            case '设备总数':
+            this.getChartData('selecteq')
+            break
+            case '设备激活数':
+            this.getChartData('selectjihuo')
+            break
+            case '设备活跃数':
+            this.getChartData('selecthuoyue')
+            break
+            //用户
+            case '累计用户':
+            this.getChartData('selectleijiuser')
+            break
+            case '新增用户':
+            this.getChartData('selectnewuser')
+            break
+            case '活跃用户':
+            this.getChartData('selecthuoyueuser')
+            break
+            case '已绑定设备用户':
+            this.getChartData('selectlockuser')
+            break
+          //用户管理
+            case '用户总数':
+            this.getChartData_user('usertotal1')
+            break
+            case '新增用户2':
+            this.getChartData_user('usertotal2')
+            break
           //设备情况
           case '设备总数2':
           this.getChartData_appoint('selectinsertsb1')
@@ -151,6 +159,31 @@ import echarts from 'echarts'
           day:this.Day,
           userid:this.ID,
           product_id:this.$store.state.CurProduction,
+        }
+        let DATA = {'users':Info}
+        var base = new Date().getTime()//+new Date(2016, 9, 8);
+        var oneDay = 24 * 3600 * 1000
+        var data = []
+        axios.post(R_PRE_URL + KIND ,DATA
+          ).then((res)=> {
+            let onlyData = res.data.info.reverse()
+            for (var i = 0; i <this.Day; i++) {
+                var now = new Date(base -= oneDay)
+                var dayStr = [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('-')
+                data.push([dayStr, onlyData[i]])
+            }
+            this.data = data
+            this.drawPie(this.Info.Htit)
+        }).catch((error)=> {
+          console.log(error)
+        })
+      },
+       //获取指定应用下的用户数据
+      getChartData_user(KIND){
+        let Info = {
+          day:this.Day,
+          userid:this.ID,
+          apply_id:this.$store.state.CurApplication,
         }
         let DATA = {'users':Info}
         var base = new Date().getTime()//+new Date(2016, 9, 8);

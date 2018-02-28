@@ -195,14 +195,16 @@ import EditWarning from "./Edit/EditWarning"
             ).then((res)=> {
                 switch(res.data.result){
                   case 1:
-                  let ListTemp = []
-                  res.data.prolist.map(item=>{
-                    item.map(item_E=>{
-                        ListTemp.push(item_E)
-                    })
-                  })
-                  this.CurProduction = this.$store.state.CurProduction == ''?ListTemp[0].id:this.$store.state.CurProduction
-                  this.ProductionList = ListTemp
+                  // let ListTemp = []
+                  // res.data.prolist.map(item=>{
+                  //   item.map(item_E=>{
+                  //       ListTemp.push(item_E)
+                  //   })
+                  // })
+                  // this.CurProduction = this.$store.state.CurProduction == ''?ListTemp[0].id:this.$store.state.CurProduction
+                  // this.ProductionList = ListTemp
+                  this.CurProduction = this.$store.state.CurProduction == ''?res.data.prolist[0].id:this.$store.state.CurProduction
+                  this.ProductionList = res.data.prolist
                   this.GetAgreementList()
                   this.GetWarningList()
                   break

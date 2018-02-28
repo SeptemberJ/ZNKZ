@@ -26,14 +26,14 @@
                         <!-- 当前应用 -->
                         <span v-if="curMneu == '用户情况' || curMneu == '活跃用户' || curMneu == 'APK升级' || curMneu == '消息推送' || curMneu == '用户反馈' || curMneu == '邮件模板' || curMneu == '常见问题管理'">
                             <b>当前应用:</b>
-                            <Select v-model="CurApplication" style="width:200px;marginRight:10px;">
+                            <Select v-model="CurApplication" style="width:200px;marginRight:10px;" @on-change="ChangeCurApplication">
                                 <Option v-for="item in ApplicationList" :value="item.id" :key="item.id">{{ item.apply_name }}</Option>
                             </Select>
                         </span>
                         <!-- 当前产品 -->
                         <span v-else>
                             <b>当前产品:</b>
-                            <Select v-model="CurProduction" style="width:200px;marginRight:10px;">
+                            <Select v-model="CurProduction" style="width:200px;marginRight:10px;" @on-change="ChangeCurProduction">
                                 <Option v-for="item in ProductionList" :value="item.id" :key="item.id">{{ item.product_name }}</Option>
                             </Select>
                         </span>
@@ -62,11 +62,12 @@
                     <EnterpriseInfo v-if="curMneu == '企业信息'"></EnterpriseInfo>
                     <UserSituation v-if="curMneu == '用户情况'"></UserSituation>
                     <ActiveUser v-if="curMneu == '活跃用户'"></ActiveUser>
-                    <EquipmentCondition v-if="curMneu == '设备情况'"></EquipmentCondition>
-                    <EquipmentAuthorization v-if="curMneu == '设备授权'"></EquipmentAuthorization>
-                    <Alert v-if="curMneu == '警告管理'"></Alert>
-                    <ApkUpgrade v-if="curMneu == 'APK升级'"></ApkUpgrade>
-                    <FirmwareUpdate v-if="curMneu == '固件升级'"></FirmwareUpdate>
+                    <Subaccount v-if="curMneu == '子账户管理' && Type=='大客户'"></Subaccount>
+                    <EquipmentCondition v-if="curMneu == '设备情况'" ref="EquipmentCondition"></EquipmentCondition>
+                    <EquipmentAuthorization v-if="curMneu == '设备授权'" ref="EquipmentAuthorization"></EquipmentAuthorization>
+                    <Alert v-if="curMneu == '警告管理'" ref="Alert"></Alert>
+                    <ApkUpgrade v-if="curMneu == 'APK升级'" ref="ApkUpgrade"></ApkUpgrade>
+                    <FirmwareUpdate v-if="curMneu == '固件升级'" ref="FirmwareUpdate"></FirmwareUpdate>
                     <MessagePush v-if="curMneu == '消息推送'"></MessagePush>
                     <UserFeedback v-if="curMneu == '用户反馈'"></UserFeedback>
                     <MailTemplate v-if="curMneu == '邮件模板'"></MailTemplate>
@@ -94,6 +95,7 @@ import EnterpriseInfo from '../../components/Common/EnterpriseInfo.vue'
 import Alert from '../../components/Operator/Alert.vue'
 import UserSituation from '../../components/Operator/UserSituation.vue'
 import ActiveUser from '../../components/Operator/ActiveUser.vue'
+import Subaccount from '../../components/Operator/Subaccount.vue'
 import EquipmentCondition from '../../components/Operator/EquipmentCondition.vue'
 import EquipmentAuthorization from '../../components/Operator/EquipmentAuthorization.vue'
 import ApkUpgrade from '../../components/Operator/ApkUpgrade.vue'
@@ -138,6 +140,10 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
         ID(){
             let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
             return ID
+        },
+        Type(){
+            let Type = CryptoJS.AES.decrypt(this.$store.state.userInfo.userType,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
+            return Type
         },
         UserName(){
             return CryptoJS.AES.decrypt(this.$store.state.userInfo.username,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
@@ -189,6 +195,7 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
         EnterpriseInfo,
         UserSituation,
         ActiveUser,
+        Subaccount,
         EquipmentCondition,
         EquipmentAuthorization,
         Alert,
@@ -249,14 +256,15 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
             ).then((res)=> {
                 switch(res.data.result){
                   case 1:
-                  let ListTemp = []
-                  res.data.prolist.map(item=>{
-                    item.map(item_E=>{
-                        ListTemp.push(item_E)
-                    })
-                  })
-                  this.CurProduction = this.$store.state.CurProduction == ''?ListTemp[0].id:this.$store.state.CurProduction
-                  this.ProductionList = ListTemp
+                  // let ListTemp = []
+                  // res.data.prolist.map(item=>{
+                  //   item.map(item_E=>{
+                  //       ListTemp.push(item_E)
+                  //   })
+                  // })
+                  // this.CurProduction = this.$store.state.CurProduction == ''?ListTemp[0].id:this.$store.state.CurProduction
+                   this.CurProduction = this.$store.state.CurProduction == ''?res.data.prolist[0].id:this.$store.state.CurProduction
+                  this.ProductionList = res.data.prolist//ListTemp
                   break
                   case 0:
                   this.$Message.error('获取产品列表失败!')
@@ -270,6 +278,37 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
                 this.$Message.error('系统繁忙,获取产品列表失败!')
                 this.modal_loading = false
             })
+        },
+        //切换当前应用
+        ChangeCurApplication(){
+            switch(this.curMneu){
+                case 'APK升级':
+                this.$refs.ApkUpgrade.GetApkList()
+                break
+            }
+        },
+        //切换当前产品
+        ChangeCurProduction(){
+            switch(this.curMneu){
+                case '固件升级':
+                this.$refs.FirmwareUpdate.GetFirmwareList()
+                break
+                case '警告管理':
+                this.$refs.Alert.GetOverViewData()
+                this.$refs.Alert.GetWarnList()
+                break
+                case '设备情况':
+                this.$refs.EquipmentCondition.GetOverViewData()
+                this.$refs.EquipmentCondition.GetAuthorizationList()
+                break
+                case '设备授权':
+                this.$refs.EquipmentAuthorization.GetOverViewData()
+                this.$refs.EquipmentAuthorization.GetAuthorizationList()
+                break
+
+                
+            }
+            
         },
      
 
