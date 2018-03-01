@@ -52,19 +52,19 @@ import SchatPie from '../../components/Common/SchatPie.vue'
             'Htit':'激活数据',
             'colorList':['#ff7f50','#87cefa'],
             'kind':'activationData',
-            'url':'PieChart1'
+            'url':'selectjhuser'
         },
         onlineData:{
             'Htit':'在线数据',
             'colorList':['#ff69b4','#333'],
             'kind':'onlineData',
-            'url':'PieChart2'
+            'url':'PieChart2.json'
         },
         modelData:{
             'Htit':'机型数据',
             'colorList':['#6495ed','#ff69b4','#ba55d3', '#cd5c5c', '#ffa500'],
             'kind':'modelData',
-            'url':'PieChart3'
+            'url':'PieChart3.json'
         },
 
       }
@@ -102,6 +102,7 @@ import SchatPie from '../../components/Common/SchatPie.vue'
               console.log(error)
             })
         },
+        
      
 
     }

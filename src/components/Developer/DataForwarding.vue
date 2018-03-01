@@ -1,6 +1,11 @@
 <template>
-    <div>
-        数据转发
+    <div class="DataForwarding">
+        <Row type="flex" justify="space-between" class="code-row-bg">
+            <Col span="4"><h2>数据转发</h2></Col>
+            <Col span="4" class="TextRight">
+                <Button type="primary" icon="android-add" @click="Apply">首次申请数据转发</Button>
+            </Col>
+        </Row>
     </div>
         
 </template>
@@ -14,7 +19,7 @@
     mounted: function () {
       
     },
-    created: function () {
+    created() {
       
     },
     computed: {
@@ -26,11 +31,16 @@
     components: {
     },
     methods: {
+        Apply(){
+
+        }
      
 
     }
   }
 </script>
-<style scoped>
-    
+<style lang="scss" scoped>
+.DataForwarding{
+    margin-top: 50px;
+}
 </style>

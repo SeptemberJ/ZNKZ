@@ -111,18 +111,9 @@ import CryptoJS from "crypto-js"
      particlesJS.load('particlesSign','/static/particlesData.js');
     },
    created() {
-    // axios.get(PRE_URL+'static/json/Index.json'
-    //   ).then((res)=> {
-    //     this.IndexInfor = res.data
-    // }).catch((error)=> {
-    //   console.log(error)
-    // })
      
    },
    computed: {
-    // isMobile(){
-    //   return this.$store.state.isMobile
-    //  }
     
    },
     components: {
@@ -145,7 +136,7 @@ import CryptoJS from "crypto-js"
         }
         
         //倒计时
-        var countdown = 10;
+        var countdown = 60;
         var _this = this
         this.GetRealCode()
         settime()
@@ -190,10 +181,10 @@ import CryptoJS from "crypto-js"
                   big_customer_id:this.formSign.big_customer_id
                  }
 
-                 // if(this.formSign.code!=this.RealCode){
-                 //  this.$Message.error('手机验证码不正确!')
-                 //  return false
-                 // }
+                 if(this.formSign.code!=this.RealCode){
+                  this.$Message.error('手机验证码不正确!')
+                  return false
+                 }
                  let DATA = {'users':SignInfo}
                  if(this.formSign.psd!=this.formSign.psdAgain){
                     this.$Message.error('两次输入的密码不一致!')
@@ -217,7 +208,7 @@ import CryptoJS from "crypto-js"
                     }
                   }).catch((error)=> {
                     console.log(error)
-                    this.$Message.error('系统繁忙!')
+                    this.$Message.error('系统繁忙，注册失败!')
                   })
                 
               } else {

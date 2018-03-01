@@ -111,7 +111,7 @@ import CryptoJS from "crypto-js"
         return false
         }
         //倒计时
-        var countdown = 10;
+        var countdown = 60;
         var _this = this
         this.GetRealCode()
         settime()
@@ -148,6 +148,10 @@ import CryptoJS from "crypto-js"
       handleSubmit(name) {
           this.$refs[name].validate((valid) => {
               if (valid) {
+                if(this.formModify.code!=this.RealCode){
+                  this.$Message.error('手机验证码不正确!')
+                  return false
+                 }
                  if(this.formModify.psd!=this.formModify.psdAgain){
                   this.$Message.error('两次输入的密码不一致!')
                   return false
@@ -163,11 +167,16 @@ import CryptoJS from "crypto-js"
                       case 1:
                       this.$Message.success('修改密码成功!')
                       this.ToLogin()
+                      break
+                      case 0:
+                      this.$Message.error('修改密码失败,请确认输入信息是否正确!')
+                      break
                       default:
                       this.$Message.error('系统繁忙!')
                     }
                   }).catch((error)=> {
                     console.log(error)
+                    console.log('系统繁忙,修改密码失败!')
                   })
               } else {
                   this.$Message.error('请确保信息已全部填写!');

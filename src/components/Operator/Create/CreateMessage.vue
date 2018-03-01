@@ -3,34 +3,38 @@
         <!-- 新增消息 -->
         <Modal v-model="ifShowModal" width="600" :mask-closable="false">
             <p slot="header">
-                <Icon type="information-circled"></Icon>
+                <Icon type="email-unread"></Icon>
                 <span>新增消息</span>
             </p>
             <div style="">
-                <!-- <Form ref="formCreate" :model="formCreate" :rules="ruleCreate"  label-position="left" :label-width="100">
-                    <FormItem label="应用分类" prop="A_kind">
-                        <Select v-model="formCreate.A_kind" placeholder="请选择应用类别">
-                            <Option value="智能家居">智能家居</Option>
-                            <Option value="智慧社区">智慧社区</Option>
-                            <Option value="智能硬件">智能硬件</Option>
-                        </Select>
+                <p class="marginTB_10">
+                  <Icon type="information-circled" style="color:orange;margin-right:10px;"></Icon>第一次在该应用下新增消息请确认已填写极光配置
+                </p>
+                <Form ref="formCreateMessage" :model="formCreateMessage" :rules="ruleCreateMessage"  label-position="left" :label-width="100">
+                    <FormItem label="消息标题" prop="name">
+                        <Input v-model="formCreateMessage.name" placeholder='请输入消息标题'></Input>
                     </FormItem>
-                    <FormItem label="应用名称" prop="A_name">
-                        <Input v-model="formCreate.A_name"></Input>
+                    <FormItem label="消息内容" prop="content">
+                        <Input type="textarea" :autosize="true" :maxlength='100' v-model="formCreateMessage.content" placeholder='请输入消息内容（100字以内）...'></Input>
                     </FormItem>
-                    <FormItem label="应用说明" prop="A_introduction">
-                        <Input v-model="formCreate.A_introduction" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入应用说明"></Input>
+                    <FormItem label="推送方式" prop="pushWay">
+                      <RadioGroup v-model="formCreateMessage.pushWay">
+                          <Radio label="极光推送"></Radio>
+                      </RadioGroup>
                     </FormItem>
-                    <FormItem label="应用包名" prop="A_android">
-                        <Input v-model="formCreate.A_android" placeholder="请输入应用包名（50字以内）"></Input>
+                    <FormItem label="推送人群" prop="crowd">
+                      <RadioGroup v-model="formCreateMessage.crowd">
+                          <Radio label="群发"></Radio>
+                          <Radio label="单发"></Radio>
+                      </RadioGroup>
                     </FormItem>
-                    <FormItem label="应用包名" prop="A_ios">
-                        <Input v-model="formCreate.A_ios" placeholder="请输入Bundle Id（50字以内）"></Input>
+                    <FormItem label="" prop="tel" v-if="formCreateMessage.crowd == '单发'">
+                        <Input v-model="formCreateMessage.tel" placeholder='请输入用户手机号'></Input>
                     </FormItem>
-                </Form> -->
+                </Form>
             </div>
             <div slot="footer" style="text-align:center">
-                <Button type="error" size="large" :loading="modal_loading" @click="handleCreate('formCreate')">确定创建</Button>
+                <Button type="error" size="large" :loading="modal_loading" @click="handleCreateMessage('formCreateMessage')">确定创建</Button>
             </div>
         </Modal>
 
@@ -48,20 +52,25 @@ import CryptoJS from "crypto-js"
         modal_loading:false,
         ApplicationList:[],
         application_id:'',
-        formCreate:{
-            A_kind:'',
-            A_name:'',
-            A_introduction:'',
-            A_img:'',
-            A_android:'',
-            A_ios:'',
+        formCreateMessage:{
+            name:'',
+            content:'',
+            pushWay:'极光推送',
+            crowd:'群发',
+            tel:''
         },
-        ruleCreate: {
-            A_kind: [
-                { required: true, message: '请选择应用类别', trigger: 'change' }
+        ruleCreateMessage: {
+            name: [
+                { required: true, message: '请输入消息标题', trigger: 'blur' }
             ],
-            A_name: [
-                { required: true, message: '应用名称不能为空', trigger: 'blur' }
+            content: [
+                { required: true, message: '请输入消息内容', trigger: 'blur' }
+            ],
+            pushWay: [
+                { required: true, message: '请选择推送方式', trigger: 'change' }
+            ],
+            crowd: [
+                { required: true, message: '请选择推送人群', trigger: 'change' }
             ],
         }
       }
@@ -93,79 +102,63 @@ import CryptoJS from "crypto-js"
     components: {
     },
     methods: {
-        handleCreate (name) {
+      //创建推送消息
+        handleCreateMessage (name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
-                    let CreatInfo = {
-                      userid:this.ID,
-                      apply_type:this.formCreate.A_kind,
-                      apply_name:this.formCreate.A_name,
-                      apply_introduction:this.formCreate.A_introduction,
-                      apply_icon:this.formCreate.A_img,
-                      Android_name:this.formCreate.A_android,
-                      ios_name:this.formCreate.A_ios
-                    }
-                    this.modal_loading = true
-                    let DATA = {'users':CreatInfo}
-                    axios.post(R_PRE_URL+'insertapply',DATA
-                    ).then((res)=> {
-                        switch(res.data.result){
-                          case 1:
-                          this.$Message.success('创建成功!')
-                          this.modal_loading = false
-                          this.$store.state.M_CreateApplication = false
-                          this.application_id = res.data.id
-                          this.$emit('refreshApplication')
-                          break
-                          case 2:
-                          this.$Message.error('应用名称重复!')
-                          this.modal_loading = false
-                          break
-                          case 0:
-                          this.$Message.error('创建应用失败!')
-                          this.modal_loading = false
-                          break
-                          default:
-                          this.$Message.error('系统繁忙!')
-                          this.modal_loading = false
-                        }
-                    }).catch((error)=> {
-                        console.log(error)
-                        this.$Message.error('系统繁忙，创建应用失败!')
+                  //验证手机号码
+                  if(this.formCreateMessage.crowd == '单发' && !this.formCreateMessage.tel){
+                    this.$Message.error('请输入用户手机号!')
+                    return false
+                  }
+                  if(this.formCreateMessage.crowd == '群发'){
+                    this.formCreateMessage.tel = ''
+                  }
+                  let CreatInfo = {
+                    userid:this.ID,
+                    apply_id:this.$store.state.CurApplication,
+                    ftitle:this.formCreateMessage.name,
+                    fpushcontent:this.formCreateMessage.content,
+                    fpushmode:this.formCreateMessage.pushWay,
+                    fpushmasses:this.formCreateMessage.crowd,
+                    fpushmobile:this.formCreateMessage.tel
+                  }
+                  this.modal_loading = true
+                  let DATA = {'users':CreatInfo}
+                  axios.post(R_PRE_URL+'addmsg',DATA
+                  ).then((res)=> {
+                      switch(res.data.result){
+                        case 1:
+                        this.$Message.success('创建推送消息成功!')
                         this.modal_loading = false
-                    })
+                        this.$store.state.M_CreateMessage = false
+                        this.$emit('refreshMessage')
+                        break
+                        case 2:
+                        this.$Message.error('请先对该应用进行极光配置!')
+                        this.modal_loading = false
+                        break
+                        case 3:
+                        this.$Message.error('该用户不存在!')
+                        this.modal_loading = false
+                        break
+                        case 0:
+                        this.$Message.error('创建推送消息失败!')
+                        this.modal_loading = false
+                        break
+                        default:
+                        this.$Message.error('系统繁忙!')
+                        this.modal_loading = false
+                      }
+                  }).catch((error)=> {
+                      console.log(error)
+                      this.$Message.error('系统繁忙,创建推送消息失败!')
+                      this.modal_loading = false
+                  })
                     
                 } else {
                     this.$Message.error('带*号的为必填项!');
                 }
-            })
-        },
-        //下一步创建产品
-        Next_creatProduction(){
-            this.handleCreate('formCreate')
-            //this.GetApplication()
-            this.$store.state.M_CreateApplication = false
-            this.$store.state.M_CreateProduction = true
-        },
-        //获取所有应用
-        GetApplication(){
-            axios.get(R_PRE_URL+'selectallapply?userid='+this.ID
-            ).then((res)=> {
-                switch(res.data.result){
-                  case 1:
-                  this.ApplicationList = res.data.applylist
-                  break
-                  case 0:
-                  this.$Message.error('获取应用列表失败!')
-                  break
-                  default:
-                  this.$Message.error('系统繁忙!')
-                  this.modal_loading = false
-                }
-            }).catch((error)=> {
-                console.log(error)
-                this.$Message.error('系统繁忙,获取应用列表失败!')
-                this.modal_loading = false
             })
         },
      

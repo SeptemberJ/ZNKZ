@@ -141,6 +141,9 @@ body{
 .colorWhite{
   color: #fff !important;
 }
+.colorLightGray{
+  color: #eee;
+}
 
 .TextCenter{
     text-align: center;

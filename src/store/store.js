@@ -42,6 +42,8 @@ const store = new Vuex.Store({
     M_SeeAgreement:false,
     M_SeeWarning:false,
     M_CreateMessage:false,
+    M_CreateProblem:false,
+    M_EditProblem:false,
 
     // newsKind:'1',
     // newsPage:1,

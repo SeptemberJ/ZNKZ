@@ -13,7 +13,9 @@
   </div>
 </template>
 <script>
+import Vue from 'vue'
 import axios from 'axios'
+import CryptoJS from "crypto-js"
 import echarts from 'echarts'
 
   export default{
@@ -32,6 +34,10 @@ import echarts from 'echarts'
       
     },
     computed: {
+      ID(){
+            let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
+            return ID
+        }
       
     },
     watch: {
@@ -43,7 +49,15 @@ import echarts from 'echarts'
     },
     methods: {
       getChartData(){
-        axios.get('static/json/'+ this.Info.url +'.json'
+        let Url
+        switch(this.Info.Htit){
+          case '激活数据':
+          Url = R_PRE_URL + this.Info.url +'?userid=' + this.ID
+          break
+          default:
+          Url = 'static/json/'+ this.Info.url
+        }
+        axios.get(Url
           ).then((res)=> {
             let PieData = res.data.info
             this.drawPie(this.Info.Htit,PieData.column_name,PieData.column_data)
@@ -85,13 +99,28 @@ import echarts from 'echarts'
                 calculable : true,
                 series : [
                     {
-                        name:id,
-                        type:'pie',
-                        radius : [30, 110],
-                        //center : ['75%', '50%'],
-                        roseType : 'area',
-                        data:Data
-                    }
+                      name:id,
+                      type:'pie',
+                      radius : [20, 110],
+                      roseType : 'radius',
+                      label: {
+                          normal: {
+                              show: false
+                          },
+                          emphasis: {
+                              show: true
+                          }
+                      },
+                      lableLine: {
+                          normal: {
+                              show: false
+                          },
+                          emphasis: {
+                              show: true
+                          }
+                      },
+                      data:Data
+                  }
                 ]
                })
       }

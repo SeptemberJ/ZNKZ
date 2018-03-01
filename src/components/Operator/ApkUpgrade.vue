@@ -251,7 +251,7 @@ import CryptoJS from "crypto-js"
                 switch(res.data.result){
                   case 1:
                   this.APKData = res.data.apkdetail
-                  this.Total = res.data.sunmun
+                  this.Total = res.data.count
                   this.table_loading = false
                   break
                   case 0:

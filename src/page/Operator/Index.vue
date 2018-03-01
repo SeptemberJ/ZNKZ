@@ -22,7 +22,7 @@
                         <Icon type="power" size="14"></Icon>
                         退出
                     </Button>
-                    <div style="display: inline-block;" v-if="curMneu != '首页' && curMneu != '个人账号' && curMneu != '企业信息'">
+                    <div style="display: inline-block;" v-if="curMneu != '首页' && curMneu != '个人账号' && curMneu != '企业信息' && curMneu != '子账户管理'">
                         <!-- 当前应用 -->
                         <span v-if="curMneu == '用户情况' || curMneu == '活跃用户' || curMneu == 'APK升级' || curMneu == '消息推送' || curMneu == '用户反馈' || curMneu == '邮件模板' || curMneu == '常见问题管理'">
                             <b>当前应用:</b>
@@ -60,18 +60,18 @@
                     <IndividualAccount v-if="curMneu == '个人账号'"></IndividualAccount>
                     <!-- <ModifyInfo v-if="curMneu == '修改个人信息'"></ModifyInfo> -->
                     <EnterpriseInfo v-if="curMneu == '企业信息'"></EnterpriseInfo>
-                    <UserSituation v-if="curMneu == '用户情况'"></UserSituation>
-                    <ActiveUser v-if="curMneu == '活跃用户'"></ActiveUser>
+                    <UserSituation v-if="curMneu == '用户情况'" ref="UserSituation"></UserSituation>
+                    <ActiveUser v-if="curMneu == '活跃用户'" ref="ActiveUser"></ActiveUser>
                     <Subaccount v-if="curMneu == '子账户管理' && Type=='大客户'"></Subaccount>
                     <EquipmentCondition v-if="curMneu == '设备情况'" ref="EquipmentCondition"></EquipmentCondition>
                     <EquipmentAuthorization v-if="curMneu == '设备授权'" ref="EquipmentAuthorization"></EquipmentAuthorization>
                     <Alert v-if="curMneu == '警告管理'" ref="Alert"></Alert>
                     <ApkUpgrade v-if="curMneu == 'APK升级'" ref="ApkUpgrade"></ApkUpgrade>
                     <FirmwareUpdate v-if="curMneu == '固件升级'" ref="FirmwareUpdate"></FirmwareUpdate>
-                    <MessagePush v-if="curMneu == '消息推送'"></MessagePush>
-                    <UserFeedback v-if="curMneu == '用户反馈'"></UserFeedback>
-                    <MailTemplate v-if="curMneu == '邮件模板'"></MailTemplate>
-                    <CommonProblem v-if="curMneu == '常见问题管理'"></CommonProblem>
+                    <MessagePush v-if="curMneu == '消息推送'"  ref="MessagePush"></MessagePush>
+                    <UserFeedback v-if="curMneu == '用户反馈'" ref="UserFeedback"></UserFeedback>
+                    <MailTemplate v-if="curMneu == '邮件模板'" ref="MailTemplate"></MailTemplate>
+                    <CommonProblem v-if="curMneu == '常见问题管理'" ref="CommonProblem"></CommonProblem>
                     
                 </div>
             </Card>
@@ -285,6 +285,27 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
                 case 'APK升级':
                 this.$refs.ApkUpgrade.GetApkList()
                 break
+                case '用户情况':
+                this.$refs.UserSituation.GetUserSituationData()
+                this.$refs.UserSituation.GetUserList()
+                break
+                case '活跃用户':
+                this.$refs.ActiveUser.GetActiveUserData()
+                break
+                case '消息推送':
+                this.$refs.MessagePush.GetMessageList()
+                break
+                case '用户反馈':
+                this.$refs.UserFeedback.GetFeedbackList()
+                break
+                case '邮件模板':
+                this.$refs.MailTemplate.GetTemplateInfo()
+                break
+                case '常见问题管理':
+                this.$refs.CommonProblem.GetProblemList()
+                break
+                
+                
             }
         },
         //切换当前产品

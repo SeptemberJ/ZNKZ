@@ -3,7 +3,7 @@
         <Row type="flex" justify="space-between" class="code-row-bg">
             <Col span="4"><h2>消息列表</h2></Col>
             <Col span="8" class="TextRight">
-                <Button type="error" icon="android-add" @click="JGconfigure">极光配置</Button>
+                <Button type="primary" icon="settings" @click="JGconfigure">极光配置</Button>
                 <Button type="error" icon="android-add" @click="AddMessage">新增消息</Button>
             </Col>
         </Row>
@@ -15,7 +15,7 @@
         <!-- 极光配置 -->
         <Modal v-model="ifShowModal_configure" width="600" :mask-closable="false">
             <p slot="header">
-                <Icon type="information-circled"></Icon>
+                <Icon type="gear-b"></Icon>
                 <span>极光配置</span>
             </p>
             <div style="">
@@ -28,8 +28,8 @@
                         <Input type="text" v-model="formCreateConfigure.AppSecret" placeholder="请输入APP Secret">
                       </Input>
                     </FormItem>
-                    <FormItem prop="plat" label="目标平台（只对iOS有效）">
-                        <RadioGroup v-model="formCreateConfigure.plat">
+                    <FormItem prop="Plat" label="目标平台（只对iOS有效）">
+                        <RadioGroup v-model="formCreateConfigure.Plat">
                             <Radio label="iOS开发环境"></Radio>
                             <Radio label="iOS生产环境"></Radio>
                         </RadioGroup>
@@ -42,7 +42,7 @@
         </Modal>
 
         <!-- 新增消息 -->
-        <CreateMessage></CreateMessage>
+        <CreateMessage v-on:refreshMessage="Refresh"></CreateMessage>
     </div>
         
 </template>
@@ -64,7 +64,7 @@ import CreateMessage from "./Create/CreateMessage"
         formCreateConfigure:{
             AppKey:'',
             AppSecret:'',
-            plat:'iOS生产环境'
+            Plat:'iOS生产环境'
         },
         ruleCreateConfigure: {
             AppKey: [
@@ -73,7 +73,7 @@ import CreateMessage from "./Create/CreateMessage"
             AppSecret: [
                 { required: true, message: '请输入APP Secret', trigger: 'blur' }
             ],
-            plat: [
+            Plat: [
                 { required: true, message: '请选择目标平台', trigger: 'change' }
             ],
         },
@@ -85,23 +85,23 @@ import CreateMessage from "./Create/CreateMessage"
             },
             {
                 title: '消息标题',
-                key: 'fname'
+                key: 'ftitle'
             },
             {
                 title: '推送内容',
-                key: 'fversion'
+                key: 'fpushcontent'
             },
             {
                 title: '推送方式',
-                key: 'fversion'
+                key: 'fpushmode'
             },
             {
                 title: '推送时间',
-                key: 'fcreateTime'
+                key: 'fpushtime'
             },
             {
                 title: '推送人群',
-                key: 'fcreateTime'
+                key: 'fpushmasses'
             }
         ],
         MesssageData:[]
@@ -111,7 +111,7 @@ import CreateMessage from "./Create/CreateMessage"
       
     },
     created() {
-        //this.GetFirmwareList()
+        this.GetMessageList()
       
     },
     computed: {
@@ -131,34 +131,68 @@ import CreateMessage from "./Create/CreateMessage"
         //极光配置modal
         JGconfigure(){
             this.ifShowModal_configure = true
+            this.GetConfigureInfo()
+
         },
-        //消息modal
+        //获取极光配置信息
+        GetConfigureInfo(){
+            let ConfigureInfo = {
+              userid:this.ID,
+              apply_id:this.$store.state.CurApplication,
+            }
+            let DATA = {'users':ConfigureInfo}
+            axios.post(R_PRE_URL+'selectfeed1',DATA
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  if(res.data.feedlist[0]){
+                    this.formCreateConfigure.AppKey = res.data.feedlist[0].feedappkey
+                    this.formCreateConfigure.AppSecret = res.data.feedlist[0].feedappkey
+                    this.formCreateConfigure.Plat = res.data.feedlist[0].feedmbpt
+                  }else{
+                    this.formCreateConfigure.AppKey = ''
+                    this.formCreateConfigure.AppSecret = ''
+                    this.formCreateConfigure.Plat = 'iOS生产环境'
+                  }
+                  break
+                  case 0:
+                  this.$Message.error('获取极光配置信息失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                }
+            }).catch((error)=> {
+                console.log(error)
+                this.$Message.error('系统繁忙，获取极光配置信息失败!')
+            })
+        },
+        //创建消息modal
         AddMessage(){
             this.$store.state.M_CreateMessage = true
         },
-        //创建固件
+        //极光配置
         handleCreateConfigure(name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     let CreatInfo = {
-                      user_id:this.ID,
-                      product_id:this.$store.state.CurProduction,
-                      fname:this.formCreateConfigure.name,
-                      fversion:this.formCreateConfigure.version,
-                      fcontent:this.formCreateConfigure.file,
+                      userid:this.ID,
+                      apply_id:this.$store.state.CurApplication,
+                      feedappkey:this.formCreateConfigure.AppKey,
+                      feedappsecret:this.formCreateConfigure.AppSecret,
+                      feedmbpt:this.formCreateConfigure.Plat,
                     }
                     this.modal_loading = true
                     let DATA = {'users':CreatInfo}
-                    axios.post(R_PRE_URL+'addfirmware',DATA
+                    axios.post(R_PRE_URL+'updatefeed',DATA
                     ).then((res)=> {
                         switch(res.data.result){
                           case 1:
-                          this.$Message.success('创建新固件成功!')
-                          this.ifShowModal = false
+                          this.$Message.success('极光配置成功!')
+                          this.ifShowModal_configure = false
                           this.modal_loading = false
                           break
                           case 0:
-                          this.$Message.error('创建新固件失败!')
+                          this.$Message.error('极光配置失败!')
                           this.modal_loading = false
                           break
                           default:
@@ -167,7 +201,7 @@ import CreateMessage from "./Create/CreateMessage"
                         }
                     }).catch((error)=> {
                         console.log(error)
-                        this.$Message.error('系统繁忙，创建新固件失败!')
+                        this.$Message.error('系统繁忙，极光配置失败!')
                         this.modal_loading = false
                     })
                     
@@ -179,43 +213,46 @@ import CreateMessage from "./Create/CreateMessage"
         //分页
         changePage(event){
           this.page_num = event
-          this.GetFirmwareList()
+          this.GetMessageList()
         },
         //切换每页条数
         changePageSize(event){
           this.number = event
-          this.GetFirmwareList()
+          this.GetMessageList()
         },
-        //获取固件列表
-        GetFirmwareList(){
-            let FirmwareInfo = {
+        //获取推送消息列表
+        GetMessageList(){
+            let MessageInfo = {
                 userid:this.ID,
-                product_id:this.$store.state.CurProduction,
+                apply_id:this.$store.state.CurApplication,
                 page:this.page_num,
                 number:this.number
             }
-            let DATA = {'users':FirmwareInfo}
-            axios.post(R_PRE_URL+'firmware',DATA
+            let DATA = {'users':MessageInfo}
+            axios.post(R_PRE_URL+'msg',DATA
             ).then((res)=> {
-                // switch(res.data.result){
-                //   case 1:
-                //   this.FirmwareData = res.data.apkdetail
-                //   this.Total = res.data.sunmun
-                //   this.table_loading = false
-                //   break
-                //   case 0:
-                //   this.$Message.error('获取固件列表失败!')
-                //   this.table_loading = false
-                //   break
-                //   default:
-                //   this.$Message.error('系统繁忙!')
-                //   this.table_loading = false
-                // }
+                switch(res.data.result){
+                  case 1:
+                  this.MesssageData = res.data.msg
+                  //this.Total = res.data.sunmun
+                  this.table_loading = false
+                  break
+                  case 0:
+                  this.$Message.error('获取推送消息列表失败!')
+                  this.table_loading = false
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.table_loading = false
+                }
             }).catch((error)=> {
                 console.log(error)
-                this.$Message.error('系统繁忙，获取固件列表失败!')
+                this.$Message.error('系统繁忙，获取推送消息列表失败!')
                 this.table_loading = false
             })
+        },
+        Refresh(){
+            this.GetMessageList()
         }
      
 

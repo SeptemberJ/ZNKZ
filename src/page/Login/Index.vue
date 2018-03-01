@@ -139,7 +139,7 @@ import {setCookie,getCookie,getCryptoJsCookie,Encrypt,Decrypt} from '../../util/
   background-position: 50% 50%;
   .Login{
     .LoginBox{
-      width: 80%;
+      width: 100%;
       color: #fff;
       max-width: 500px;
       padding:20px 0;

@@ -28,7 +28,7 @@
                                 :prop="'items.' + index + '.value'">
                             <Row class="BgDarkBlue colorWhite PaddingLR_10">
                                 <Col span="24" class="TextRight">
-                                    <span @click="handleRemove(item.id)"><Icon type="close-circled"></Icon></span>
+                                    <span class="cursorPointer" @click="handleRemove(item.id)"><Icon type="close-circled"></Icon></span>
                                 </Col>
                                 <Col span="20">
                                     <h3  class="Ellipsis">{{item.debugname}}</h3>
@@ -286,22 +286,30 @@ import CryptoJS from "crypto-js"
         },
         //删除调试设备
         handleRemove (ID) {
-            axios.get(R_PRE_URL+'deletedebug?debugid=' + ID
-            ).then((res)=> {
-                switch(res.data.result){
-                  case 1:
-                  this.$Message.success('删除调试设备成功!')
-                  this.GetEquipment(this.cur_production)
-                  break
-                  case 0:
-                  this.$Message.error('删除调试设备失败!')
-                  break
-                  default:
-                  this.$Message.error('系统繁忙!')
-                  this.modal_loading = false
+            this.$Modal.confirm({
+                title: '删除提醒',
+                content: '<p>确定删除该调试设备？</p>',
+                onOk: () => {
+                    axios.get(R_PRE_URL+'deletedebug?debugid=' + ID
+                    ).then((res)=> {
+                        switch(res.data.result){
+                          case 1:
+                          this.$Message.success('删除调试设备成功!')
+                          this.GetEquipment(this.cur_production)
+                          break
+                          case 0:
+                          this.$Message.error('删除调试设备失败!')
+                          break
+                          default:
+                          this.$Message.error('系统繁忙!')
+                          this.modal_loading = false
+                        }
+                    }).catch((error)=> {
+                        console.log(error)
+                    })
+                },
+                onCancel: () => {
                 }
-            }).catch((error)=> {
-                console.log(error)
             })
         },
         //添加调试设备
