@@ -1,29 +1,40 @@
 <template>
     <div class="UserSituation">
-        <!-- 概览 -->
-        <ColorfulBlock :Info="OverView"/>
-        <!--  数据趋势-->
-        <LineChart :Info="dataTrend"/>
-        <!-- 用户数据 -->
-        <div class="userData">
-            <div>
-                <Row>
-                    <Col span="4"><h2>用户明细</h2></Col>
-                    <!-- <Col span="20" class="TextRight">
-                        注册时间：
-                        <DatePicker v-model="signDate" type="date" placeholder="请选择注册时间" style="width: 200px;display: inline-block;" @on-change="ChangeSignDate"></DatePicker>
-                        <Button class="marginL_10" type="primary" @click="Export">导出</Button>
-                    </Col> -->
-                </Row>
-            </div>
-            
-            <div  class="BlockWrap marginTB_20">
-                <Table border :columns="columnsUsers" :data="dataUsers"></Table>
-                <Page v-if="Total>0" class="marginT_20 marginB_150" :total="Total" show-total style="float: right;" :current="page_num" @on-change="changePage" @on-page-size-change="changePageSize" show-sizer></Page>
+        <!-- 没有任何信息 -->
+        <div v-if="ApplicationList.length == 0">
+            <Card :bordered="false" dis-hover>
+                <div style="text-align:center">
+                    <img src="static/img/NoInformation.png">
+                    <h3>您还没有创建任何应用</h3>
+                    <Button class="marginT_10" type="primary" icon="android-add" @click="ToCreateApplication">创建新应用</Button>
+                </div>
+            </Card>
+        </div>
+        <!-- 有信息 -->
+        <div v-else>
+            <!-- 概览 -->
+            <ColorfulBlock :Info="OverView"/>
+            <!--  数据趋势-->
+            <LineChart :Info="dataTrend" ref="LineChart"/>
+            <!-- 用户数据 -->
+            <div class="userData">
+                <div>
+                    <Row>
+                        <Col span="4"><h2>用户明细</h2></Col>
+                        <!-- <Col span="20" class="TextRight">
+                            注册时间：
+                            <DatePicker v-model="signDate" type="date" placeholder="请选择注册时间" style="width: 200px;display: inline-block;" @on-change="ChangeSignDate"></DatePicker>
+                            <Button class="marginL_10" type="primary" @click="Export">导出</Button>
+                        </Col> -->
+                    </Row>
+                </div>
+                
+                <div  class="BlockWrap marginTB_20">
+                    <Table border :columns="columnsUsers" :data="dataUsers"></Table>
+                    <Page v-if="Total>0" class="marginT_20 marginB_150" :total="Total" show-total style="float: right;" :current="page_num" @on-change="changePage" @on-page-size-change="changePageSize" show-sizer></Page>
+                </div>
             </div>
         </div>
-        
-        
     </div>
 </template>
 <script>
@@ -32,6 +43,7 @@ import axios from 'axios'
 import CryptoJS from "crypto-js"
 import ColorfulBlock from '../../components/Common/ColorfulBlock.vue'
 import LineChart from '../../components/Common/LineChart.vue'
+import echarts from 'echarts'
   export default{
     data: function () {
       return {
@@ -81,14 +93,22 @@ import LineChart from '../../components/Common/LineChart.vue'
       
     },
     created() {
-        this.GetUserSituationData()
-        this.GetUserList(this.signDate)
+        this.GetPageData()
+        
     },
     computed: {
         ID(){
             let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
             return ID
-        }
+        },
+        ApplicationList:{
+            get: function () {
+              return this.$store.state.ApplicationList
+            },
+            set: function (newValue) {
+              this.$store.state.ApplicationList = newValue
+            }
+        },
       
     },
     watch: {
@@ -99,6 +119,19 @@ import LineChart from '../../components/Common/LineChart.vue'
         LineChart
     },
     methods: {
+        ToCreateApplication(){
+            this.$router.push({name:'开发者平台'})
+            this.$store.state.DeveloperMenuCur = '应用管理'
+        },
+        //获取页面总数据
+        GetPageData(){
+            this.GetUserSituationData()
+            this.GetUserList(this.signDate)
+        },
+        //refreshLineChart
+        refreshLineChart(){
+            this.$refs.LineChart.ChangeDay()
+        },
         //获取概览
         GetUserSituationData(KIND){
             let Info = {
@@ -113,6 +146,7 @@ import LineChart from '../../components/Common/LineChart.vue'
               console.log(error)
             })
         },
+        
         //用户明细列表
         GetUserList(Date){
             let Info = {

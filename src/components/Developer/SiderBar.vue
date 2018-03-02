@@ -122,6 +122,7 @@
     -webkit-box-shadow: 0 0 9px rgba(0,0,0,.25);
     -moz-box-shadow: 0 0 9px rgba(0,0,0,.25);
     box-shadow: 0 0 9px rgba(0,0,0,.25);
+    background-color: #fff;
 }
 .ivu-layout-sider{
     height: 100%;

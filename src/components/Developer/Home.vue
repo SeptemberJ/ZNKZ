@@ -13,7 +13,7 @@
         <!-- 开发指南文件 -->
         <h2>开发指南文件</h2>
         <div  class="BlockWrap marginTB_20">
-            <Table border :columns="DownColumns" :data="DownData"></Table>
+            <Table border :loading="table_loading" :columns="DownColumns" :data="DownData"></Table>
         </div>
     </div>
 </template>
@@ -23,6 +23,7 @@ import axios from 'axios'
   export default{
     data: function () {
       return {
+        table_loading:true,
         DownColumns: [
             {
                 type: 'index',
@@ -121,7 +122,18 @@ import axios from 'axios'
         GetGuideFile(KIND){
             axios.post(R_PRE_URL + 'selectdevelopment'
               ).then((res)=> {
-                this.DownData = res.data.info.overview
+                switch(res.data.result){
+                  case 1:
+                  this.DownData = res.data.info.overview
+                  this.table_loading = false
+                  break
+                  case 0:
+                  this.$Message.error('获取开发指南文件列表失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                }
+                
             }).catch((error)=> {
               console.log(error)
             })

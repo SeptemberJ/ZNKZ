@@ -38,18 +38,18 @@ import Schart from 'vue-schart'
 import echarts from 'echarts'
 
   export default{
-    props:['Info'],
+    props:['Info','LineChartData'],
     data: function () {
       return {
         Day:'7',
         BtCur:0,
         charts: '',
         data:''
+        
 
       }
     },
     mounted() {
-      //this.getChartData('selecteq')
       
       
     },
@@ -59,9 +59,9 @@ import echarts from 'echarts'
     },
     computed: {
       ID(){
-            let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
-            return ID
-        },
+          let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
+          return ID
+      },
       
     },
     watch: {
@@ -103,34 +103,38 @@ import echarts from 'echarts'
             break
           //用户管理
             case '用户总数':
-            this.getChartData_user('usertotal1')
+            this.getChartData_appoint_A('usertotal1')
             break
             case '新增用户2':
-            this.getChartData_user('usertotal2')
+            this.getChartData_appoint_A('usertotal2')
+            break
+            //活跃用户
+            case '活跃用户2':
+            this.getChartData_appoint_A('activeuser1')
             break
           //设备情况
           case '设备总数2':
-          this.getChartData_appoint('selectinsertsb1')
+          this.getChartData_appoint_P('selectinsertsb1')
           break
           case '新增设备':
-          this.getChartData_appoint('selectinsertsb')
+          this.getChartData_appoint_P('selectinsertsb')
           break
           //告警
           // case '告警总数':
-          // this.getChartData_appoint('')
+          // this.getChartData_appoint_P('')
           // break
           // case '设备异常':
-          // this.getChartData_appoint('')
+          // this.getChartData_appoint_P('')
           // break
           // case '设备故障':
-          // this.getChartData_appoint('')
+          // this.getChartData_appoint_P('')
           // break
           default:
           this.getChartData('selecteq')
         }
       },
       //切换天数
-      ChangeDay(day){
+      ChangeDay(){
         let Value = this.Info.Sdata.filter((item,idx) => idx == this.BtCur)[0].value
         this.BtTab(Value,this.BtCur)
       },
@@ -154,7 +158,7 @@ import echarts from 'echarts'
         })
       },
       //获取指定产品下的设备数据
-      getChartData_appoint(KIND){
+      getChartData_appoint_P(KIND){
         let Info = {
           day:this.Day,
           userid:this.ID,
@@ -174,12 +178,13 @@ import echarts from 'echarts'
             }
             this.data = data
             this.drawPie(this.Info.Htit)
+
         }).catch((error)=> {
           console.log(error)
         })
       },
        //获取指定应用下的用户数据
-      getChartData_user(KIND){
+      getChartData_appoint_A(KIND){
         let Info = {
           day:this.Day,
           userid:this.ID,

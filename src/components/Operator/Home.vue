@@ -1,20 +1,31 @@
 <template>
     <div class="Home">
-        <!-- 概览 -->
-        <ColorfulBlock :Info="OverView"/>
-        <!-- 设备趋势-->
-        <LineChart :Info="equipmentTrend"/>
-        <!-- 用户趋势 -->
-        <LineChart :Info="userTrend"/>
-        <!--  三大数据图 -->
-        <PieChart :Info="activationData"/>
-        <PieChart :Info="onlineData"/>
-        <PieChart :Info="modelData"/>
-        <!-- map分布图 -->
-        <!-- <MapChart/> -->
-
+        <!-- 没有任何信息 -->
+        <div v-if="ApplicationList.length == 0">
+            <Card :bordered="false" dis-hover>
+                <div style="text-align:center">
+                    <img src="static/img/NoInformation.png">
+                    <h3>您还没有创建任何应用</h3>
+                    <Button class="marginT_10" type="primary" icon="android-add" @click="ToCreateApplication">创建新应用</Button>
+                </div>
+            </Card>
+        </div>
+        <!-- 有信息 -->
+        <div v-else>
+            <!-- 概览 -->
+            <ColorfulBlock :Info="OverView"/>
+            <!-- 设备趋势-->
+            <LineChart :Info="equipmentTrend"/>
+            <!-- 用户趋势 -->
+            <LineChart :Info="userTrend"/>
+            <!--  三大数据图 -->
+            <PieChart :Info="activationData"/>
+            <PieChart :Info="onlineData"/>
+            <PieChart :Info="modelData"/>
+            <!-- map分布图 -->
+            <!-- <MapChart/> -->
+        </div>
         
-
     </div>
         
 </template>
@@ -80,7 +91,15 @@ import SchatPie from '../../components/Common/SchatPie.vue'
         ID(){
             let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
             return ID
-        }
+        },
+        ApplicationList:{
+            get: function () {
+              return this.$store.state.ApplicationList
+            },
+            set: function (newValue) {
+              this.$store.state.ApplicationList = newValue
+            }
+        },
       
     },
     watch: {
@@ -94,6 +113,10 @@ import SchatPie from '../../components/Common/SchatPie.vue'
         SchatPie
     },
     methods: {
+        ToCreateApplication(){
+            this.$router.push({name:'开发者平台'})
+            this.$store.state.DeveloperMenuCur = '应用管理'
+        },
         GetOverViewData(KIND){
             axios.get(R_PRE_URL + 'selectnumber?userid='+this.ID
               ).then((res)=> {

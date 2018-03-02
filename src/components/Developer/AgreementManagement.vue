@@ -35,7 +35,7 @@ import EditAgreement from "./Edit/EditAgreement"
       return {
         table_loading:true,
         ifDeleteModal:false,
-        ProductionList:[],
+        //ProductionList:[],
         EditInfo:'',
         Total:10,
         page_num:1,  //页数
@@ -144,7 +144,8 @@ import EditAgreement from "./Edit/EditAgreement"
       
     },
     created() {
-        this.GetAllProduction()
+        this.GetAgreement()
+        //this.GetAllProduction()
 
       
     },
@@ -161,6 +162,14 @@ import EditAgreement from "./Edit/EditAgreement"
               this.$store.state.CurProduction = newValue
             }
         },
+        ProductionList:{
+            get: function () {
+              return this.$store.state.ProductionList
+            },
+            set: function (newValue) {
+              this.$store.state.ProductionList = newValue
+            }
+        },
       
     },
     watch: {
@@ -173,7 +182,8 @@ import EditAgreement from "./Edit/EditAgreement"
     methods: {
         //切换当前应用
         ChangeCurProduction(){
-            this.GetAllProduction()
+            this.GetAgreement()
+            //this.GetAllProduction()
         },
         //获取对应协议列表
         GetAgreement(){
@@ -231,41 +241,38 @@ import EditAgreement from "./Edit/EditAgreement"
         //分页
         changePage(event){
           this.page_num = event
-          this.GetAllProduction()
+          this.GetAgreement()
         },
         //切换每页条数
         changePageSize(event){
           this.number = event
-          this.GetAllProduction()
+          this.GetAgreement()
         },
         //获取所有产品列表
-        GetAllProduction(){
-            axios.get(R_PRE_URL+'selectallpro?userid='+this.ID
-            ).then((res)=> {
-                switch(res.data.result){
-                  case 1:
-                  // let ListTemp = []
-                  // res.data.prolist.map(item=>{
-                  //   item.map(item_E=>{
-                  //       ListTemp.push(item_E)
-                  //   })
-                  // })
-                  // this.CurProduction = this.$store.state.CurProduction == ''?ListTemp[0].id:this.$store.state.CurProduction
-                  this.CurProduction = this.$store.state.CurProduction == ''?res.data.prolist[0].id:this.$store.state.CurProduction
-                  this.ProductionList = res.data.prolist
-                  this.GetAgreement()
-                  break
-                  case 0:
-                  this.$Message.error('获取产品列表失败!')
-                  break
-                  default:
-                  this.$Message.error('系统繁忙!')
-                  this.modal_loading = false
-                }
-            }).catch((error)=> {
-                console.log(error)
-            })
-        },
+        // GetAllProduction(){
+        //     axios.get(R_PRE_URL+'selectallpro?userid='+this.ID
+        //     ).then((res)=> {
+        //         switch(res.data.result){
+        //           case 1:
+        //           if(res.data.prolist[0]){
+        //             this.CurProduction = this.$store.state.CurProduction == ''?res.data.prolist[0].id:this.$store.state.CurProduction
+        //             this.ProductionList = res.data.prolist
+        //           }else{
+        //             this.CurProduction = ''
+        //           }
+        //           this.GetAgreement()
+        //           break
+        //           case 0:
+        //           this.$Message.error('获取产品列表失败!')
+        //           break
+        //           default:
+        //           this.$Message.error('系统繁忙!')
+        //           this.modal_loading = false
+        //         }
+        //     }).catch((error)=> {
+        //         console.log(error)
+        //     })
+        // },
         //编辑协议
         editAgreement(Info){
             this.EditInfo = Info
@@ -273,7 +280,8 @@ import EditAgreement from "./Edit/EditAgreement"
             console.log(Info)
         },
         Refresh(){
-            this.GetAllProduction()
+            this.GetAgreement()
+            //this.GetAllProduction()
         },
      
 

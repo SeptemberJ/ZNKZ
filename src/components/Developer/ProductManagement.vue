@@ -38,7 +38,7 @@ import EditProduction from "./Edit/EditProduction"
         Total:10,
         page_num:1,  //页数
         number:10,   //每页条数
-        ApplicationList:[],
+        //ApplicationList:[],
         ProductionColumns: [
             {
                 type: 'index',
@@ -127,7 +127,8 @@ import EditProduction from "./Edit/EditProduction"
       
     },
     created() {
-        this.GetApplication()
+        this.GetProduction()
+        //this.GetApplication()
       
     },
     computed: {
@@ -143,6 +144,14 @@ import EditProduction from "./Edit/EditProduction"
               this.$store.state.CurApplication = newValue
             }
         },
+        ApplicationList:{
+            get: function () {
+              return this.$store.state.ApplicationList
+            },
+            set: function (newValue) {
+              this.$store.state.ApplicationList = newValue
+            }
+        },
       
     },
     watch: {
@@ -153,31 +162,35 @@ import EditProduction from "./Edit/EditProduction"
         EditProduction
     },
     methods: {
-        //切换当前应用
+        //切换当前应用获取产品
         ChangeCurApplication(){
             this.GetProduction()
         },
         //获取所有应用
-        GetApplication(){
-            axios.get(R_PRE_URL+'selectallapply?userid='+this.ID
-            ).then((res)=> {
-                switch(res.data.result){
-                  case 1:
-                  this.CurApplication = this.$store.state.CurApplication == ''?res.data.applylist[0].id:this.$store.state.CurApplication
-                  this.ApplicationList = res.data.applylist
-                  this.GetProduction()
-                  break
-                  case 0:
-                  this.$Message.error('获取应用列表失败!')
-                  break
-                  default:
-                  this.$Message.error('系统繁忙!')
-                  this.modal_loading = false
-                }
-            }).catch((error)=> {
-                console.log(error)
-            })
-        },
+        // GetApplication(){
+        //     axios.get(R_PRE_URL+'selectallapply?userid='+this.ID
+        //     ).then((res)=> {
+        //         switch(res.data.result){
+        //           case 1:
+        //           if(res.data.applylist[0]){
+        //             this.CurApplication = this.$store.state.CurApplication == ''?res.data.applylist[0].id:this.$store.state.CurApplication
+        //             this.ApplicationList = res.data.applylist
+        //           }else{
+        //             this.CurApplication = ''
+        //           }
+        //           this.GetProduction()
+        //           break
+        //           case 0:
+        //           this.$Message.error('获取应用列表失败!')
+        //           break
+        //           default:
+        //           this.$Message.error('系统繁忙!')
+        //           this.modal_loading = false
+        //         }
+        //     }).catch((error)=> {
+        //         console.log(error)
+        //     })
+        // },
         //获取对应产品列表
         GetProduction(){
             let info = {
@@ -256,6 +269,7 @@ import EditProduction from "./Edit/EditProduction"
         },
         Refresh(){
             this.GetProduction()
+            this.$emit('refreshProductionList')
         },
      
 

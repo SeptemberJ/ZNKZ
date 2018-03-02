@@ -87,9 +87,9 @@ import CryptoJS from "crypto-js"
       return {
         modal_loading:false,
         modalEquipment:false,
-        cur_application:'',
-        cur_production:'',
-        ApplicationList:[],  //所有应用
+        // cur_application:'',
+        // cur_production:'',
+        //ApplicationList:[],  //所有应用
         ProductionList:[],  //当前应用对应所有产品
         index: 1,
         formEquipment:{
@@ -172,13 +172,38 @@ import CryptoJS from "crypto-js"
       
     },
     created() {
-        this.GetApplication()
+        this.GetProduction(this.cur_application)
+        //this.GetApplication()
       
     },
     computed: {
         ID(){
             let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
             return ID
+        },
+        cur_application: {
+            get: function () {
+              return this.$store.state.CurApplication
+            },
+            set: function (newValue) {
+              this.$store.state.CurApplication = newValue
+            }
+        },
+        cur_production: {
+            get: function () {
+              return this.$store.state.CurProduction
+            },
+            set: function (newValue) {
+              this.$store.state.CurProduction = newValue
+            }
+        },
+        ApplicationList:{
+            get: function () {
+              return this.$store.state.ApplicationList
+            },
+            set: function (newValue) {
+              this.$store.state.ApplicationList = newValue
+            }
         },
       
     },
@@ -197,35 +222,41 @@ import CryptoJS from "crypto-js"
             this.GetAgreementInfo(Value)
         },
         //获取所有应用
-        GetApplication(){
-            axios.get(R_PRE_URL+'selectallapply?userid='+this.ID
-            ).then((res)=> {
-                switch(res.data.result){
-                  case 1:
-                  this.cur_application = this.$store.state.CurApplication == ''?res.data.applylist[0].id:this.$store.state.CurApplication
-                  this.ApplicationList = res.data.applylist
-                  this.GetProduction(this.cur_application)
-                  break
-                  case 0:
-                  this.$Message.error('获取应用列表失败!')
-                  break
-                  default:
-                  this.$Message.error('系统繁忙!')
-                  this.modal_loading = false
-                }
-            }).catch((error)=> {
-                console.log(error)
-            })
-        },
+        // GetApplication(){
+        //     axios.get(R_PRE_URL+'selectallapply?userid='+this.ID
+        //     ).then((res)=> {
+        //         switch(res.data.result){
+        //           case 1:
+        //           if(res.data.applylist[0]){
+        //             this.cur_application = this.$store.state.CurApplication == ''?res.data.applylist[0].id:this.$store.state.CurApplication
+        //             this.ApplicationList = res.data.applylist
+        //             this.GetProduction(this.cur_application)
+        //           }else{
+        //             this.cur_application = ''
+        //           }
+        //           break
+        //           case 0:
+        //           this.$Message.error('获取应用列表失败!')
+        //           break
+        //           default:
+        //           this.$Message.error('系统繁忙!')
+        //           this.modal_loading = false
+        //         }
+        //     }).catch((error)=> {
+        //         console.log(error)
+        //     })
+        // },
         //获取对应产品列表
         GetProduction(apply_id){
             axios.get(R_PRE_URL+'selectdebugpro?apply_id=' + apply_id
             ).then((res)=> {
                 switch(res.data.result){
                   case 1:
-                  this.ProductionList = res.data.prolist
-                  this.cur_production = res.data.prolist[0].id
-                  this.GetEquipment(this.cur_production)
+                  if(res.data.prolist[0]){
+                    this.ProductionList = res.data.prolist
+                    this.cur_production = res.data.prolist[0].id
+                    this.GetEquipment(this.cur_production)
+                  }
                   break
                   case 0:
                   this.$Message.error('获取产品列表失败!')

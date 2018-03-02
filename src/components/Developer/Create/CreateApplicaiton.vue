@@ -16,7 +16,7 @@
                         </Select>
                     </FormItem>
                     <FormItem label="应用名称" prop="A_name">
-                        <Input v-model="formCreate.A_name"></Input>
+                        <Input v-model="formCreate.A_name"  placeholder="请输入应用名称"></Input>
                     </FormItem>
                     <FormItem label="应用说明" prop="A_introduction">
                         <Input v-model="formCreate.A_introduction" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入应用说明"></Input>
@@ -55,7 +55,7 @@
             </div>
         </Modal>
         <!-- 创建新产品 -->
-        <Create :_CurApplication="formCreate.A_name" :applicationId="application_id" :Applications="ApplicationList"></Create>
+        <Create :_CurApplication="formCreate.A_name" :applicationId="application_id" v-on:refreshProduction="RefreshProduction"></Create>
 
     </div>
 </template>
@@ -65,7 +65,7 @@ import axios from 'axios'
 import CryptoJS from "crypto-js"
 import Create from "./Create"
   export default{
-    props:['OriginType'],
+    props:[],
     data: function () {
       return {
         modal_loading:false,
@@ -214,6 +214,9 @@ import Create from "./Create"
                 this.modal_loading = false
             })
         },
+        RefreshProduction(){
+            this.$emit('refreshProduction')
+        }
      
 
     }

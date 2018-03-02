@@ -1,23 +1,36 @@
 <template>
     <div class="CommonProblem">
-        <Row type="flex" justify="space-between" class="code-row-bg">
-            <Col span="4"><h2>常见问题</h2></Col>
-            <Col span="8" class="TextRight">
-                <Button type="error" icon="android-add" @click="AddProblem">创建问题</Button>
-            </Col>
-        </Row>
-        <!-- 常见问题列表 -->
-        <div  class="BlockWrap marginTB_20">
-            <Table border :loading="table_loading" :columns="ProblemColumns" :data="ProblemData" ></Table>
-            <Page v-if="Total>0" class="marginT_20 marginB_150" :total="Total" show-total style="float: right;" :current="page_num" @on-change="changePage" @on-page-size-change="changePageSize" show-sizer></Page>
+        <!-- 没有任何信息 -->
+        <div v-if="ApplicationList.length == 0">
+            <Card :bordered="false" dis-hover>
+                <div style="text-align:center">
+                    <img src="static/img/NoInformation.png">
+                    <h3>您还没有创建任何应用</h3>
+                    <Button class="marginT_10" type="primary" icon="android-add" @click="ToCreateApplication">创建新应用</Button>
+                </div>
+            </Card>
         </div>
+        <!-- 有信息 -->
+        <div v-else>
+            <Row type="flex" justify="space-between" class="code-row-bg">
+                <Col span="4"><h2>常见问题</h2></Col>
+                <Col span="8" class="TextRight">
+                    <Button type="error" icon="android-add" @click="AddProblem">创建问题</Button>
+                </Col>
+            </Row>
+            <!-- 常见问题列表 -->
+            <div  class="BlockWrap marginTB_20">
+                <Table border :loading="table_loading" :columns="ProblemColumns" :data="ProblemData" ></Table>
+                <Page v-if="Total>0" class="marginT_20 marginB_150" :total="Total" show-total style="float: right;" :current="page_num" @on-change="changePage" @on-page-size-change="changePageSize" show-sizer></Page>
+            </div>
 
-        <!-- 创建常见问题 -->
-        <CreateProblem v-on:refreshProblem="Refresh"></CreateProblem>
-        <!-- 编辑常见问题 -->
-        <EditProblem :EditInfo="EditInfo" v-on:refreshProblem="Refresh"></EditProblem>
-    </div>
+            <!-- 创建常见问题 -->
+            <CreateProblem v-on:refreshProblem="Refresh"></CreateProblem>
+            <!-- 编辑常见问题 -->
+            <EditProblem :EditInfo="EditInfo" v-on:refreshProblem="Refresh"></EditProblem>
+        </div>
         
+    </div>
 </template>
 <script>
 import Vue from 'vue'
@@ -105,6 +118,14 @@ import EditProblem from './Edit/EditProblem.vue'
             let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
             return ID
         },
+        ApplicationList:{
+            get: function () {
+              return this.$store.state.ApplicationList
+            },
+            set: function (newValue) {
+              this.$store.state.ApplicationList = newValue
+            }
+        },
       
     },
     watch: {
@@ -115,6 +136,10 @@ import EditProblem from './Edit/EditProblem.vue'
         EditProblem
     },
     methods: {
+        ToCreateApplication(){
+            this.$router.push({name:'开发者平台'})
+            this.$store.state.DeveloperMenuCur = '应用管理'
+        },
         AddProblem(){
             this.$store.state.M_CreateProblem = true
         },

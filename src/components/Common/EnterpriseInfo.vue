@@ -142,10 +142,13 @@ import CryptoJS from "crypto-js"
                     ).then((res)=> {
                         switch(res.data.result){
                           case 1:
-                          this.$Message.success('修改个人账号信息成功!');
+                          this.$Message.success('修改企业账号信息成功!')
                           break
                           case 0:
-                          this.$Message.error('修改个人账号信息失败!');
+                          this.$Message.error('修改企业信息失败!')
+                          break
+                          case 2:
+                          this.$Message.error('该企业已经注册!')
                           break
                           default:
                           this.$Message.error('系统繁忙!')

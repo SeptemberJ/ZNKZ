@@ -110,8 +110,8 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
         isCollapsed: false,
         LeftDistance:false,
         // CurrentApplication:1,
-        ApplicationList:[], //应用列表
-        ProductionList:[], //产品列表
+        // ApplicationList:[], //应用列表
+        // ProductionList:[], //产品列表
         cityList: [
             {
                 value: 0,
@@ -132,7 +132,7 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
           top: 82,
           duration: 1.5
       });
-      this.GetApplication()
+      this.GetAllApplication()
       this.GetAllProduction()
       
     },
@@ -173,6 +173,22 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
             },
             set: function (newValue) {
               this.$store.state.CurProduction = newValue
+            }
+        },
+        ApplicationList:{
+            get: function () {
+              return this.$store.state.ApplicationList
+            },
+            set: function (newValue) {
+              this.$store.state.ApplicationList = newValue
+            }
+        },
+        ProductionList:{
+            get: function () {
+              return this.$store.state.ProductionList
+            },
+            set: function (newValue) {
+              this.$store.state.ProductionList = newValue
             }
         },
         // rotateIcon () {
@@ -229,13 +245,17 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
             this.$router.push({name:'登录'})
         },
         //获取所有应用
-        GetApplication(){
+        GetAllApplication(){
             axios.get(R_PRE_URL+'selectallapply?userid='+this.ID
             ).then((res)=> {
                 switch(res.data.result){
                   case 1:
-                  this.CurApplication = this.$store.state.CurApplication == ''?res.data.applylist[0].id:this.$store.state.CurApplication
-                  this.ApplicationList = res.data.applylist
+                  if(res.data.applylist[0]){
+                    this.CurApplication = this.$store.state.CurApplication == ''?res.data.applylist[0].id:this.$store.state.CurApplication
+                    this.$store.state.ApplicationList = res.data.applylist
+                  }else{
+                    this.CurApplication = ''
+                  }
                   break
                   case 0:
                   this.$Message.error('获取应用列表失败!')
@@ -256,15 +276,12 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
             ).then((res)=> {
                 switch(res.data.result){
                   case 1:
-                  // let ListTemp = []
-                  // res.data.prolist.map(item=>{
-                  //   item.map(item_E=>{
-                  //       ListTemp.push(item_E)
-                  //   })
-                  // })
-                  // this.CurProduction = this.$store.state.CurProduction == ''?ListTemp[0].id:this.$store.state.CurProduction
-                   this.CurProduction = this.$store.state.CurProduction == ''?res.data.prolist[0].id:this.$store.state.CurProduction
-                  this.ProductionList = res.data.prolist//ListTemp
+                  if(res.data.prolist[0]){
+                    this.CurProduction = this.$store.state.CurProduction == ''?res.data.prolist[0].id:this.$store.state.CurProduction
+                    this.$store.state.ProductionList = res.data.prolist
+                  }else{
+                    this.CurProduction = ''
+                  }
                   break
                   case 0:
                   this.$Message.error('获取产品列表失败!')
@@ -286,11 +303,12 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
                 this.$refs.ApkUpgrade.GetApkList()
                 break
                 case '用户情况':
-                this.$refs.UserSituation.GetUserSituationData()
-                this.$refs.UserSituation.GetUserList()
+                this.$refs.UserSituation.GetPageData()
+                this.$refs.UserSituation.refreshLineChart()
                 break
                 case '活跃用户':
-                this.$refs.ActiveUser.GetActiveUserData()
+                this.$refs.ActiveUser.GetPageData()
+                this.$refs.ActiveUser.refreshLineChart()
                 break
                 case '消息推送':
                 this.$refs.MessagePush.GetMessageList()
@@ -315,16 +333,15 @@ import CommonProblem from '../../components/Operator/CommonProblem.vue'
                 this.$refs.FirmwareUpdate.GetFirmwareList()
                 break
                 case '警告管理':
-                this.$refs.Alert.GetOverViewData()
-                this.$refs.Alert.GetWarnList()
+                this.$refs.Alert.GetPageData()
+                this.$refs.Alert.refreshLineChart()
                 break
                 case '设备情况':
-                this.$refs.EquipmentCondition.GetOverViewData()
-                this.$refs.EquipmentCondition.GetAuthorizationList()
+                this.$refs.EquipmentCondition.GetPageData()
+                this.$refs.EquipmentCondition.refreshLineChart()
                 break
                 case '设备授权':
-                this.$refs.EquipmentAuthorization.GetOverViewData()
-                this.$refs.EquipmentAuthorization.GetAuthorizationList()
+                this.$refs.EquipmentAuthorization.GetPageData()
                 break
 
                 

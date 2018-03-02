@@ -29,6 +29,8 @@ const store = new Vuex.Store({
     step:2,
     CurApplication:'',//当前应用
     CurProduction:'',//当前产品
+    ProductionList:[],//应用集合
+    ApplicationList:[],//产品集合
     M_CreateApplication:false,
     M_CreateProduction:false,
     M_CreateAgreement:false,

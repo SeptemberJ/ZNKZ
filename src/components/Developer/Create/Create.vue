@@ -9,7 +9,7 @@
             <div style="">
                 <Form ref="formCreateP" :model="formCreateP" :rules="ruleCreateP"  label-position="left" :label-width="100">
                     <FormItem label="所属应用">
-                       <!--  <Select v-model="P_belongKind"  placeholder="请选择所属应用">
+                        <!-- <Select v-model="P_belongKind"  placeholder="请选择所属应用">
                             <Option v-for="item in ApplicationList" :value="item.id" :key="item.id">{{ item.apply_name }}</Option>
                         </Select> -->
                         <Input v-model="P_belongKind" disabled></Input>
@@ -260,6 +260,7 @@
 <script>
 import Vue from 'vue'
 import axios from 'axios'
+import CryptoJS from "crypto-js"
   export default{
     props:['_CurApplication','applicationId'],
     data: function () {
@@ -433,6 +434,14 @@ import axios from 'axios'
             let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
             return ID
         },
+        ApplicationList:{
+            get: function () {
+              return this.$store.state.ApplicationList
+            },
+            set: function (newValue) {
+              this.$store.state.ApplicationList = newValue
+            }
+        },
         //Production
             ifShowModal_P: {
                 get: function () {
@@ -585,6 +594,7 @@ import axios from 'axios'
                               this.modal_loading = false
                               this.production_ID = res.data.id
                               this.$store.state.M_CreateProduction = false
+                              this.$emit('refreshProduction')
                               break
                               case 2:
                               this.$Message.error('该产品名称已已存在!')

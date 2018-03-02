@@ -3,7 +3,7 @@
         <!-- 概览 -->
         <ColorfulBlock :Info="OverView"/>
         <!-- 数据趋势 -->
-        <LineChart :Info="equipmentTrend"/>
+        <LineChart :Info="equipmentTrend" ref="LineChart"/>
         <!-- 设备明细 -->
         <Row style="display: block;" type="flex" justify="space-between" class="code-row-bg">
             <Col span="4">
@@ -107,9 +107,7 @@ import LineChart from '../../components/Common/LineChart.vue'
       
     },
     created() {
-        this.GetOverViewData()
-        this.GetAuthorizationList(this.signDate)
-      
+        this.GetPageData()
     },
     computed: {
         ID(){
@@ -126,6 +124,15 @@ import LineChart from '../../components/Common/LineChart.vue'
         LineChart
     },
     methods: {
+        //获取页面总数据
+        GetPageData(){
+            this.GetOverViewData()
+            this.GetAuthorizationList(this.signDate)
+        },
+        //refreshLineChart
+        refreshLineChart(){
+            this.$refs.LineChart.ChangeDay()
+        },
         //概览信息
         GetOverViewData(){
             let Info = {

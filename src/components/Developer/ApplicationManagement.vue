@@ -13,7 +13,11 @@
         <!-- 应用列表 -->
         <h2>应用列表</h2>
         <div  class="marginTB_20">
-            <Row :gutter="16" class="PaddingLR_10">
+            <p v-if="ApplicationList.length == 0" class="TextCenter">
+                <Icon type="social-tux" :size="24"></Icon>
+                暂无数据
+            </p>
+            <Row v-else :gutter="16" class="PaddingLR_10">
                 <Col :xs="12" :sm="12" :md="12" :lg="8" class="marginB_20" v-for="(Application,Idx) in ApplicationList">
                     <Card>
                         <p slot="title" style="height: 100%">
@@ -35,7 +39,7 @@
             </Row>
         </div>
         <!-- 创建新应用 -->
-        <CreateApplication :OriginType="0" v-on:refreshApplication="Refresh"/>
+        <CreateApplication v-on:refreshApplication="Refresh" v-on:refreshProduction="RefreshProduction"/>
         <!-- 编辑应用信息 -->
         <EditApplicaiton :EditInfo="EditInfo" v-on:refreshApplication="Refresh"/>
         <!-- <EditApplicaiton :AppId="AppId" :EditInfo="EditInfo" v-if="ifShow"/> -->
@@ -98,7 +102,15 @@ import SeeApplicaiton from "./See/SeeApplicaiton"
             set: function (newValue) {
               this.$store.state.M_EditApplication = newValue
             }
-        }
+        },
+        // ApplicationList:{
+        //     get: function () {
+        //       return this.$store.state.ApplicationList
+        //     },
+        //     set: function (newValue) {
+        //       this.$store.state.ApplicationList = newValue
+        //     }
+        // },
         
       
     },
@@ -125,6 +137,10 @@ import SeeApplicaiton from "./See/SeeApplicaiton"
         },
         Refresh(){
             this.GetApplication()
+            this.$emit('refreshApplicationList')
+        },
+        RefreshProduction(){
+            this.$emit('refreshProductionList')
         },
         SearchAppliction(){
             let Keywords = {
@@ -156,41 +172,9 @@ import SeeApplicaiton from "./See/SeeApplicaiton"
         },
         Modify_A(Idx){
              let Info = this.ApplicationList[Idx]
-            // this.formEdit.A_kind = Info.apply_type
-            // this.formEdit.A_name = Info.apply_name
-            // this.formEdit.A_introduction = Info.apply_introduction
-            // this.formEdit.A_img = Info.apply_icon
-            // this.formEdit.A_android = Info.android_name
-            // this.formEdit.A_ios = Info.ios_name
-            // this.ImgSource = Info.apply_icon
             this.EditInfo = Info
             this.$store.state.M_EditApplication = true
         },
-        // GetApplicationInfo(){
-        //     axios.get(R_PRE_URL+'selectapp?id='+this.AppId
-        //     ).then((res)=> {
-        //         switch(res.data.result){
-        //           case 1:
-        //           let Info = res.data.applylist[0]
-        //           this.formEdit.A_kind = Info.apply_type
-        //           this.formEdit.A_name = Info.apply_name
-        //           this.formEdit.A_introduction = Info.apply_introduction
-        //           this.formEdit.A_img = Info.apply_icon
-        //           this.formEdit.A_android = Info.android_name
-        //           this.formEdit.A_ios = Info.ios_name
-        //           this.ImgSource = Info.apply_icon
-        //           break
-        //           case 0:
-        //           this.$Message.error('获取应用信息失败!')
-        //           break
-        //           default:
-        //           this.$Message.error('系统繁忙!')
-        //           this.modal_loading = false
-        //         }
-        //     }).catch((error)=> {
-        //         console.log(error)
-        //     })
-        // },
         handleFormatError (file) {
             this.$Notice.warning({
                 title: '提示',

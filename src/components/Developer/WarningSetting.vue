@@ -35,7 +35,7 @@ import EditWarning from "./Edit/EditWarning"
       return {
         table_loading:true,
         ifDeleteModal:false,
-        ProductionList:[],
+        //ProductionList:[],
         AgreementList:[],
         EditInfo:'',
         Total:10,
@@ -133,7 +133,9 @@ import EditWarning from "./Edit/EditWarning"
       
     },
     created() {
-        this.GetAllProduction()
+        this.GetAgreementList()
+        this.GetWarningList()
+        //this.GetAllProduction()
       
     },
     computed: {
@@ -149,6 +151,14 @@ import EditWarning from "./Edit/EditWarning"
               this.$store.state.CurProduction = newValue
             }
         },
+        ProductionList:{
+            get: function () {
+              return this.$store.state.ProductionList
+            },
+            set: function (newValue) {
+              this.$store.state.ProductionList = newValue
+            }
+        },
       
     },
     watch: {
@@ -161,7 +171,8 @@ import EditWarning from "./Edit/EditWarning"
     methods: {
         //切换当前产品
         ChangeCurProduction(){
-            this.GetAllProduction()
+            this.GetWarningList()
+            //this.GetAllProduction()
         },
         AddWarning(){
             if(this.AgreementList.length>0){
@@ -170,7 +181,7 @@ import EditWarning from "./Edit/EditWarning"
                 this.$Message.error('该产品下暂时还没有上报类型的协议,请先去添加!')
             }
         },
-        //获取对应协议列表
+        //获取对应上报类型的协议列表
         GetAgreementList(){
             axios.get(R_PRE_URL+'selectagreements1?product_id='+this.CurProduction
             ).then((res)=> {
@@ -190,35 +201,31 @@ import EditWarning from "./Edit/EditWarning"
             })
         },
         //获取所有产品列表
-        GetAllProduction(){
-            axios.get(R_PRE_URL+'selectallpro?userid='+this.ID
-            ).then((res)=> {
-                switch(res.data.result){
-                  case 1:
-                  // let ListTemp = []
-                  // res.data.prolist.map(item=>{
-                  //   item.map(item_E=>{
-                  //       ListTemp.push(item_E)
-                  //   })
-                  // })
-                  // this.CurProduction = this.$store.state.CurProduction == ''?ListTemp[0].id:this.$store.state.CurProduction
-                  // this.ProductionList = ListTemp
-                  this.CurProduction = this.$store.state.CurProduction == ''?res.data.prolist[0].id:this.$store.state.CurProduction
-                  this.ProductionList = res.data.prolist
-                  this.GetAgreementList()
-                  this.GetWarningList()
-                  break
-                  case 0:
-                  this.$Message.error('获取产品列表失败!')
-                  break
-                  default:
-                  this.$Message.error('系统繁忙!')
-                  this.modal_loading = false
-                }
-            }).catch((error)=> {
-                console.log(error)
-            })
-        },
+        // GetAllProduction(){
+        //     axios.get(R_PRE_URL+'selectallpro?userid='+this.ID
+        //     ).then((res)=> {
+        //         switch(res.data.result){
+        //           case 1:
+        //           if(res.data.prolist[0]){
+        //             this.CurProduction = this.$store.state.CurProduction == ''?res.data.prolist[0].id:this.$store.state.CurProduction
+        //             this.ProductionList = res.data.prolist
+        //           }else{
+        //             this.CurProduction = ''
+        //           }
+        //           this.GetAgreementList()
+        //           this.GetWarningList()
+        //           break
+        //           case 0:
+        //           this.$Message.error('获取产品列表失败!')
+        //           break
+        //           default:
+        //           this.$Message.error('系统繁忙!')
+        //           this.modal_loading = false
+        //         }
+        //     }).catch((error)=> {
+        //         console.log(error)
+        //     })
+        // },
         //获取对应告警列表
         GetWarningList(){
             let info = {
@@ -277,15 +284,16 @@ import EditWarning from "./Edit/EditWarning"
         //分页
         changePage(event){
           this.page_num = event
-          this.GetAllProduction()
+          this.GetWarningList()
         },
         //切换每页条数
         changePageSize(event){
           this.number = event
-          this.GetAllProduction()
+          this.GetWarningList()
         },
         Refresh(){
-            this.GetAllProduction()
+            this.GetWarningList()
+            //this.GetAllProduction()
         },
      
 

@@ -1,43 +1,56 @@
 <template>
     <div class="MailTemplate">
-        <!-- 邮箱验证码模板 -->
-        <h2>邮箱验证码模板</h2>
-        <div  class="BlockWrap marginTB_20 PaddingTB_50">
-            <Form class="PaddingLR_20" ref="formMailVerification" :model="formMailVerification" :rules="ruleMailVerification" :label-width="80">
-                <FormItem label="邮件标题" prop="name">
-                    <Input v-model="formMailVerification.name" placeholder="请输入邮件标题"></Input>
-                </FormItem>
-                <FormItem label="邮件内容" prop="content">
-                    <Input v-model="formMailVerification.content" type="textarea" :autosize="{minRows: 5,maxRows: 5}" :maxlength="250" placeholder="请输入邮件内容（250字以内）"></Input>
-                </FormItem>
-                <FormItem label="示例模板:">
-                   <p>【Smart Hox】你的验证码是{1}，请于{2}分钟内正确输入。</p>
-                </FormItem>
-                <FormItem label="">
-                   <Button type="error" size="large" :loading="modal_loading_M" @click="handleCreateMailVerification('formMailVerification')">保存</Button>
-                </FormItem>
-            </Form>
+        <!-- 没有任何信息 -->
+        <div v-if="ApplicationList.length == 0">
+            <Card :bordered="false" dis-hover>
+                <div style="text-align:center">
+                    <img src="static/img/NoInformation.png">
+                    <h3>您还没有创建任何应用</h3>
+                    <Button class="marginT_10" type="primary" icon="android-add" @click="ToCreateApplication">创建新应用</Button>
+                </div>
+            </Card>
         </div>
-        <!-- 密码找回模板 -->
-        <h2>密码找回模板</h2>
-        <div  class="BlockWrap marginTB_20 PaddingTB_50">
-            <Form class="PaddingLR_20"  ref="formPSDBack" :model="formPSDBack" :rules="rulePSDBack" :label-width="80">
-                <FormItem label="邮件标题" prop="name">
-                    <Input v-model="formPSDBack.name" placeholder="请输入邮件标题"></Input>
-                </FormItem>
-                <FormItem label="邮件内容" prop="content">
-                    <Input v-model="formPSDBack.content" type="textarea" :autosize="{minRows: 5,maxRows: 5}" :maxlength="250"placeholder="请输入邮件内容（250字以内）"></Input>
-                </FormItem>
-                <FormItem label="示例模板:">
-                   <p>【Smart Hox】你的验证码是{1}，请于{2}分钟内正确输入。</p>
-                </FormItem>
-                <FormItem label="">
-                   <Button type="error" size="large" :loading="modal_loading_P" @click="handleCreatePSDBack('formPSDBack')">保存</Button>
-                </FormItem>
-            </Form>
+        <!-- 有信息 -->
+        <div v-else>
+            <!-- 邮箱验证码模板 -->
+            <h2>邮箱验证码模板</h2>
+            <div  class="BlockWrap marginTB_20 PaddingTB_50">
+                <Form class="PaddingLR_20" ref="formMailVerification" :model="formMailVerification" :rules="ruleMailVerification" :label-width="80">
+                    <FormItem label="邮件标题" prop="name">
+                        <Input v-model="formMailVerification.name" placeholder="请输入邮件标题"></Input>
+                    </FormItem>
+                    <FormItem label="邮件内容" prop="content">
+                        <Input v-model="formMailVerification.content" type="textarea" :autosize="{minRows: 5,maxRows: 5}" :maxlength="250" placeholder="请输入邮件内容（250字以内）"></Input>
+                    </FormItem>
+                    <FormItem label="示例模板:">
+                       <p>【Smart Hox】你的验证码是{1}，请于{2}分钟内正确输入。</p>
+                    </FormItem>
+                    <FormItem label="">
+                       <Button type="error" size="large" :loading="modal_loading_M" @click="handleCreateMailVerification('formMailVerification')">保存</Button>
+                    </FormItem>
+                </Form>
+            </div>
+            <!-- 密码找回模板 -->
+            <h2>密码找回模板</h2>
+            <div  class="BlockWrap marginTB_20 PaddingTB_50">
+                <Form class="PaddingLR_20"  ref="formPSDBack" :model="formPSDBack" :rules="rulePSDBack" :label-width="80">
+                    <FormItem label="邮件标题" prop="name">
+                        <Input v-model="formPSDBack.name" placeholder="请输入邮件标题"></Input>
+                    </FormItem>
+                    <FormItem label="邮件内容" prop="content">
+                        <Input v-model="formPSDBack.content" type="textarea" :autosize="{minRows: 5,maxRows: 5}" :maxlength="250"placeholder="请输入邮件内容（250字以内）"></Input>
+                    </FormItem>
+                    <FormItem label="示例模板:">
+                       <p>【Smart Hox】你的验证码是{1}，请于{2}分钟内正确输入。</p>
+                    </FormItem>
+                    <FormItem label="">
+                       <Button type="error" size="large" :loading="modal_loading_P" @click="handleCreatePSDBack('formPSDBack')">保存</Button>
+                    </FormItem>
+                </Form>
+            </div>
         </div>
-    </div>
         
+    </div>
 </template>
 <script>
 import Vue from 'vue'
@@ -109,6 +122,14 @@ import CryptoJS from "crypto-js"
             let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
             return ID
         },
+        ApplicationList:{
+            get: function () {
+              return this.$store.state.ApplicationList
+            },
+            set: function (newValue) {
+              this.$store.state.ApplicationList = newValue
+            }
+        },
       
     },
     watch: {
@@ -117,6 +138,10 @@ import CryptoJS from "crypto-js"
     components: {
     },
     methods: {
+        ToCreateApplication(){
+            this.$router.push({name:'开发者平台'})
+            this.$store.state.DeveloperMenuCur = '应用管理'
+        },
         //邮箱验证码模板保存
         handleCreateMailVerification(name){
             this.$refs[name].validate((valid) => {

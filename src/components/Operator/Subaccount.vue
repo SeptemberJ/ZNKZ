@@ -214,6 +214,9 @@ import CryptoJS from "crypto-js"
                       case 2:
                       this.$Message.error('该手机号已注册!')
                       break
+                      case 3:
+                      this.$Message.error('该公司已注册!')
+                      break
                       default:
                       this.$Message.error('系统繁忙!')
                     }

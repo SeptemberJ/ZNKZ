@@ -26,8 +26,8 @@
                         <Home v-if="curMneu == '首页'"></Home>
                         <IndividualAccount v-if="curMneu == '个人账号'"></IndividualAccount>
                         <EnterpriseInfo v-if="curMneu == '企业信息'"></EnterpriseInfo>
-                        <ApplicationManagement v-if="curMneu == '应用管理'"></ApplicationManagement>
-                        <ProductManagement v-if="curMneu == '产品管理'"></ProductManagement>
+                        <ApplicationManagement v-if="curMneu == '应用管理'" v-on:refreshApplicationList="RefreshApplication" v-on:refreshProductionList="RefreshProduction"></ApplicationManagement>
+                        <ProductManagement v-if="curMneu == '产品管理'" v-on:refreshProductionList="RefreshProduction"></ProductManagement>
                         <AgreementManagement v-if="curMneu == '协议管理'"></AgreementManagement>
                         <WarningSetting v-if="curMneu == '警告设置'"></WarningSetting>
                         <DebugEquipment v-if="curMneu == '调试设备'"></DebugEquipment>
@@ -93,28 +93,50 @@ import Community from '../../components/Developer/Community.vue'
           top: 82,
           duration: 1.5
       });
+      this.GetAllApplication()
+      this.GetAllProduction()
       
     },
     computed: {
+        ID(){
+            let ID = CryptoJS.AES.decrypt(this.$store.state.userInfo.userID,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
+            return ID
+        },
         UserName(){
             return CryptoJS.AES.decrypt(this.$store.state.userInfo.username,this.$store.state.PlainText).toString(CryptoJS.enc.Utf8)
         },
         activeRoute(){
-        return this.$store.state.activeRoute
-       },
-       curMneu: {
-        get: function () {
-          return this.$store.state.DeveloperMenuCur
+            return this.$store.state.activeRoute
         },
-        set: function (newValue) {
-          this.$store.state.DeveloperMenuCur = newValue
-        }
-       },
-       rotateIcon () {
+        curMneu: {
+            get: function () {
+              return this.$store.state.DeveloperMenuCur
+            },
+            set: function (newValue) {
+              this.$store.state.DeveloperMenuCur = newValue
+            }
+        },
+        rotateIcon () {
             return [
                 'menu-icon',
                 this.isCollapsed ? 'rotate-icon' : ''
             ];
+        },
+        CurApplication: {
+            get: function () {
+              return this.$store.state.CurApplication
+            },
+            set: function (newValue) {
+              this.$store.state.CurApplication = newValue
+            }
+        },
+        CurProduction: {
+            get: function () {
+              return this.$store.state.CurProduction
+            },
+            set: function (newValue) {
+              this.$store.state.CurProduction = newValue
+            }
         },
 
       
@@ -169,6 +191,66 @@ import Community from '../../components/Developer/Community.vue'
             localStorage.clear()
             clearCookie('btznkz')
             this.$router.push({name:'登录'})
+        },
+        RefreshApplication(){
+            alert('刷新 应用')
+            this.GetAllApplication()
+        },
+        RefreshProduction(){
+            alert('刷新 产品')
+            this.GetAllProduction()
+        },
+        //获取所有应用
+        GetAllApplication(){
+            axios.get(R_PRE_URL+'selectallapply?userid='+this.ID
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  if(res.data.applylist[0]){
+                    this.CurApplication = this.$store.state.CurApplication == ''?res.data.applylist[0].id:this.$store.state.CurApplication
+                    this.$store.state.ApplicationList = res.data.applylist
+                  }else{
+                    this.CurApplication = ''
+                  }
+                  break
+                  case 0:
+                  this.$Message.error('获取应用列表失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
+            }).catch((error)=> {
+                console.log(error)
+                this.$Message.error('系统繁忙，获取应用列表失败!')
+                this.modal_loading = false
+            })
+        },
+        //获取所有产品列表
+        GetAllProduction(){
+            axios.get(R_PRE_URL+'selectallpro?userid='+this.ID
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  if(res.data.prolist[0]){
+                    this.CurProduction = this.$store.state.CurProduction == ''?res.data.prolist[0].id:this.$store.state.CurProduction
+                    this.$store.state.ProductionList = res.data.prolist
+                  }else{
+                    this.CurProduction = ''
+                  }
+                  break
+                  case 0:
+                  this.$Message.error('获取产品列表失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                  this.modal_loading = false
+                }
+            }).catch((error)=> {
+                console.log(error)
+                this.$Message.error('系统繁忙,获取产品列表失败!')
+                this.modal_loading = false
+            })
         },
      
 

@@ -50,7 +50,7 @@
         </div>
         <div slot="footer" style="text-align:center">
             <Button type="error" size="large" :loading="modal_loading" @click="handleEdit('formEdit')">保存</Button>
-            <Button type="primary" size="large"  @click="Del()">删除</Button>
+            <Button type="primary" size="large"  @click="DeleteApplication()">删除</Button>
         </div>
     </Modal>
         
@@ -65,14 +65,6 @@ import CryptoJS from "crypto-js"
       return {
         modal_loading:false,
         ImgSource:'',
-        // formEdit:{
-        //     A_kind:'',
-        //     A_name:'',
-        //     A_introduction:'',
-        //     A_img:'',
-        //     A_android:'',
-        //     A_ios:'',
-        // },
         ruleEdit: {
             A_kind: [
                 { required: true, message: '请选择应用类别', trigger: 'change' }
@@ -113,7 +105,7 @@ import CryptoJS from "crypto-js"
                 A_kind : this.EditInfo.apply_type,
                 A_name : this.EditInfo.apply_name,
                 A_introduction : this.EditInfo.apply_introduction,
-                A_img : this.EditInfo.apply_icon,
+                A_img : this.ImgSource?this.ImgSource:this.EditInfo.apply_icon,
                 A_android : this.EditInfo.android_name,
                 A_ios : this.EditInfo.ios_name,
             }
@@ -132,24 +124,32 @@ import CryptoJS from "crypto-js"
             this.$store.state.M_EditApplication = e
             //console.log(this.$store.state.M_EditApplication)
         },
-        Del(){
-            axios.get(R_PRE_URL+'deleteapply?id='+this.EditInfo.id
-            ).then((res)=> {
-                switch(res.data.result){
-                  case 1:
-                  this.$Message.success('应用删除成功!')
-                  this.$store.state.M_EditApplication = false
-                  this.$emit('refreshApplication')
-                  break
-                  case 0:
-                  this.$Message.error('删除应用失败!')
-                  break
-                  default:
-                  this.$Message.error('系统繁忙!')
-                }
-            }).catch((error)=> {
-                console.log(error)
-            })
+        DeleteApplication(){
+            this.$Modal.confirm({
+                    title: '删除提醒',
+                    content: '<p>确定删除该应用？</p>',
+                    onOk: () => {
+                        axios.get(R_PRE_URL+'deleteapply?id='+this.EditInfo.id
+                        ).then((res)=> {
+                            switch(res.data.result){
+                              case 1:
+                              this.$Message.success('应用删除成功!')
+                              this.$store.state.M_EditApplication = false
+                              this.$emit('refreshApplication')
+                              break
+                              case 0:
+                              this.$Message.error('删除应用失败!')
+                              break
+                              default:
+                              this.$Message.error('系统繁忙!')
+                            }
+                        }).catch((error)=> {
+                            console.log(error)
+                        })
+                    },
+                    onCancel: () => {
+                    }
+                })
         },
         handleFormatError (file) {
             this.$Notice.warning({
@@ -170,7 +170,8 @@ import CryptoJS from "crypto-js"
             var reader = new FileReader();   
             reader.readAsDataURL(file);   
             reader.onload = function(e){
-              _this.formEdit.A_img = this.result
+                _this.ImgSource = this.result
+              //_this.formEdit.A_img = this.result
             } 
         },
         handleEdit (name) {

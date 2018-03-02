@@ -84,8 +84,7 @@ import ColorfulBlock from '../../components/Common/ColorfulBlock.vue'
       
     },
     created(){
-        this.GetOverViewData()
-        this.GetAuthorizationList()
+        this.GetPageData()
       
     },
     computed: {
@@ -102,6 +101,11 @@ import ColorfulBlock from '../../components/Common/ColorfulBlock.vue'
         ColorfulBlock
     },
     methods: {
+        //获取页面总数据
+        GetPageData(){
+          this.GetOverViewData()
+          this.GetAuthorizationList()
+        },
         //概览信息
         GetOverViewData(KIND){
             let Info = {
