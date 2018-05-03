@@ -21,7 +21,7 @@
                 <Col :xs="12" :sm="12" :md="12" :lg="8" class="marginB_20" v-for="(Application,Idx) in ApplicationList">
                     <Card>
                         <p slot="title" style="height: 100%">
-                            <img class="SmallImg" :src="Application.apply_icon?Application.apply_icon:'/static/img/icon/application.png'">
+                            <img class="SmallImg" :src="Application.apply_icon?Application.apply_icon:'static/img/icon/application.png'">
                         </p>
                         <div slot="extra"  style="width: 150px">
                             <h3 class="Ellipsis">{{Application.apply_name}}</h3>

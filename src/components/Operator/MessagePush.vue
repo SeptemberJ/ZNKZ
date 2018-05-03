@@ -1,7 +1,7 @@
 <template>
     <div class="MessagePush">
         <!-- 没有任何信息 -->
-        <div v-if="ApplicationList.length == 0">
+       <!--  <div v-if="ApplicationList.length == 0">
             <Card :bordered="false" dis-hover>
                 <div style="text-align:center">
                     <img src="static/img/NoInformation.png">
@@ -9,9 +9,10 @@
                     <Button class="marginT_10" type="primary" icon="android-add" @click="ToCreateApplication">创建新应用</Button>
                 </div>
             </Card>
-        </div>
+        </div> -->
         <!-- 有信息 -->
-        <div v-else>
+       <!--  <div v-else> -->
+        <div>
             <Row type="flex" justify="space-between" class="code-row-bg">
               <Col span="4"><h2>消息列表</h2></Col>
               <Col span="8" class="TextRight">

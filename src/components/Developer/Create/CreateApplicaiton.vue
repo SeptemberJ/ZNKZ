@@ -7,12 +7,13 @@
                 <span>创建新应用</span>
             </p>
             <div style="">
-                <Form ref="formCreate" :model="formCreate" :rules="ruleCreate"  label-position="left" :label-width="100">
+                <Form ref="formCreate" :model="formCreate" :rules="ruleCreate"  label-position="left" :label-width="120">
                     <FormItem label="应用分类" prop="A_kind">
                         <Select v-model="formCreate.A_kind" placeholder="请选择应用类别">
-                            <Option value="智能家居">智能家居</Option>
+                            <Option v-for="(item,idx) in ApplicationKind" :value="item.typename" :key="idx">{{ item.typename }}</Option>
+                            <!-- <Option value="智能家居">智能家居</Option>
                             <Option value="智慧社区">智慧社区</Option>
-                            <Option value="智能硬件">智能硬件</Option>
+                            <Option value="智能硬件">智能硬件</Option> -->
                         </Select>
                     </FormItem>
                     <FormItem label="应用名称" prop="A_name">
@@ -41,10 +42,10 @@
                             </div>
                         </Upload>
                     </FormItem>
-                    <FormItem label="应用包名" prop="A_android">
+                    <FormItem label="Android应用包名" prop="A_android">
                         <Input v-model="formCreate.A_android" placeholder="请输入应用包名（50字以内）"></Input>
                     </FormItem>
-                    <FormItem label="应用包名" prop="A_ios">
+                    <FormItem label="iOS应用包名" prop="A_ios">
                         <Input v-model="formCreate.A_ios" placeholder="请输入Bundle Id（50字以内）"></Input>
                     </FormItem>
                 </Form>
@@ -68,6 +69,7 @@ import Create from "./Create"
     props:[],
     data: function () {
       return {
+        ApplicationKind:[],
         modal_loading:false,
         ApplicationList:[],
         application_id:'',
@@ -93,6 +95,7 @@ import Create from "./Create"
       
     },
     created() {
+        this.GetApplicationKind()
       
     },
     computed: {
@@ -192,6 +195,25 @@ import Create from "./Create"
             //this.GetApplication()
             this.$store.state.M_CreateApplication = false
             this.$store.state.M_CreateProduction = true
+        },
+        //获取应用分类
+        GetApplicationKind(){
+            axios.post(R_PRE_URL+'getyingyong'
+            ).then((res)=> {
+                switch(res.data.result){
+                  case 1:
+                  this.ApplicationKind = res.data.yingyonglist
+                  break
+                  case 0:
+                  this.$Message.error('获取应用分类失败!')
+                  break
+                  default:
+                  this.$Message.error('系统繁忙!')
+                }
+            }).catch((error)=> {
+                console.log(error)
+                this.$Message.error('系统繁忙,获取应用分类失败!')
+            })
         },
         //获取所有应用
         GetApplication(){

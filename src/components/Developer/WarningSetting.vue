@@ -172,7 +172,7 @@ import EditWarning from "./Edit/EditWarning"
         //切换当前产品
         ChangeCurProduction(){
             this.GetWarningList()
-            //this.GetAllProduction()
+            this.GetAgreementList()
         },
         AddWarning(){
             if(this.AgreementList.length>0){

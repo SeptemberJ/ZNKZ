@@ -6,7 +6,7 @@
             <span>修改应用信息</span>
         </p>
         <div style="">
-            <Form ref="formEdit" :model="formEdit" :rules="ruleEdit"  label-position="left" :label-width="100">
+            <Form ref="formEdit" :model="formEdit" :rules="ruleEdit"  label-position="left" :label-width="120">
                 <FormItem label="应用分类" prop="A_kind">
                     <Select v-model="formEdit.A_kind" placeholder="请选择应用类别">
                         <Option value="智能家居">智能家居</Option>
@@ -40,10 +40,10 @@
                         </div>
                     </Upload>
                 </FormItem>
-                <FormItem label="应用包名" prop="A_android">
+                <FormItem label="Android应用包名" prop="A_android">
                     <Input v-model="formEdit.A_android" placeholder="请输入应用包名（50字以内）"></Input>
                 </FormItem>
-                <FormItem label="应用包名" prop="A_ios">
+                <FormItem label="iOS应用包名" prop="A_ios">
                     <Input v-model="formEdit.A_ios" placeholder="请输入Bundle Id（50字以内）"></Input>
                 </FormItem>
             </Form>
@@ -182,7 +182,8 @@ import CryptoJS from "crypto-js"
                       apply_type:this.formEdit.A_kind,
                       apply_name:this.formEdit.A_name,
                       apply_introduction:this.formEdit.A_introduction,
-                      apply_icon:this.formEdit.A_img == this.ImgSource?'':this.formEdit.A_img ,
+                      apply_icon:this.ImgSource?this.ImgSource:'' ,
+                      // apply_icon:this.formEdit.A_img == this.ImgSource?'':this.formEdit.A_img ,
                       Android_name:this.formEdit.A_android,
                       ios_name:this.formEdit.A_ios
                     }

@@ -22,7 +22,7 @@
                         <Icon type="power" size="14"></Icon>
                         退出
                     </Button>
-                    <div style="display: inline-block;" v-if="curMneu != '首页' && curMneu != '个人账号' && curMneu != '企业信息' && curMneu != '子账户管理'">
+                    <div style="display: inline-block;" v-if="curMneu != '首页' && curMneu != '个人账号' && curMneu != '企业信息' && curMneu != '子账户管理' && curMneu != '设备情况' && curMneu != '设备授权' && curMneu != '用户情况' && curMneu != '活跃用户'">
                         <!-- 当前应用 -->
                         <span v-if="curMneu == '用户情况' || curMneu == '活跃用户' || curMneu == 'APK升级' || curMneu == '消息推送' || curMneu == '用户反馈' || curMneu == '邮件模板' || curMneu == '常见问题管理'">
                             <b>当前应用:</b>

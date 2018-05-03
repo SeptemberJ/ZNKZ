@@ -1,7 +1,7 @@
 <template>
     <div class="ApkUpgrade">
         <!-- 没有任何信息 -->
-        <div v-if="ApplicationList.length == 0">
+        <!-- <div v-if="ApplicationList.length == 0">
             <Card :bordered="false" dis-hover>
                 <div style="text-align:center">
                     <img src="static/img/NoInformation.png">
@@ -9,9 +9,10 @@
                     <Button class="marginT_10" type="primary" icon="android-add" @click="ToCreateApplication">创建新应用</Button>
                 </div>
             </Card>
-        </div>
+        </div> -->
         <!-- 有信息 -->
-        <div v-else>
+        <!-- <div v-else> -->
+        <div>
             <Row type="flex" justify="space-between" class="code-row-bg">
                 <Col span="4"><h2>APK列表</h2></Col>
                 <Col span="4" class="TextRight">
@@ -113,7 +114,7 @@ import CryptoJS from "crypto-js"
             },
             {
                 title: '更新说明',
-                key: 'fversion'
+                key: 'fupdateContent'
             },
             {
                 title: '创建时间',
@@ -232,6 +233,7 @@ import CryptoJS from "crypto-js"
                           this.$Message.success('创建APK成功!')
                           this.ifShowModal = false
                           this.modal_loading = false
+                          this.GetApkList()
                           break
                           case 0:
                           this.$Message.error('创建APK失败!')

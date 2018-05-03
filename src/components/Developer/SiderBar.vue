@@ -24,6 +24,7 @@
             <MenuItem name="协议管理">协议管理</MenuItem>
             <MenuItem name="警告设置">警告设置</MenuItem>
             <MenuItem name="调试设备">调试设备</MenuItem>
+            <MenuItem name="设备管理">设备管理</MenuItem>
         </Submenu>
         <Submenu name="智能互联">
             <template slot="title">

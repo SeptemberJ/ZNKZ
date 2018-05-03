@@ -31,6 +31,7 @@
                         <AgreementManagement v-if="curMneu == '协议管理'"></AgreementManagement>
                         <WarningSetting v-if="curMneu == '警告设置'"></WarningSetting>
                         <DebugEquipment v-if="curMneu == '调试设备'"></DebugEquipment>
+                        <Equipments v-if="curMneu == '设备管理'" ></Equipments>
                         <AmazonEcho v-if="curMneu == 'AmazonEcho'"></AmazonEcho>
                         <GoogleHome v-if="curMneu == 'GoogleHome'"></GoogleHome>
                         <YSSXT v-if="curMneu == '莹石摄像头'"></YSSXT>
@@ -65,6 +66,7 @@ import ProductManagement from '../../components/Developer/ProductManagement.vue'
 import AgreementManagement from '../../components/Developer/AgreementManagement.vue'
 import WarningSetting from '../../components/Developer/WarningSetting.vue'
 import DebugEquipment from '../../components/Developer/DebugEquipment.vue'
+import Equipments from '../../components/Developer/Equipments.vue'
 import AmazonEcho from '../../components/Developer/AmazonEcho.vue'
 import GoogleHome from '../../components/Developer/GoogleHome.vue'
 import YSSXT from '../../components/Developer/YSSXT.vue'
@@ -154,6 +156,7 @@ import Community from '../../components/Developer/Community.vue'
         AgreementManagement,
         WarningSetting,
         DebugEquipment,
+        Equipments,
         AmazonEcho,
         GoogleHome,
         YSSXT,
@@ -193,11 +196,11 @@ import Community from '../../components/Developer/Community.vue'
             this.$router.push({name:'登录'})
         },
         RefreshApplication(){
-            alert('刷新 应用')
+            // alert('刷新 应用')
             this.GetAllApplication()
         },
         RefreshProduction(){
-            alert('刷新 产品')
+            // alert('刷新 产品')
             this.GetAllProduction()
         },
         //获取所有应用

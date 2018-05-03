@@ -53,7 +53,7 @@ import EditProduction from "./Edit/EditProduction"
                     return h('div', [
                         h('img', {
                             attrs: {
-                                src: '/static/img/icon/application.png',//params.row.headimg,
+                                src: params.row.product_pic?params.row.product_pic:'/static/img/icon/application.png',//'/static/img/icon/application.png',//params.row.headimg,
                                 style: 'width: 40px;height: 40px;border-radius: 2px;margin: 10px auto'
                             },
                         }),

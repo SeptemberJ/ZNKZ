@@ -195,6 +195,7 @@ import CryptoJS from "crypto-js"
                           this.$Message.success('创建新固件成功!')
                           this.ifShowModal = false
                           this.modal_loading = false
+                          this.GetFirmwareList()
                           break
                           case 0:
                           this.$Message.error('创建新固件失败!')

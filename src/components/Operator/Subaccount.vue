@@ -7,6 +7,7 @@
             <Col span="20" class="TextRight">
                 <Button type="error" icon="android-add" @click="AddUser">添加子账户</Button>
             </Col>
+
         </Row>
         <!-- 添加账户 -->
         <Modal v-model="ifShowModal" width="600" :mask-closable="false">
@@ -42,6 +43,7 @@
                 <Button type="error" size="large" :loading="modal_loading" @click="handleCreateU('formCreateU')">确定创建</Button>
             </div>
         </Modal>
+        
         <!-- 子账户列表 -->
         <div  class="BlockWrap marginTB_20">
             <Table border :loading="table_loading" :columns="UsersColumns" :data="UsersData"></Table>
@@ -73,6 +75,10 @@ import CryptoJS from "crypto-js"
             name:'',
             company:''
         },
+        formImport: {
+            xlsFile: '',
+            xlsMoban:''
+        },
         ruleCreateU:{
             phone: [
                 { required: true, message: '请输入手机号', trigger: 'blur' }
@@ -91,6 +97,11 @@ import CryptoJS from "crypto-js"
             ],
             company: [
                 { required: true, message: '请输入公司名称', trigger: 'blur' }
+            ]
+        },
+        ruleImport: {
+            xlsFile: [
+                { required: true, message: '请选择导入的xls文件', trigger: 'blur' }
             ]
         },
         UsersColumns: [

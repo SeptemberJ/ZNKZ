@@ -1,7 +1,7 @@
 <template>
     <div class="MailTemplate">
         <!-- 没有任何信息 -->
-        <div v-if="ApplicationList.length == 0">
+        <!-- <div v-if="ApplicationList.length == 0">
             <Card :bordered="false" dis-hover>
                 <div style="text-align:center">
                     <img src="static/img/NoInformation.png">
@@ -9,9 +9,10 @@
                     <Button class="marginT_10" type="primary" icon="android-add" @click="ToCreateApplication">创建新应用</Button>
                 </div>
             </Card>
-        </div>
+        </div> -->
         <!-- 有信息 -->
-        <div v-else>
+        <!-- <div v-else> -->
+        <div>
             <!-- 邮箱验证码模板 -->
             <h2>邮箱验证码模板</h2>
             <div  class="BlockWrap marginTB_20 PaddingTB_50">

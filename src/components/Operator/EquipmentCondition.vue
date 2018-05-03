@@ -127,7 +127,7 @@ import LineChart from '../../components/Common/LineChart.vue'
         //获取页面总数据
         GetPageData(){
             this.GetOverViewData()
-            this.GetAuthorizationList(this.signDate)
+            //this.GetAuthorizationList(this.signDate)
         },
         //refreshLineChart
         refreshLineChart(){
@@ -137,7 +137,7 @@ import LineChart from '../../components/Common/LineChart.vue'
         GetOverViewData(){
             let Info = {
               userid:this.ID,
-              product_id:this.$store.state.CurProduction,
+              //product_id:this.$store.state.CurProduction,
             }
             let DATA = {'users':Info}
             axios.post(R_PRE_URL + 'selectnumber1',DATA
@@ -153,7 +153,7 @@ import LineChart from '../../components/Common/LineChart.vue'
                 page:this.page_num,
                 number:this.number,
                 userid:this.ID,
-                product_id:this.$store.state.CurProduction,
+                //product_id:this.$store.state.CurProduction,
                 date:Date?Date:''
             }
             let DATA = {'users':Info}
@@ -179,17 +179,17 @@ import LineChart from '../../components/Common/LineChart.vue'
         //分页
         changePage(event){
           this.page_num = event
-          this.GetAuthorizationList(this.signDate)
+          //this.GetAuthorizationList(this.signDate)
         },
         //切换每页条数
         changePageSize(event){
           this.number = event
-          this.GetAuthorizationList(this.signDate)
+          //this.GetAuthorizationList(this.signDate)
         },
         //切换注册时间
         ChangeSignDate(Time){
             this.signDate = Time
-            this.GetAuthorizationList(Time)
+            //this.GetAuthorizationList(Time)
         }
      
 

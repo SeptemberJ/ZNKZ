@@ -60,10 +60,10 @@ import {setCookie,getCookie,getCryptoJsCookie,Encrypt,Decrypt} from '../../util/
       }
     },
     mounted(){
-     particlesJS.load('particlesLogin','/static/particlesData.js');
+     
     },
    created() {
-     
+     particlesJS.load('particlesLogin','/static/particlesData.js');
    },
    computed: {
     
