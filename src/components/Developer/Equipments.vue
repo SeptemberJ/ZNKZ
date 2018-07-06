@@ -26,7 +26,7 @@
                     
                 </FormItem>
                 <FormItem label="模板下载：" prop="xlsMoban">
-                    <a href="static/AddEquipmentTemplate.xls">设备导入模板</a>
+                    <a href="http://222.44.17.8:8085/images/AddEquipmentTemplate.xls">设备导入模板</a>
                 </FormItem>
               </Form>
             </div>
@@ -47,10 +47,11 @@
                     <FormItem label="设备ID" prop="Equ_id">
                         <Input v-model="formCreateE.Equ_id"></Input>
                     </FormItem>
-                    <FormItem label="设备密码" prop="Equ_psd">
-                        <Input v-model="formCreateE.Equ_psd"></Input>
+                    <FormItem label="设备类型" prop="Equ_sensortype">
+                        <Input v-model="formCreateE.Equ_sensortype"></Input>
                     </FormItem>
                 </Form>
+                <span>(设备类型详见导入文件说明)</span>
             </div>
             <div slot="footer" style="text-align:center">
                 <Button type="error" size="large"  :loading="modal_loading" @click="handleCreateE">确定创建</Button>
@@ -69,10 +70,11 @@
                     <FormItem label="设备ID" prop="machine_id">
                         <Input disabled v-model="EditInfo.machine_id"></Input>
                     </FormItem>
-                    <FormItem label="设备密码" prop="machine_password">
-                        <Input v-model="EditInfo.machine_password"></Input>
+                    <FormItem label="设备类型" prop="sensortype">
+                        <Input v-model="EditInfo.sensortype"></Input>
                     </FormItem>
                 </Form>
+                <span>(设备类型详见导入文件说明)</span>
             </div>
             <div slot="footer" style="text-align:center">
                 <Button type="error" size="large"  :loading="modal_loading" @click="handleEditE">保存</Button>
@@ -99,7 +101,12 @@ import CryptoJS from "crypto-js"
         ifEdit: false,
         modal_loading:false,
         file:null,
-        EditInfo:'',
+        EditInfo:{
+            machine_code:'',
+            machine_id:'',
+            sensortype:'',
+        },
+        //EditInfo:'',
         formImport: {
 	        xlsFile: '',
 	        xlsMoban:''
@@ -110,15 +117,18 @@ import CryptoJS from "crypto-js"
         formCreateE:{
         	Equ_code:'',
         	Equ_id:'',
-        	Equ_psd:''
+        	Equ_sensortype:''
         },
         ruleCreateE: {
             Equ_code: [
                 { required: true, message: '设备编码不能为空', trigger: 'blur' }
             ],
+            Equ_sensortype: [
+                { required: true, message: '设备类型不能为空', trigger: 'blur' }
+            ],
         },
         ruleEditE: {
-            machine_code: [
+            sensortype: [
                 { required: true, message: '设备编码不能为空', trigger: 'blur' }
             ],
         },
@@ -137,8 +147,8 @@ import CryptoJS from "crypto-js"
                 key: 'machine_id'
             },
             {
-                title: '设备密码',
-                key: 'machine_password'
+                title: '设备类别',
+                key: 'sensortype'
             },
             {
                 title: '操作',
@@ -200,7 +210,7 @@ import CryptoJS from "crypto-js"
       
     },
     created() {
-        this.getAllEquipment()
+        this.getAllEquipment(this.ID,1,10)
       
     },
     computed: {
@@ -269,24 +279,29 @@ import CryptoJS from "crypto-js"
     	//分页
         changePage(event){
           this.page_num = event
-          this.getAllEquipment()
+          this.getAllEquipment(this.ID,event,this.number)
         },
 
         //切换每页条数
         changePageSize(event){
           this.number = event
-          this.getAllEquipment()
+          this.getAllEquipment(this.ID,this.page_num,event)
         },
         //手动添加设备
         handleCreateE(){
         	if(this.formCreateE.Equ_code == ''){
+                this.$Message.error('请输入设备编码!')
         		return false
         	}
+            if(this.formCreateE.Equ_sensortype == ''){
+                this.$Message.error('请输入设备类型!')
+                return false
+            }
         	let info = {
         		take_user: this.ID,
         		machine_id: this.formCreateE.Equ_id,
         		machine_code: this.formCreateE.Equ_code,
-        		machine_password: this.formCreateE.Equ_psd,
+        		sensortype: this.formCreateE.Equ_sensortype,
         	}
         	let DATA = {'devices':info}
         	axios.post(R_PRE_URL+'insertdevice',DATA
@@ -295,6 +310,7 @@ import CryptoJS from "crypto-js"
                   case 1:
                   this.$Message.success('新增设备成功!')
                   this.ifAdd = false
+                  this.getAllEquipment(this.ID,1,this.number)
                   break
                   case 2:
                   this.$Message.error('该设备编号已存在!')
@@ -314,11 +330,11 @@ import CryptoJS from "crypto-js"
             })
         },
         //获取所有设备
-        getAllEquipment(){
+        getAllEquipment(ID,PAGE,NUMBER){
             let info = {
-                take_user:this.ID,
-                page:this.page_num,
-                number:this.number
+                take_user:ID,//this.ID,
+                page:PAGE,//this.page_num,
+                number:NUMBER,//this.number
             }
             let DATA = {'users':info}
             axios.post(R_PRE_URL+'selectmachinetake',DATA
@@ -345,12 +361,14 @@ import CryptoJS from "crypto-js"
         },
         //编辑
         editEquipment(Info){
+            console.log(Info)
             this.ifEdit = true
             this.EditInfo = Info
         },
         //保存编辑
         handleEditE(){
-            if(this.EditInfo.machine_code == ''){
+            if(this.EditInfo.sensortype == ''){
+                this.$Message.error('请输入设备类型!')
                 return false
             }
             let info = {
@@ -358,7 +376,7 @@ import CryptoJS from "crypto-js"
                 take_user: this.ID,
                 // machine_id: this.EditInfo.machine_id,
                 // machine_code: this.EditInfo.machine_code,
-                machine_password: this.EditInfo.machine_password,
+                sensortype: this.EditInfo.sensortype,
             }
             let DATA = {'users':info}
             axios.post(R_PRE_URL+'updatemachinetake',DATA
@@ -368,6 +386,7 @@ import CryptoJS from "crypto-js"
                   this.$Message.success('修改设备信息成功!')
                   this.ifEdit = false
                   this.modal_loading = false
+                  this.getAllEquipment(this.ID,this.page_num,this.number)
                   break
                   case 2:
                   this.$Message.error('该设备编号已存在!')
@@ -395,7 +414,7 @@ import CryptoJS from "crypto-js"
                   this.$Message.success('删除设备成功!')
                   this.ifEdit = false
                   this.modal_loading = false
-                  this.getAllEquipment()
+                  this.getAllEquipment(this.ID,this.page_num,this.number)
                   break
                   case 0:
                   this.$Message.error('删除设备失败!')
